@@ -1,28 +1,26 @@
-import java.util.*;
-
 public class Recensione {
-    private String[] nomiRecensioni = { "Sintetica", "Posizione", "Pulizia", "Servizio", "Prezzo" };
-    private int[] recensione = { 0, 0, 0, 0, 0 };
-    public boolean recensioneValida = true;
+    private String[] reviewNames = { "Sintetica", "Posizione", "Pulizia", "Servizio", "Prezzo" };
+    private int[] review = { 0, 0, 0, 0, 0 };
+    public boolean validReview = true;
     
     public Recensione(int recensioneSintetica, int posizione, int pulizia, int servizio, int prezzo) {
-        recensione[0] = recensioneSintetica;
-        recensione[1] = posizione;
-        recensione[2] = pulizia;
-        recensione[3] = servizio;
-        recensione[4] = prezzo;
+        review[0] = recensioneSintetica;
+        review[1] = posizione;
+        review[2] = pulizia;
+        review[3] = servizio;
+        review[4] = prezzo;
         checkReview();
     }
 
     private void checkReview() {
 
-        for (int i = 0; i < recensione.length; i++) {
-            int review = recensione[i];
-            if (review < 0 || review > 5) {
+        for (int i = 0; i < review.length; i++) {
+            int currentReview = review[i];
+            if (currentReview < 0 || currentReview > 5) {
                 // flag to set invalid review
-                recensioneValida = false;
-                System.out.println("Il punteggio per la recensione: " + nomiRecensioni[i]
-                        + " e' invalido, recensione non pubblicabile");
+                validReview = false;
+                System.out.println("Il punteggio per la review: " + reviewNames[i]
+                        + " e' invalido, review non pubblicabile");
             }
         }
     }    
