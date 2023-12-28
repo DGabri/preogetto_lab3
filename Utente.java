@@ -1,12 +1,12 @@
 public class Utente {
     public int writtenReviewsCount;
     public String userLevel;
-    public String nome;
-    public String cognome;
+    public String name;
+    public String surname;
 
-    public Utente(String nome, String cognome) {
-        this.nome = nome;
-        this.cognome = cognome;
+    public Utente(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
         this.writtenReviewsCount = 0;
         setUserLevel();
     }
