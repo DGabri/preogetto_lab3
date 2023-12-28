@@ -156,17 +156,6 @@ public class HotelierCustomerClient {
         System.out.print("Inserisci un valore compreso tra 1 ed 8: ");
     }
 
-    private static String getUserInput(String prompt) {
-        System.out.print(prompt);
-
-        try (Scanner scanner = new Scanner(System.in)) {
-            return scanner.nextLine();
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
     // function to get username and password from cmd
     public String getUsernamePwd() {
         String username = "";
@@ -185,8 +174,7 @@ public class HotelierCustomerClient {
                     System.out.println("Username e password devono essere non vuoti. Riprova.");
                 }
             } while (username.length() == 0 || password.length() == 0);
-
-            // scanner.close();
+;
             return new String(username + "_" + password);
 
         } catch (Exception e) {
@@ -203,8 +191,6 @@ public class HotelierCustomerClient {
             String msg = "1_" + username + "_" + password;
             System.out.println("MSG: " + msg);
 
-            // sendMessage(socketChannel, msg);
-            // String res = receiveMessage(socketChannel);
             String res = writeRead(socketChannel, msg);
             System.out.println("RECEIVED: " + res);
         } else {
@@ -218,9 +204,6 @@ public class HotelierCustomerClient {
 
             String msg = "2_" + username + "_" + password;
             System.out.println("MSG: " + msg);
-
-            // sendMessage(socketChannel, msg);
-            // String retCode = receiveMessage(socketChannel);
 
             String retCode = writeRead(socketChannel, msg);
             System.out.println("Login return code: " + retCode);
@@ -241,9 +224,6 @@ public class HotelierCustomerClient {
         String msg = "3_logout";
         System.out.println("MSG: " + msg);
 
-        // sendMessage(socketChannel, msg);
-        // String retCode = receiveMessage(socketChannel);
-
         String retCode = writeRead(socketChannel, msg);
         System.out.println("Login return code: " + retCode);
 
@@ -259,9 +239,6 @@ public class HotelierCustomerClient {
         String msg = "4_" + nomeHotel + "_" + citta;
         System.out.println("MSG: " + msg);
 
-        // sendMessage(socketChannel, msg);
-        // String retCode = receiveMessage(socketChannel);
-
         String retCode = writeRead(socketChannel, msg);
         System.out.println("Return code: " + retCode);
     }
@@ -270,9 +247,6 @@ public class HotelierCustomerClient {
 
         String msg = "5_" + citta;
         System.out.println("MSG: " + msg);
-
-        // sendMessage(socketChannel, msg);
-        // String retCode = receiveMessage(socketChannel);
 
         String retCode = writeRead(socketChannel, msg);
         System.out.println("Return code: " + retCode);
@@ -287,9 +261,6 @@ public class HotelierCustomerClient {
 
             System.out.println("MSG: " + msg);
 
-            // sendMessage(socketChannel, msg);
-            // String msg = receiveMessage(socketChannel);
-
             String retCode = writeRead(socketChannel, msg);
             System.out.println("Return code: " + retCode);
         } else {
@@ -301,9 +272,6 @@ public class HotelierCustomerClient {
         if (this.loggedIn) {
 
             String msg = "7_showBadges";
-
-            // sendMessage(socketChannel, msg);
-            // String ret = receiveMessage(socketChannel);
 
             String retCode = writeRead(socketChannel, msg);
             System.out.println("RCVD: " + retCode);
@@ -323,38 +291,24 @@ public class HotelierCustomerClient {
         }
     }
 
-    private static void sendMessage(SocketChannel socketChannel, String message) {
-        try {
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
-            buffer.put(message.getBytes());
-            buffer.flip(); // This might not be necessary
-            socketChannel.write(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private static String writeRead(SocketChannel socketChannel, String msg) {
         try {
             ByteBuffer writeBuffer = ByteBuffer.wrap(msg.getBytes());
             socketChannel.write(writeBuffer);
 
-            // Allocate a buffer for reading
-            ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
 
-            // Wait for the server's response
+            // wait server
             while (socketChannel.read(readBuffer) <= 0) {
-                // Wait for data to be available
+                // wait data
             }
 
-            // Flip the buffer to read the response
+            // flip buffer to read response
             readBuffer.flip();
 
-            // Read the remaining data
             byte[] responseData = new byte[readBuffer.remaining()];
             readBuffer.get(responseData);
 
-            // Convert bytes to string
             String response = new String(responseData, "UTF-8");
             System.out.println("Echo: " + response);
 
@@ -365,72 +319,4 @@ public class HotelierCustomerClient {
         }
     }
 
-    private static String receiveMessage(SocketChannel socketChannel) {
-        try {
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
-            int bytesRead = socketChannel.read(buffer);
-
-            if (bytesRead == -1) {
-                // Handle closed connection
-                System.out.println("Server closed the connection.");
-                return "";
-            }
-
-            buffer.flip();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
-            System.out.println("RECEIVED: " + new String(bytes));
-
-            return new String(bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
 }
-
-/*
- * public static void main1(String[] args){
- * // Open scanner+socketchannel with try to handle exceptions
- * try {
- * Scanner scanner = new Scanner(System.in);
- * SocketChannel socketChannel = SocketChannel.open();
- * socketChannel.connect(new InetSocketAddress("localhost", 6349));
- * 
- * while (true) {
- * System.out.println("Inserisci msg da inviare al server:");
- * String msg = scanner.nextLine();
- * 
- * if (msg.equals("stop")) {
- * break;
- * }
- * 
- * // create buffer and write content to channel
- * ByteBuffer buffer = ByteBuffer.wrap(msg.getBytes());
- * socketChannel.write(buffer);
- * 
- * // allocate response buff and read
- * ByteBuffer resBuff = ByteBuffer.allocate(1024);
- * socketChannel.read(resBuff);
- * resBuff.flip();
- * 
- * // read remaining data
- * byte[] responseData = new byte[resBuff.remaining()];
- * resBuff.get(responseData);
- * 
- * // convert bytes to string
- * System.out.println("Echo: " + new String(responseData, "UTF-8"));
- * 
- * }
- * 
- * // close socketchannel+scanner
- * socketChannel.close();
- * scanner.close();
- * 
- * } catch (IOException e) {
- * e.printStackTrace();
- * }
- * 
- * }
- */
