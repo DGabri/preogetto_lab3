@@ -32,7 +32,6 @@ public class HotelierServer {
                     if (key.isAcceptable()) {
                         acceptConnection(key, selector);
                     } else if (key.isReadable()) {
-                        // handleRead(key, selector);
                         readMsg(key, selector);
                     } 
 
@@ -87,56 +86,6 @@ public class HotelierServer {
             e.printStackTrace();
         }
 
-    }
-
-    private static void handleRead(SelectionKey key, Selector selector) {
-        try {
-            SocketChannel socketChannel = (SocketChannel) key.channel();
-            ByteBuffer buffer = (ByteBuffer) key.attachment();
-
-            int bytesRead = socketChannel.read(buffer);
-            if (bytesRead == -1) {
-                // Client closed connection
-                socketChannel.close();
-                System.out.println("Client closed connection: " + socketChannel.getRemoteAddress());
-                return;
-            }
-
-            // Handle received data (you can modify this part based on your application
-            // logic)
-            buffer.flip();
-            byte[] data = new byte[buffer.remaining()];
-            buffer.get(data);
-            String messageReceived = new String(data);
-            System.out.println("Received from client " + socketChannel.getRemoteAddress() + ": " + messageReceived);
-
-            // Modify the interest set to write and attach the response
-            key.interestOps(SelectionKey.OP_WRITE);
-            key.attach(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void handleWrite(SelectionKey key, Selector selector, String message) {
-        try {
-            SocketChannel socketChannel = (SocketChannel) key.channel();
-            ByteBuffer buff = (ByteBuffer) key.attachment(); // Retrieve the attached ByteBuffer
-
-            buff.clear();
-            buff.put(message.getBytes());
-
-            buff.flip();
-
-            while (buff.hasRemaining()) {
-                socketChannel.write(buff);
-            }
-
-            // Set the interest set back to read
-            key.interestOps(SelectionKey.OP_READ);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }

@@ -93,7 +93,7 @@ public class HotelierCustomerClient {
                     case "4":
                         System.out.print("Inserisci nome hotel: ");
                         String nomeHotel = scanner.nextLine();
-                        System.out.println("Inserisci citta' hotel: ");
+                        System.out.print("Inserisci citta' hotel: ");
                         String citta = scanner.nextLine();
 
                         System.out.print("Hotel: " + nomeHotel + " citta: " + citta);
@@ -124,10 +124,10 @@ public class HotelierCustomerClient {
                     case "8":
                         System.out.println("Ok esco");
                         // close selector and socket channel
-                        sendMessage(client.socketChannel, "8");
+                        writeRead(client.socketChannel, "8");
                         client.selector.close();
                         client.socketChannel.close();
-                        break;
+                        System.exit(0);
 
                     default:
                         System.out.println("Valore non corretto, inserisci un valore tra quelli elencati");
