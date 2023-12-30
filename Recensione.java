@@ -1,3 +1,4 @@
+
 public class Recensione {
     private String[] reviewNames = { "Sintetica", "Posizione", "Pulizia", "Servizio", "Prezzo" };
     private int[] review = { 0, 0, 0, 0, 0 };

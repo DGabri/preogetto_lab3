@@ -1,3 +1,4 @@
+
 public class Utente {
     public int writtenReviewsCount;
     public String userLevel;
@@ -36,18 +37,23 @@ public class Utente {
         int count = this.writtenReviewsCount;
         if ((count > 0) && (count < 3)) {
             setLevel("Recensore");
-        }
-        else if ((count >= 3) && (count < 6)) {
+        } else if ((count >= 3) && (count < 6)) {
             setLevel("Recensore_Esperto");
-        }
-        else if ((count >= 6) && (count < 8)) {
+        } else if ((count >= 6) && (count < 8)) {
             setLevel("Contributore");
-        }
-        else if ((count >= 8) && (count < 10)) {
+        } else if ((count >= 8) && (count < 10)) {
             setLevel("Contributore_Esperto");
-        }
-        else if (count >= 10) {
+        } else if (count >= 10) {
             setLevel("Contributore_Super");
         }
+    }
+    
+    public String toString() {
+        return "Utente{" +
+                "writtenReviewsCount=" + writtenReviewsCount +
+                ", userLevel='" + userLevel + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
     }
 }
