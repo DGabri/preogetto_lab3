@@ -1,0 +1,17 @@
+{
+    "utenti": [
+      {
+        "writtenReviewsCount": 3,
+        "userLevel": "Gold",
+        "name": "Alice",
+        "surname": "Smith"
+      },
+      {
+        "writtenReviewsCount": 7,
+        "userLevel": "Platinum",
+        "name": "Bob",
+        "surname": "Johnson"
+      }
+    ]
+  }
+  
