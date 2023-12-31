@@ -17,7 +17,6 @@ public class HotelierServer {
     // Users tracker
     private ConcurrentHashMap<String, String> registeredUsers;
     private ConcurrentHashMap<String, Integer> loggedInUsers;
-    private Map<String, Utente> utenti;
 
 
     private static HotelierServer serverRef;
