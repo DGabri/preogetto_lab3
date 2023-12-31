@@ -1,4 +1,4 @@
-package demo.src;
+
 import java.util.List;
 
 public class Hotel {

@@ -1,4 +1,3 @@
-package demo.src;
 
 public class Utente {
     public int writtenReviewsCount;

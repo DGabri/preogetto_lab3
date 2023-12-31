@@ -1,4 +1,4 @@
-package demo.src;
+
 
 public class Recensione {
     public int posizione;
