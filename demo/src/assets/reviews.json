@@ -1,6 +1,7 @@
 {
   "1": [
     {
+      "totale": 4,
       "posizione": 4,
       "pulizia": 5,
       "servizio": 4,
@@ -10,6 +11,7 @@
       "timestamp": 1672531199000
     },
     {
+      "totale": 3,
       "posizione": 5,
       "pulizia": 4,
       "servizio": 5,
@@ -19,6 +21,7 @@
       "timestamp": 1672531199000
     },
     {
+      "totale": 2,
       "posizione": 1,
       "pulizia": 2,
       "servizio": 3,
@@ -28,6 +31,7 @@
       "timestamp": 1672531239000
     },
     {
+      "totale": 5,
       "posizione": 1,
       "pulizia": 2,
       "servizio": 3,
@@ -35,10 +39,181 @@
       "username": "user5f",
       "idHotel": 0,
       "timestamp": 1672531189600
+    },
+    {
+      "totale": 4,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704141534154
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142279004
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142740915
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142744127
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142744458
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142744669
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142744882
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142745113
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142745329
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142745530
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142745730
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142745941
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142746145
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142746506
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142878209
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142879373
+    },
+    {
+      "totale": 3,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 5,
+      "username": "gabri",
+      "idHotel": 1,
+      "timestamp": 1704142880015
     }
   ],
   "2": [
     {
+      "totale": 4,
       "posizione": 3,
       "pulizia": 5,
       "servizio": 4,
@@ -48,6 +223,7 @@
       "timestamp": 1686547199000
     },
     {
+      "totale": 2,
       "posizione": 4,
       "pulizia": 4,
       "servizio": 5,
@@ -57,6 +233,7 @@
       "timestamp": 1672531689600
     },
     {
+      "totale": 2,
       "posizione": 1,
       "pulizia": 2,
       "servizio": 3,
@@ -66,6 +243,7 @@
       "timestamp": 1672531189630
     },
     {
+      "totale": 2,
       "posizione": 1,
       "pulizia": 2,
       "servizio": 3,
@@ -77,6 +255,7 @@
   ],
   "3": [
     {
+      "totale": 2,
       "posizione": 1,
       "pulizia": 2,
       "servizio": 3,
@@ -86,6 +265,7 @@
       "timestamp": 1672531185600
     },
     {
+      "totale": 3,
       "posizione": 1,
       "pulizia": 2,
       "servizio": 3,
@@ -95,6 +275,7 @@
       "timestamp": 1672531129600
     },
     {
+      "totale": 5,
       "posizione": 1,
       "pulizia": 2,
       "servizio": 3,
@@ -106,6 +287,7 @@
   ],
   "4": [
     {
+      "totale": 2,
       "posizione": 1,
       "pulizia": 2,
       "servizio": 3,

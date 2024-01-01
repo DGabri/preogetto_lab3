@@ -1,65 +1,76 @@
 {
-    "utenti": [
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "sjdnfiansf",
-        "password": "sdnfoinasof"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "kdfjgshd",
-        "password": "dfjhsgdf"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "aldfhgs",
-        "password": "sfjhsgd"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "zxcvnmb",
-        "password": "iuytre"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "qweorpo",
-        "password": "bnmcvx"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "mnbvcxz",
-        "password": "lkjhgf"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "poiuytre",
-        "password": "asdfgh"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "zxcvbnm",
-        "password": "qwert"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "lkjhgfds",
-        "password": "yuiop"
-      },
-      {
-        "writtenReviewsCount": 0,
-        "userLevel": "Recensore",
-        "username": "mnbvcxza",
-        "password": "plmokn"
-      }
-    ]
-  }
-  
+  "utenti": [
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "kdfjgshd",
+      "password": "dfjhsgdf"
+    },
+    {
+      "writtenReviewsCount": 4,
+      "userLevel": "Recensore_Esperto",
+      "username": "gabri",
+      "password": "gabri"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "mnbvcxza",
+      "password": "plmokn"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "mnbvcxz",
+      "password": "lkjhgf"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "mario",
+      "password": "mario"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "lkjhgfds",
+      "password": "yuiop"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "poiuytre",
+      "password": "asdfgh"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "qweorpo",
+      "password": "bnmcvx"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "zxcvbnm",
+      "password": "qwert"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "zxcvnmb",
+      "password": "iuytre"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "sjdnfiansf",
+      "password": "sdnfoinasof"
+    },
+    {
+      "writtenReviewsCount": 0,
+      "userLevel": "Recensore",
+      "username": "aldfhgs",
+      "password": "sfjhsgd"
+    }
+  ]
+}
