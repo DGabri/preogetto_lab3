@@ -1,5 +1,6 @@
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.nio.charset.StandardCharsets;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
@@ -108,7 +109,64 @@ public class HotelierServer {
         }
     }
 
+
     public void readMsg(SelectionKey selKey, Selector selector) {
+        try {
+            SocketChannel socketChannel = (SocketChannel) selKey.channel();
+            ByteBuffer lengthBuffer = ByteBuffer.allocate(Integer.BYTES);
+    
+            // Read the length of the message
+            int bytesRead = socketChannel.read(lengthBuffer);
+    
+            if (bytesRead == -1) {
+                socketChannel.close();
+                System.out.println("Client closed connection");
+                return;
+            }
+    
+            lengthBuffer.flip();
+            int messageLength = lengthBuffer.getInt();
+    
+            // Read the actual message
+            ByteBuffer msgBuffer = ByteBuffer.allocate(messageLength);
+            bytesRead = socketChannel.read(msgBuffer);
+    
+            if (bytesRead == -1) {
+                socketChannel.close();
+                System.out.println("Client closed connection");
+                return;
+            }
+    
+            msgBuffer.flip();
+            byte[] data = new byte[msgBuffer.remaining()];
+            msgBuffer.get(data);
+            String messageReceived = new String(data, StandardCharsets.UTF_8);
+            System.out.println("RECEIVED: " + messageReceived);
+    
+            // Handle the received message and send back a response
+            String msgToSend = serverRef.handleReceivedMessage(messageReceived);
+    
+            // Echo the message back to the client with length prefix
+            byte[] responseBytes = msgToSend.getBytes(StandardCharsets.UTF_8);
+            ByteBuffer responseBuffer = ByteBuffer.allocate(Integer.BYTES + responseBytes.length);
+            responseBuffer.putInt(responseBytes.length);
+            responseBuffer.put(responseBytes);
+            responseBuffer.flip();
+    
+            while (responseBuffer.hasRemaining()) {
+                socketChannel.write(responseBuffer);
+            }
+    
+            selKey.interestOps(SelectionKey.OP_READ); // Set interest back to read for the next message
+    
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
+    public void readMsg1(SelectionKey selKey, Selector selector) {
         try {
             // open socket channel and read to buff
             SocketChannel socketChannel = (SocketChannel) selKey.channel();

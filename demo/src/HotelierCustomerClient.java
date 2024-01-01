@@ -1,3 +1,4 @@
+import java.nio.charset.StandardCharsets;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -304,7 +305,7 @@ public class HotelierCustomerClient {
         }
     }
 
-    private static String writeRead(SocketChannel socketChannel, String msg) {
+    private static String writeRead1(SocketChannel socketChannel, String msg) {
         try {
             ByteBuffer writeBuffer = ByteBuffer.wrap(msg.getBytes());
             socketChannel.write(writeBuffer);
@@ -330,5 +331,49 @@ public class HotelierCustomerClient {
             return "";
         }
     }
+    private static String writeRead(SocketChannel socketChannel, String msg) {
+        try {
+            // Convert the message to bytes
+            byte[] msgBytes = msg.getBytes(StandardCharsets.UTF_8);
+    
+            // Create a ByteBuffer with length prefix
+            ByteBuffer writeBuffer = ByteBuffer.allocate(Integer.BYTES + msgBytes.length);
+            writeBuffer.putInt(msgBytes.length);
+            writeBuffer.put(msgBytes);
+            writeBuffer.flip();
+    
+            // Write the message to the server
+            while (writeBuffer.hasRemaining()) {
+                socketChannel.write(writeBuffer);
+            }
+    
+            // Read the response length
+            ByteBuffer lengthBuffer = ByteBuffer.allocate(Integer.BYTES);
+            while (socketChannel.read(lengthBuffer) <= 0) {
+                // wait for data
+            }
+            lengthBuffer.flip();
+            int responseLength = lengthBuffer.getInt();
+    
+            // Read the actual response
+            ByteBuffer readBuffer = ByteBuffer.allocate(responseLength);
+            while (socketChannel.read(readBuffer) <= 0) {
+                // wait for data
+            }
+            readBuffer.flip();
+    
+            // Convert the received bytes to a String
+            byte[] responseData = new byte[readBuffer.remaining()];
+            readBuffer.get(responseData);
+    
+            return new String(responseData, StandardCharsets.UTF_8);
+    
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+    
+    
 
 }
