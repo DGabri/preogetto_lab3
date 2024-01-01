@@ -1,16 +1,64 @@
 {
     "utenti": [
       {
-        "writtenReviewsCount": 3,
-        "userLevel": "Gold",
-        "name": "Alice",
-        "surname": "Smith"
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "sjdnfiansf",
+        "password": "sdnfoinasof"
       },
       {
-        "writtenReviewsCount": 7,
-        "userLevel": "Platinum",
-        "name": "Bob",
-        "surname": "Johnson"
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "kdfjgshd",
+        "password": "dfjhsgdf"
+      },
+      {
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "aldfhgs",
+        "password": "sfjhsgd"
+      },
+      {
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "zxcvnmb",
+        "password": "iuytre"
+      },
+      {
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "qweorpo",
+        "password": "bnmcvx"
+      },
+      {
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "mnbvcxz",
+        "password": "lkjhgf"
+      },
+      {
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "poiuytre",
+        "password": "asdfgh"
+      },
+      {
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "zxcvbnm",
+        "password": "qwert"
+      },
+      {
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "lkjhgfds",
+        "password": "yuiop"
+      },
+      {
+        "writtenReviewsCount": 0,
+        "userLevel": "Recensore",
+        "username": "mnbvcxza",
+        "password": "plmokn"
       }
     ]
   }

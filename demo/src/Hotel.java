@@ -1,14 +1,14 @@
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-
-import java.io.File;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import java.lang.reflect.Type;
+import com.google.gson.Gson;
+import java.io.IOException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
+import java.io.File;
+
 
 public class Hotel {
     public int id;
@@ -83,15 +83,14 @@ public class Hotel {
     }
 
     public String toString() {
-        return "Hotel{" +
+        return "Hotel -> " +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", city='" + city + '\'' +
                 ", phone='" + phone + '\'' +
                 ", services=" + services +
-                ", rate=" + rate +
-                '}';
+                ", rate=" + rate;
     }
 
 }

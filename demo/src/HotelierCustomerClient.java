@@ -9,10 +9,10 @@ import java.nio.ByteBuffer;
 import java.util.*;
 
 
+
 public class HotelierCustomerClient {
     // config variables and asset path
-    private static final String CONFIG = "./assets/client.properties";
-    private static final int BUFFER_SIZE = 1024;
+    private static final String CLIENT_CONFIG = "./assets/client.properties";
     private static String SERVER_ADDRESS;
     private static int PORT;
 
@@ -26,7 +26,7 @@ public class HotelierCustomerClient {
     public HotelierCustomerClient() {
         try {
             // load config
-            Properties prop = loadConfig(CONFIG);
+            Properties prop = loadConfig(CLIENT_CONFIG);
             PORT = Integer.parseInt(prop.getProperty("port"));
             SERVER_ADDRESS = prop.getProperty("serverAddress");
 
@@ -305,32 +305,6 @@ public class HotelierCustomerClient {
         }
     }
 
-    private static String writeRead1(SocketChannel socketChannel, String msg) {
-        try {
-            ByteBuffer writeBuffer = ByteBuffer.wrap(msg.getBytes());
-            socketChannel.write(writeBuffer);
-
-            ByteBuffer readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
-
-            // wait server
-            while (socketChannel.read(readBuffer) <= 0) {
-                // wait data
-            }
-
-            // flip buffer to read response
-            readBuffer.flip();
-
-            byte[] responseData = new byte[readBuffer.remaining()];
-            readBuffer.get(responseData);
-
-            String response = new String(responseData, "UTF-8");
-
-            return response;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
     private static String writeRead(SocketChannel socketChannel, String msg) {
         try {
             // Convert the message to bytes

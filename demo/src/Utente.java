@@ -9,7 +9,7 @@ public class Utente {
         this.username = username;
         this.password = password;
         this.writtenReviewsCount = 0;
-        setUserLevel();
+        this.setUserLevel();
     }
 
     // function to increase by 1 the number of reviews done to keep statistics
@@ -33,9 +33,14 @@ public class Utente {
         this.userLevel = level;
     }
 
+    /* FUNCTION TO CALCULATE CURRENT LEVEL */
     public void setUserLevel() {
+
         int count = this.writtenReviewsCount;
-        if ((count > 0) && (count < 3)) {
+        System.out.println("----------------------------");
+        System.out.println("COUNT: " + count);
+        System.out.println("----------------------------");
+        if ((count >= 0) && (count < 3)) {
             setLevel("Recensore");
         } else if ((count >= 3) && (count < 6)) {
             setLevel("Recensore_Esperto");
@@ -46,13 +51,17 @@ public class Utente {
         } else if (count >= 10) {
             setLevel("Contributore_Super");
         }
+        System.out.println("CALLED SETUSERLEVEL");
+        System.out.println("LEVEL: " + userLevel);
     }
     
+    /* FUNCTION TO PRINT OBJECT */
     public String toString() {
         return "Utente{" +
                 "writtenReviewsCount=" + writtenReviewsCount +
                 ", userLevel='" + userLevel + '\'' +
                 ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

@@ -1,27 +1,26 @@
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.*;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Map;
-import java.util.HashSet;
-
-import com.google.gson.*;
-
-import java.io.*;
+import java.util.Comparator;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Comparator;
-import java.util.stream.Collectors;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+import java.util.Iterator;
+import com.google.gson.*;
+import java.util.*;
+import java.io.*;
+
+
 
 public class HotelierServer {
-    // private static final String CONFIG = "./assets/server.properties";
-    private static final int PORT = 63490;
+    // config variables
+    private static final String SERVER_CONFIG = "./assets/server.properties";
+    private static int RANKING_REFRESH_RATE;
+    private static int PORT;
 
     // json files path
     private static final String HOTELS_JSON_PATH = "./assets/Hotels.json";
@@ -39,6 +38,12 @@ public class HotelierServer {
     private static HotelierServer serverRef;
 
     public HotelierServer() {
+
+        // load config
+        Properties prop = loadConfig(SERVER_CONFIG);
+        PORT = Integer.parseInt(prop.getProperty("port"));
+        RANKING_REFRESH_RATE = Integer.parseInt(prop.getProperty("rankingRefreshRate"));
+
         // Initialize data structures
         registeredUsers = new ConcurrentHashMap<>();
         loggedInUsers = new HashSet<>();
@@ -49,7 +54,8 @@ public class HotelierServer {
         loadUsersFromJson();
         loadHotelsFromJson();
         loadReviewsFromJson();
-
+        saveReviewsToJson();
+        System.out.println("SAVED REV");
         for (String hotelId : reviews.keySet()) {
 
             List<Recensione> reviewsList = reviews.get(hotelId);
@@ -90,6 +96,26 @@ public class HotelierServer {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // function to split the received message from the client
+    public static String[] splitCredentials(String credentials) {
+        String[] parts = credentials.split("_");
+
+        return parts;
+    }
+
+    // function to load the configuration
+    public static Properties loadConfig(String fname) {
+        try (FileInputStream fileInputStream = new FileInputStream(fname)) {
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+
+            return properties;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -163,39 +189,7 @@ public class HotelierServer {
             e.printStackTrace();
         }
     }
-    
-    
-    
-    public void readMsg1(SelectionKey selKey, Selector selector) {
-        try {
-            // open socket channel and read to buff
-            SocketChannel socketChannel = (SocketChannel) selKey.channel();
-            ByteBuffer buff = ByteBuffer.allocate(1024);
-            int bytesRead = socketChannel.read(buff);
 
-            if (bytesRead == -1) {
-                socketChannel.close();
-                System.out.println("Client closed connection");
-                return;
-            }
-
-            // read msg from client and echo it
-            buff.flip();
-            byte[] data = new byte[buff.remaining()];
-            buff.get(data);
-            String messageReceived = new String(data, "UTF-8");
-            System.out.println("RECEIVED: " + messageReceived);
-
-            // handle the received msg and send "back response
-            String msgToSend = serverRef.handleReceivedMessage(messageReceived);
-            // Echo the message back to the client
-            socketChannel.write(ByteBuffer.wrap(msgToSend.getBytes("UTF-8")));
-            selKey.interestOps(SelectionKey.OP_READ); // Set interest back to read for the next message
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public String createHotelsString(String city) {
         List<Hotel> matchingHotels = searchAllHotels(city);
@@ -212,6 +206,7 @@ public class HotelierServer {
         // Send the response to the client
         return response.toString();
     }
+
     public String handleReceivedMessage(String inputMsg) {
         // take substring of the message
         String msgRcvd = inputMsg.substring(2);
@@ -222,7 +217,7 @@ public class HotelierServer {
             case "1":
                 // returns 0 if user is not present, 1 if present
                 String rcvdCredentials = msgRcvd;
-                String[] credentials = Utils.splitCredentials(rcvdCredentials);
+                String[] credentials = splitCredentials(rcvdCredentials);
 
                 String username = credentials[0];
                 String password = credentials[1];
@@ -240,6 +235,8 @@ public class HotelierServer {
 
                     // create new user object and save it to hashmap + users json
                     Utente newUser = new Utente(username, password);
+                    System.out.println(newUser);
+                    
                     serverRef.registerUser(newUser);
                     System.out.println("USER REGISTERED NOW");
                     return "1";
@@ -248,7 +245,7 @@ public class HotelierServer {
                 /* LOGIN */
             case "2":
                 // returns 0 if user is not present, 1 if present
-                String[] loginCredentials = Utils.splitCredentials(msgRcvd);
+                String[] loginCredentials = splitCredentials(msgRcvd);
 
                 String usernameLogin = loginCredentials[0];
                 String passwordLogin = loginCredentials[1];
@@ -259,7 +256,7 @@ public class HotelierServer {
 
             /* LOGOUT */
             case "3":
-                String[] logoutCredentials = Utils.splitCredentials(msgRcvd);
+                String[] logoutCredentials = splitCredentials(msgRcvd);
 
                 String logoutUsername = logoutCredentials[0];
                 return serverRef.logout(logoutUsername);
@@ -267,7 +264,7 @@ public class HotelierServer {
             /* SEARCH HOTEL */
             case "4":
                 // split the received message and return the response
-                String[] requestedHotel = Utils.splitCredentials(msgRcvd);
+                String[] requestedHotel = splitCredentials(msgRcvd);
                 String hotelName = requestedHotel[0];
                 String city = requestedHotel[1];
 
@@ -276,7 +273,7 @@ public class HotelierServer {
             /* SEARCH ALL HOTELS IN CITY */
             case "5":
                 System.out.println(msgRcvd);
-                String[] requestedCity = Utils.splitCredentials(msgRcvd);
+                String[] requestedCity = splitCredentials(msgRcvd);
                 String searchCity = requestedCity[0];
                 
                 return createHotelsString(searchCity);
@@ -288,7 +285,7 @@ public class HotelierServer {
             /* SHOW BADGES */
             case "7":
                 // split credentials and get username
-                String[] userCredentials = Utils.splitCredentials(msgRcvd);
+                String[] userCredentials = splitCredentials(msgRcvd);
                 username = userCredentials[0];
 
                 return serverRef.showBadges(username);
@@ -432,13 +429,21 @@ public class HotelierServer {
     private static JsonObject readJsonFromFile(String filePath) {
         try {
             String jsonData = new String(Files.readAllBytes(Paths.get(filePath)));
-            return JsonParser.parseString(jsonData).getAsJsonObject();
+    
+            if (jsonData != null && !jsonData.isEmpty()) {
+                return JsonParser.parseString(jsonData).getAsJsonObject();
+            } else {
+                // Handle the case where jsonData is null or empty
+                System.out.println("The JSON data is null or empty.");
+                // or log an error, throw an exception, or handle it as appropriate for your application
+                return null;
+            }
         } catch (IOException | JsonSyntaxException e) {
             e.printStackTrace();
             return null;
         }
     }
-
+    
     /* HOTELS FUNCTIONS */
     private static void loadHotelsFromJson() {
         try {
@@ -492,9 +497,8 @@ public class HotelierServer {
         }
 
         // Write the entire array to the file
-        try (FileWriter writer = new FileWriter("./assets/test.json")) {
+        try (FileWriter writer = new FileWriter(HOTELS_JSON_PATH)) {
             gson.toJson(hotelsArray, writer);
-            System.out.println("All hotels data saved ");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -514,7 +518,7 @@ public class HotelierServer {
                     Utente utente = new Gson().fromJson(utentiArray.get(i), Utente.class);
                     registeredUsers.put(utente.username, utente);
                 } catch (Exception e) {
-                    System.err.println("Error deserializing Utente: " + e.getMessage());
+                    System.err.println("Error loading Utente: " + e.getMessage());
                 }
             }
         }
@@ -577,12 +581,13 @@ public class HotelierServer {
                     int posizione = reviewObject.get("posizione").getAsInt();
                     int pulizia = reviewObject.get("pulizia").getAsInt();
                     int servizio = reviewObject.get("servizio").getAsInt();
-                    int prezzo = reviewObject.get("prezzo").getAsInt();
+                    int qualita = reviewObject.get("qualita").getAsInt();
                     int idHotel = reviewObject.get("idHotel").getAsInt();
+                    long ts = reviewObject.get("timestamp").getAsLong();
                     String username = reviewObject.get("username").getAsString();
 
                     // Create a new Recensione
-                    Recensione recensione = new Recensione(posizione, pulizia, servizio, prezzo, username, idHotel);
+                    Recensione recensione = new Recensione(posizione, pulizia, servizio, qualita, username, idHotel, 0, ts);
 
                     // Add the review to the list
                     reviewsList.add(recensione);
@@ -590,39 +595,6 @@ public class HotelierServer {
 
                 // Add the reviews list to the reviews map
                 reviews.put(city, reviewsList);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void loadReviewsFromJson1() {
-        try {
-            String jsonData = new String(Files.readAllBytes(Paths.get(REVIEWS_JSON_PATH)));
-            JsonObject reviewsObject = JsonParser.parseString(jsonData).getAsJsonObject();
-
-            for (Map.Entry<String, JsonElement> entry : reviewsObject.entrySet()) {
-                String hotelIdStr = entry.getKey();
-                int hotelId = Integer.parseInt(hotelIdStr);
-
-                JsonArray reviewsArray = entry.getValue().getAsJsonArray();
-                for (JsonElement reviewElement : reviewsArray) {
-                    JsonObject reviewObject = reviewElement.getAsJsonObject();
-
-                    // Extract review details
-                    int posizione = reviewObject.get("posizione").getAsInt();
-                    int pulizia = reviewObject.get("pulizia").getAsInt();
-                    int servizio = reviewObject.get("servizio").getAsInt();
-                    int prezzo = reviewObject.get("prezzo").getAsInt();
-                    int idHotel = reviewObject.get("idHotel").getAsInt();
-                    String username = reviewObject.get("username").getAsString();
-
-                    // Create a new Recensione
-                    Recensione recensione = new Recensione(posizione, pulizia, servizio, prezzo, username, idHotel);
-
-                    // Add the review to the relative hotel
-                    addReviewToHotel(hotelId, recensione);
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,0 +1,118 @@
+{
+  "1": [
+    {
+      "posizione": 4,
+      "pulizia": 5,
+      "servizio": 4,
+      "qualita": 3,
+      "username": "user1",
+      "idHotel": 0,
+      "timestamp": 1672531199000
+    },
+    {
+      "posizione": 5,
+      "pulizia": 4,
+      "servizio": 5,
+      "qualita": 3,
+      "username": "user2",
+      "idHotel": 0,
+      "timestamp": 1672531199000
+    },
+    {
+      "posizione": 1,
+      "pulizia": 2,
+      "servizio": 3,
+      "qualita": 4,
+      "username": "user5f",
+      "idHotel": 0,
+      "timestamp": 1672531239000
+    },
+    {
+      "posizione": 1,
+      "pulizia": 2,
+      "servizio": 3,
+      "qualita": 4,
+      "username": "user5f",
+      "idHotel": 0,
+      "timestamp": 1672531189600
+    }
+  ],
+  "2": [
+    {
+      "posizione": 3,
+      "pulizia": 5,
+      "servizio": 4,
+      "qualita": 4,
+      "username": "user3",
+      "idHotel": 0,
+      "timestamp": 1686547199000
+    },
+    {
+      "posizione": 4,
+      "pulizia": 4,
+      "servizio": 5,
+      "qualita": 3,
+      "username": "user4",
+      "idHotel": 0,
+      "timestamp": 1672531689600
+    },
+    {
+      "posizione": 1,
+      "pulizia": 2,
+      "servizio": 3,
+      "qualita": 4,
+      "username": "user655f",
+      "idHotel": 0,
+      "timestamp": 1672531189630
+    },
+    {
+      "posizione": 1,
+      "pulizia": 2,
+      "servizio": 3,
+      "qualita": 4,
+      "username": "user5asdasdf",
+      "idHotel": 0,
+      "timestamp": 1672531789600
+    }
+  ],
+  "3": [
+    {
+      "posizione": 1,
+      "pulizia": 2,
+      "servizio": 3,
+      "qualita": 4,
+      "username": "prova_prova",
+      "idHotel": 0,
+      "timestamp": 1672531185600
+    },
+    {
+      "posizione": 1,
+      "pulizia": 2,
+      "servizio": 3,
+      "qualita": 4,
+      "username": "ciaoansfinapofbisbdfibasdjbsadbfjas",
+      "idHotel": 0,
+      "timestamp": 1672531129600
+    },
+    {
+      "posizione": 1,
+      "pulizia": 2,
+      "servizio": 3,
+      "qualita": 4,
+      "username": "ciaoansfinapofbisbdfibasdjbsadbfjas",
+      "idHotel": 0,
+      "timestamp": 1672531489600
+    }
+  ],
+  "4": [
+    {
+      "posizione": 1,
+      "pulizia": 2,
+      "servizio": 3,
+      "qualita": 4,
+      "username": "ciaoansfinapofbisbdfibasdjbsadbfjas",
+      "idHotel": 0,
+      "timestamp": 1672531289600
+    }
+  ]
+}
