@@ -50,7 +50,8 @@ public class HotelierServer {
         loadHotelsFromJson();
         loadReviewsFromJson();
 
-        for (Integer hotelId : reviews.keySet()) {
+        for (String hotelId : reviews.keySet()) {
+
             List<Recensione> reviewsList = reviews.get(hotelId);
             for (Recensione review : reviewsList) {
                 System.out.println(review);
@@ -556,12 +557,13 @@ public class HotelierServer {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             JsonObject jsonObject = new JsonObject();
-
-            for (Integer key : reviews.keySet()) {
-                JsonArray reviewsArray = gson.toJsonTree(reviews.get(key)).getAsJsonArray();
-                jsonObject.add(String.valueOf(key), reviewsArray);
-            }
-
+    
+            // Iterate over the ConcurrentHashMap using forEach
+            reviews.forEach((hotelId, reviewsList) -> {
+                JsonArray reviewsArray = gson.toJsonTree(reviewsList).getAsJsonArray();
+                jsonObject.add(hotelId, reviewsArray);
+            });
+    
             try (FileWriter fileWriter = new FileWriter(REVIEWS_JSON_PATH)) {
                 gson.toJson(jsonObject, fileWriter);
             }
@@ -569,18 +571,21 @@ public class HotelierServer {
             e.printStackTrace();
         }
     }
+    
 
     // function to add a review to the list of reviews
     public static void addReviewToHotel(int hotelId, Recensione recensione) {
+        String hotelIdStr = String.valueOf(hotelId);
+
         // Check if the hotel ID is already in the map
-        if (reviews.containsKey(hotelId)) {
+        if (reviews.containsKey(hotelIdStr)) {
             // If yes, add the review to the existing list
-            reviews.get(hotelId).add(recensione);
+            reviews.get(hotelIdStr).add(recensione);
         } else {
             // If no, create a new list and add the review
             List<Recensione> reviewList = new ArrayList<>();
             reviewList.add(recensione);
-            reviews.put(hotelId, reviewList);
+            reviews.put(String.valueOf(hotelIdStr), reviewList);
         }
     }
 
