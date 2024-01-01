@@ -323,7 +323,6 @@ public class HotelierCustomerClient {
             readBuffer.get(responseData);
 
             String response = new String(responseData, "UTF-8");
-            System.out.println("Echo: " + response);
 
             return response;
         } catch (IOException e) {

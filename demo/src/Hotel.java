@@ -1,4 +1,13 @@
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class Hotel {
@@ -9,7 +18,7 @@ public class Hotel {
     public String phone;
     public List<String> services;
     public double rate;
-    public List<Recensione> review;
+    public Recensione ratings;
 
     public Hotel(int id, String name, String description, String city, String phone, List<String> services, double rate,
             int posizione, int pulizia, int servizio, int prezzo) {
@@ -20,8 +29,7 @@ public class Hotel {
         this.phone = phone;
         this.services = services;
         this.rate = rate;
-        this.ratings = new Recensione(posizione, pulizia, servizio, prezzo);
-        this.review = Recensione.loadReviewsFromJson("./assets/reviews.json");
+        Ratings ratings = new Ratings(0, 0, 0, 0);
 
     }
             
@@ -48,23 +56,27 @@ public class Hotel {
 
             // Aggiungi le recensioni esistenti al JsonArray
             if (new java.io.File(filePath).exists()) {
-                jsonArray = GsonUtils.readJsonArrayFromFile(filePath);
+                jsonArray = new Gson().fromJson(new FileReader(filePath), JsonArray.class);
             }
 
             // Costruisci un nuovo oggetto JSON per la nuova recensione
             JsonObject nuovaRecensioneJson = new JsonObject();
             nuovaRecensioneJson.addProperty("id", hotelId);
             nuovaRecensioneJson.addProperty("name", "Hotel " + hotelId);
-            nuovaRecensioneJson.addProperty("posizione", nuovaRecensione.posizione);
-            nuovaRecensioneJson.addProperty("pulizia", nuovaRecensione.pulizia);
-            nuovaRecensioneJson.addProperty("servizio", nuovaRecensione.servizio);
-            nuovaRecensioneJson.addProperty("prezzo", nuovaRecensione.prezzo);
+            nuovaRecensioneJson.addProperty("position", nuovaRecensione.posizione);
+            nuovaRecensioneJson.addProperty("cleaning", nuovaRecensione.pulizia);
+            nuovaRecensioneJson.addProperty("services", nuovaRecensione.servizio);
+            nuovaRecensioneJson.addProperty("quality", nuovaRecensione.qualita);
 
             // Aggiungi il nuovo oggetto JSON al JsonArray
             jsonArray.add(nuovaRecensioneJson);
 
-            // Scrivi il JsonArray aggiornato nel file JSON
-            GsonUtils.writeJsonArrayToFile(jsonArray, filePath);
+            try (FileWriter fileWriter = new FileWriter(filePath)) {
+                new Gson().toJson(jsonArray, fileWriter);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,7 +91,6 @@ public class Hotel {
                 ", phone='" + phone + '\'' +
                 ", services=" + services +
                 ", rate=" + rate +
-                ", ratings=" + ratings +
                 '}';
     }
 

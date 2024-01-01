@@ -2,12 +2,12 @@
 public class Utente {
     public int writtenReviewsCount;
     public String userLevel;
-    public String name;
-    public String surname;
+    public String username;
+    public String password;
 
-    public Utente(String name, String surname) {
-        this.name = name;
-        this.surname = surname;
+    public Utente(String username, String password) {
+        this.username = username;
+        this.password = password;
         this.writtenReviewsCount = 0;
         setUserLevel();
     }
@@ -52,8 +52,7 @@ public class Utente {
         return "Utente{" +
                 "writtenReviewsCount=" + writtenReviewsCount +
                 ", userLevel='" + userLevel + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }
