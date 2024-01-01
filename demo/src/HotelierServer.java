@@ -30,7 +30,6 @@ public class HotelierServer {
     // Users tracker, hotels and reviews
     private static ConcurrentHashMap<String, Utente> registeredUsers;
     private static Set<String> loggedInUsers;
-    // public static ConcurrentHashMap<Integer, List<Recensione>> reviews;
     public static ConcurrentHashMap<String, List<Recensione>> reviews;
 
     public static ConcurrentHashMap<String, List<Hotel>> hotels;
@@ -140,6 +139,21 @@ public class HotelierServer {
         }
     }
 
+    public String createHotelsString(String city) {
+        List<Hotel> matchingHotels = searchAllHotels(city);
+
+        StringBuilder response = new StringBuilder();
+        for (Hotel hotel : matchingHotels) {
+            response.append(hotel.toString()).append("\n");
+        }
+
+        System.out.println("---------------------");
+        System.out.println(response);
+        System.out.println("---------------------");
+
+        // Send the response to the client
+        return response.toString();
+    }
     public String handleReceivedMessage(String inputMsg) {
         // take substring of the message
         String msgRcvd = inputMsg.substring(2);
@@ -203,8 +217,11 @@ public class HotelierServer {
 
             /* SEARCH ALL HOTELS IN CITY */
             case "5":
-
-                return "0";
+                System.out.println(msgRcvd);
+                String[] requestedCity = Utils.splitCredentials(msgRcvd);
+                String searchCity = requestedCity[0];
+                
+                return createHotelsString(searchCity);
 
             /* INSERT REVIEW */
             case "6":
@@ -310,11 +327,13 @@ public class HotelierServer {
         return "null";
     }
 
-    private static void searchAllHotels(String citta) {
+    private static List<Hotel> searchAllHotels(String citta) {
         List<Hotel> matchingHotels = hotels.getOrDefault(citta, new ArrayList<>());
         for (Hotel hotel : matchingHotels) {
             System.out.println(hotel);
         }
+
+        return matchingHotels;
     }
 
     ///////////////////////////
