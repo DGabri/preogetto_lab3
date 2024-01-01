@@ -37,9 +37,7 @@ public class Utente {
     public void setUserLevel() {
 
         int count = this.writtenReviewsCount;
-        System.out.println("----------------------------");
-        System.out.println("COUNT: " + count);
-        System.out.println("----------------------------");
+
         if ((count >= 0) && (count < 3)) {
             setLevel("Recensore");
         } else if ((count >= 3) && (count < 6)) {
@@ -51,8 +49,8 @@ public class Utente {
         } else if (count >= 10) {
             setLevel("Contributore_Super");
         }
-        System.out.println("CALLED SETUSERLEVEL");
-        System.out.println("LEVEL: " + userLevel);
+
+        System.out.println("NEW LEVEL: " + userLevel);
     }
     
     /* FUNCTION TO PRINT OBJECT */

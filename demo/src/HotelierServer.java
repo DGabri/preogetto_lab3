@@ -54,15 +54,17 @@ public class HotelierServer {
         loadUsersFromJson();
         loadHotelsFromJson();
         loadReviewsFromJson();
-        saveReviewsToJson();
-        System.out.println("SAVED REV");
-        for (String hotelId : reviews.keySet()) {
 
+        /* 
+         
+        for (String hotelId : reviews.keySet()) {
+            
             List<Recensione> reviewsList = reviews.get(hotelId);
             for (Recensione review : reviewsList) {
                 System.out.println(review);
             }
         }
+        */
     }
 
     public static void main(String[] args) {
@@ -280,14 +282,51 @@ public class HotelierServer {
 
             /* INSERT REVIEW */
             case "6":
-                return "0";
+                String[] review = splitCredentials(msgRcvd);
+                System.out.println("*****************************************");
+                System.out.println(review);
+                System.out.println("*****************************************");
+                //(int posizione, int pulizia, int servizio, int qualita, String username, int idHotel, int createDate, long ts)
+                // get username, hotel name and city
+                String reviewerUsername = review[0];
+                String reviewedHotelName = review[1];
+                String reviewedHotelCity = review[2];
+                
+                // get all the scores
+                int globalScore = Integer.parseInt(review[3]);
+                int position = Integer.parseInt(review[4]);
+                int cleaning = Integer.parseInt(review[5]);
+                int services = Integer.parseInt(review[6]);
+                int quality = Integer.parseInt(review[7]);
+                int hotelId = getHotelId(reviewedHotelCity, reviewedHotelName);
+                
+                System.out.println("HOTEL ID: " + hotelId);
+                if (hotelId != -1) {
+                    // create new review with the received data
+                    Recensione newReview = new Recensione(globalScore, position, cleaning, services, quality, reviewerUsername,
+                            hotelId, 1, 0);
+                    System.out.println(newReview.toString());
+
+                    // update user level
+                    serverRef.updateUser(reviewerUsername);
+
+                    // save new data to json
+                    addSaveReview(newReview, hotelId);
+                    saveUtenteToJson();
+                    
+                    return "1";
+                }
+                
+                return "-1";
 
             /* SHOW BADGES */
             case "7":
                 // split credentials and get username
+                System.out.println("MSG: " + msgRcvd);
                 String[] userCredentials = splitCredentials(msgRcvd);
                 username = userCredentials[0];
 
+                System.out.println("USERNAME: " + username);
                 return serverRef.showBadges(username);
 
             /* EXIT */
@@ -371,6 +410,25 @@ public class HotelierServer {
     }
 
     /* SEARCH FUNCTIONS */
+    public int getHotelId(String city, String hotelName) {
+        // Check if the city exists in the ConcurrentHashMap
+        if (hotels.containsKey(city)) {
+            // Get the list of hotels for the specified city
+            List<Hotel> cityHotels = hotels.get(city);
+
+            // Iterate through the hotels in the city
+            for (Hotel hotel : cityHotels) {
+                // Check if the hotel name matches
+                if (hotel.name.equals(hotelName)) {
+                    // Return the hotel ID if found
+                    return hotel.id;
+                }
+            }
+        }
+
+        // Return -1 if the hotel is not found
+        return -1;
+    }
     private static String searchHotel(String nomeHotel, String citta) {
         for (List<Hotel> cityHotels : hotels.values()) {
             for (Hotel hotel : cityHotels) {
@@ -562,6 +620,25 @@ public class HotelierServer {
         }
     }
 
+    public int updateUser(String username) {
+        // Check if the username exists in the ConcurrentHashMap
+        if (registeredUsers.containsKey(username)) {
+            // Retrieve the user object
+            Utente currentUser = registeredUsers.get(username);
+
+            // update reviews count
+            currentUser.increaseReviewCount();
+            // recalculate user level
+            currentUser.setUserLevel();
+
+            // Put the updated user back into the map
+            registeredUsers.put(username, currentUser);
+
+            System.out.println("User fields updated successfully");
+            return 1;
+        }
+        return -1;
+    }
     /* REVIEWS FUNCTIONS */
 
     private static void loadReviewsFromJson() {
@@ -578,6 +655,7 @@ public class HotelierServer {
                     JsonObject reviewObject = reviewElement.getAsJsonObject();
 
                     // Extract review details
+                    int totale = reviewObject.get("totale").getAsInt();
                     int posizione = reviewObject.get("posizione").getAsInt();
                     int pulizia = reviewObject.get("pulizia").getAsInt();
                     int servizio = reviewObject.get("servizio").getAsInt();
@@ -587,7 +665,7 @@ public class HotelierServer {
                     String username = reviewObject.get("username").getAsString();
 
                     // Create a new Recensione
-                    Recensione recensione = new Recensione(posizione, pulizia, servizio, qualita, username, idHotel, 0, ts);
+                    Recensione recensione = new Recensione(totale, posizione, pulizia, servizio, qualita, username, idHotel, 0, ts);
 
                     // Add the review to the list
                     reviewsList.add(recensione);

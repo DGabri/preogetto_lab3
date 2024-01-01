@@ -138,7 +138,7 @@ public class HotelierCustomerClient {
                     /* INSERT REVIEW */
                     case "6":
                         int[] reviewPoints = { 2, 2, 2, 5 };
-                        client.insertReview("nome", "Venezia", 3, reviewPoints);
+                        client.insertReview("Hotel Aosta 1", "Aosta", 3, reviewPoints);
                         System.out.println("******************************");
                         break;
 
@@ -279,10 +279,10 @@ public class HotelierCustomerClient {
     public void insertReview(String nomeHotel, String nomeCitta, int globalScore, int[] singleScores) {
         if (this.loggedIn) {
             // prepare string to send
-            String msg = "6" + nomeHotel + "_" + nomeCitta + "_" + String.valueOf(globalScore) + "_"
+            System.out.println(singleScores);
+            String msg = "6" + "_" + this.username + "_" + nomeHotel + "_" + nomeCitta + "_" + String.valueOf(globalScore) + "_"
                     + String.valueOf(singleScores[0]) + "_" + String.valueOf(singleScores[1]) + "_"
-                    + String.valueOf(singleScores[2]) + "_" + String.valueOf(singleScores[3]) + "_"
-                    + String.valueOf(singleScores[4]);
+                    + String.valueOf(singleScores[2]) + "_" + String.valueOf(singleScores[3]);
 
             System.out.println("MSG: " + msg);
 
@@ -296,7 +296,7 @@ public class HotelierCustomerClient {
     public void showMyBadges() {
         if (this.loggedIn) {
             // prepare string to send
-            String msg = "7_showBadges";
+            String msg = "7_" + this.username;
 
             String badgeName = writeRead(socketChannel, msg);
             System.out.println("Il tuo badge attuale e': " + badgeName);

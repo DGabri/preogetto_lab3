@@ -2,6 +2,7 @@ import java.util.Date;
 
 
 public class Recensione {
+    public int totale;
     public int posizione;
     public int pulizia;
     public int servizio;
@@ -11,7 +12,8 @@ public class Recensione {
     public long timestamp;
 
     
-    public Recensione(int posizione, int pulizia, int servizio, int qualita, String username, int idHotel, int createDate, long ts) {
+    public Recensione(int totale, int posizione, int pulizia, int servizio, int qualita, String username, int idHotel, int createDate, long ts) {
+        this.totale = totale;
         this.posizione = posizione;
         this.pulizia = pulizia;
         this.servizio = servizio;
@@ -48,6 +50,7 @@ public class Recensione {
     @Override
     public String toString() {
         return "Recensione -> " +
+                "totale=" + totale +
                 "posizione=" + posizione +
                 ", pulizia=" + pulizia +
                 ", servizio=" + servizio +
