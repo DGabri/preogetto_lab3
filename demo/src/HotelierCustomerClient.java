@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-
-
 public class HotelierCustomerClient {
     // config variables and asset path
     private static final String CLIENT_CONFIG = "./assets/client.properties";
@@ -60,7 +58,7 @@ public class HotelierCustomerClient {
 
             while (true) {
                 // Display menu
-                printOptions();
+                client.printOptions();
 
                 // Get user input
                 input = scanner.nextLine();
@@ -105,8 +103,7 @@ public class HotelierCustomerClient {
                     case "3":
                         if (client.username.length() != 0) {
                             client.logout(client.username);
-                        }
-                        else {
+                        } else {
                             System.out.println("Hai gia' effettuato il logout");
                         }
                         System.out.println("******************************");
@@ -182,19 +179,32 @@ public class HotelierCustomerClient {
     }
 
     // function to print options available
-    private static void printOptions() {
-        System.out.println("-----------------------");
-        System.out.println("Scegli azione:");
-        System.out.println("1 Sign Up");
-        System.out.println("2 Login");
-        System.out.println("3 Logout");
-        System.out.println("4 Cerca Hotel");
-        System.out.println("5 Cerca alberghi in una citta'");
-        System.out.println("6 Inserisci Recensiones");
-        System.out.println("7 Mostra Livello Utente");
-        System.out.println("8 Termina");
-        System.out.println("-----------------------");
-        System.out.print("Inserisci un valore compreso tra 1 ed 8: ");
+    private void printOptions() {
+        // display these lines only if not logged in
+        if (!this.loggedIn) {
+            System.out.println("-----------------------");
+            System.out.println("Scegli azione:");
+            System.out.println("1 Sign Up");
+            System.out.println("2 Login");
+            System.out.println("4 Cerca Hotel");
+            System.out.println("5 Cerca alberghi in una citta'");
+            System.out.println("8 Termina");
+            System.out.println("-----------------------");
+            System.out.print("Inserisci un valore compreso tra 1 ed 8: ");
+        }
+        if (this.loggedIn) {
+            System.out.println("-----------------------");
+            System.out.println("Scegli azione:");
+            System.out.println("3 Logout");
+            System.out.println("4 Cerca Hotel");
+            System.out.println("5 Cerca alberghi in una citta'");
+            System.out.println("6 Inserisci Recensiones");
+            System.out.println("7 Mostra Livello Utente");
+            System.out.println("8 Termina");
+            System.out.println("-----------------------");
+            System.out.print("Inserisci un valore compreso tra 1 ed 8: ");
+        }
+
     }
 
     public String register(String username, String password) {
@@ -280,7 +290,8 @@ public class HotelierCustomerClient {
         if (this.loggedIn) {
             // prepare string to send
             System.out.println(singleScores);
-            String msg = "6" + "_" + this.username + "_" + nomeHotel + "_" + nomeCitta + "_" + String.valueOf(globalScore) + "_"
+            String msg = "6" + "_" + this.username + "_" + nomeHotel + "_" + nomeCitta + "_"
+                    + String.valueOf(globalScore) + "_"
                     + String.valueOf(singleScores[0]) + "_" + String.valueOf(singleScores[1]) + "_"
                     + String.valueOf(singleScores[2]) + "_" + String.valueOf(singleScores[3]);
 
@@ -309,18 +320,18 @@ public class HotelierCustomerClient {
         try {
             // Convert the message to bytes
             byte[] msgBytes = msg.getBytes(StandardCharsets.UTF_8);
-    
+
             // Create a ByteBuffer with length prefix
             ByteBuffer writeBuffer = ByteBuffer.allocate(Integer.BYTES + msgBytes.length);
             writeBuffer.putInt(msgBytes.length);
             writeBuffer.put(msgBytes);
             writeBuffer.flip();
-    
+
             // Write the message to the server
             while (writeBuffer.hasRemaining()) {
                 socketChannel.write(writeBuffer);
             }
-    
+
             // Read the response length
             ByteBuffer lengthBuffer = ByteBuffer.allocate(Integer.BYTES);
             while (socketChannel.read(lengthBuffer) <= 0) {
@@ -328,26 +339,24 @@ public class HotelierCustomerClient {
             }
             lengthBuffer.flip();
             int responseLength = lengthBuffer.getInt();
-    
+
             // Read the actual response
             ByteBuffer readBuffer = ByteBuffer.allocate(responseLength);
             while (socketChannel.read(readBuffer) <= 0) {
                 // wait for data
             }
             readBuffer.flip();
-    
+
             // Convert the received bytes to a String
             byte[] responseData = new byte[readBuffer.remaining()];
             readBuffer.get(responseData);
-    
+
             return new String(responseData, StandardCharsets.UTF_8);
-    
+
         } catch (IOException e) {
             e.printStackTrace();
             return "";
         }
     }
-    
-    
 
 }

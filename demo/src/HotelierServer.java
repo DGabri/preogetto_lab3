@@ -20,6 +20,7 @@ public class HotelierServer {
     // config variables
     private static final String SERVER_CONFIG = "./assets/server.properties";
     private static int RANKING_REFRESH_RATE;
+    private static int SELECT_TIMEOUT;
     private static int PORT;
 
     // json files path
@@ -28,11 +29,11 @@ public class HotelierServer {
     private static String REVIEWS_JSON_PATH = "./assets/reviews.json";
 
     // Users tracker, hotels and reviews
-    private static ConcurrentHashMap<String, Utente> registeredUsers;
+    private static Map<String, Utente> registeredUsers;
     private static Set<String> loggedInUsers;
-    public static ConcurrentHashMap<String, List<Recensione>> reviews;
+    public static Map<String, List<Recensione>> reviews;
+    public static Map<String, List<Hotel>> hotels;
 
-    public static ConcurrentHashMap<String, List<Hotel>> hotels;
 
     // object reference to call methods
     private static HotelierServer serverRef;
@@ -43,32 +44,25 @@ public class HotelierServer {
         Properties prop = loadConfig(SERVER_CONFIG);
         PORT = Integer.parseInt(prop.getProperty("port"));
         RANKING_REFRESH_RATE = Integer.parseInt(prop.getProperty("rankingRefreshRate"));
+        SELECT_TIMEOUT = Integer.parseInt(prop.getProperty("selectTimeout"));
 
         // Initialize data structures
-        registeredUsers = new ConcurrentHashMap<>();
+        registeredUsers = new HashMap<>();
         loggedInUsers = new HashSet<>();
-        reviews = new ConcurrentHashMap<>();
-        hotels = new ConcurrentHashMap<>();
+        reviews = new HashMap<>();
+        hotels = new HashMap<>();
 
         // Load data from JSON files
         loadUsersFromJson();
         loadHotelsFromJson();
         loadReviewsFromJson();
 
-        /* 
-         
-        for (String hotelId : reviews.keySet()) {
-            
-            List<Recensione> reviewsList = reviews.get(hotelId);
-            for (Recensione review : reviewsList) {
-                System.out.println(review);
-            }
-        }
-        */
     }
 
     public static void main(String[] args) {
         serverRef = new HotelierServer();
+        // put start time so after RANKING_REFRESH_RATE i can check if a new ranking is calculated
+        long startTime = System.currentTimeMillis();
 
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
                 Selector selector = Selector.open()) {
@@ -79,22 +73,35 @@ public class HotelierServer {
 
             System.out.printf("[SERVER] Listening on port %d\n", PORT);
 
+
             while (true) {
-                selector.select();
-                Set<SelectionKey> selectedKeys = selector.selectedKeys();
-                Iterator<SelectionKey> iter = selectedKeys.iterator();
 
-                while (iter.hasNext()) {
-                    SelectionKey key = iter.next();
+                long now = System.currentTimeMillis();
 
-                    if (key.isAcceptable()) {
-                        serverRef.acceptConnection(key, selector);
-                    } else if (key.isReadable()) {
-                        serverRef.readMsg(key, selector);
+                // timeout of 10 seconds
+                if (selector.select(SELECT_TIMEOUT) > 0) {
+
+                    Set<SelectionKey> selectedKeys = selector.selectedKeys();
+                    Iterator<SelectionKey> iter = selectedKeys.iterator();
+
+                    while (iter.hasNext()) {
+                        SelectionKey key = iter.next();
+
+                        if (key.isAcceptable()) {
+                            serverRef.acceptConnection(key, selector);
+                        } else if (key.isReadable()) {
+                            serverRef.readMsg(key, selector);
+                        }
+
+                        iter.remove();
                     }
-
-                    iter.remove();
                 }
+                
+                if (now > (startTime + (RANKING_REFRESH_RATE * 1000))) {
+                    System.out.println("TIME TO CHECK RANKING");
+                    startTime = now;
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -197,15 +204,12 @@ public class HotelierServer {
         List<Hotel> matchingHotels = searchAllHotels(city);
 
         StringBuilder response = new StringBuilder();
+
+        // append a new hotel on each line so that client can print it
         for (Hotel hotel : matchingHotels) {
             response.append(hotel.toString()).append("\n");
         }
 
-        System.out.println("---------------------");
-        System.out.println(response);
-        System.out.println("---------------------");
-
-        // Send the response to the client
         return response.toString();
     }
 
@@ -491,9 +495,7 @@ public class HotelierServer {
             if (jsonData != null && !jsonData.isEmpty()) {
                 return JsonParser.parseString(jsonData).getAsJsonObject();
             } else {
-                // Handle the case where jsonData is null or empty
-                System.out.println("The JSON data is null or empty.");
-                // or log an error, throw an exception, or handle it as appropriate for your application
+                System.out.println("The JSON data is null");
                 return null;
             }
         } catch (IOException | JsonSyntaxException e) {
