@@ -3,7 +3,10 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
 import java.io.FileInputStream;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -15,7 +18,9 @@ public class HotelierCustomerClient {
     private static int PORT;
 
     // selector variables
+    private MulticastSocket multicastSocket;
     private SocketChannel socketChannel;
+    private InetAddress multicastGroup;
     private Selector selector;
     private boolean loggedIn = false;
 
@@ -23,6 +28,7 @@ public class HotelierCustomerClient {
 
     public HotelierCustomerClient() {
         try {
+
             // load config
             Properties prop = loadConfig(CLIENT_CONFIG);
             PORT = Integer.parseInt(prop.getProperty("port"));
@@ -41,6 +47,10 @@ public class HotelierCustomerClient {
             // wait for socket to be completely connected
             while (!socketChannel.finishConnect()) {
             }
+
+            // multicast socket init
+            multicastSocket = new MulticastSocket(PORT + 1);
+            multicastSocket.setReuseAddress(true);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -134,12 +144,12 @@ public class HotelierCustomerClient {
                         // init empty review
                         int[] reviewPoints = { 0, 0, 0, 0 };
 
-                        System.out.print("********************************");
+                        System.out.println("********************************");
                         System.out.print("Inserisci il nome dell'hotel da recensire: ");
                         String reviewedHotelName = scanner.nextLine();
                         System.out.print("Inserisci la citta' dell'hotel da recensire: ");
                         String reviewedHotelCity = scanner.nextLine();
-                        
+
                         // reviews values
                         System.out.println("Inserisci i punteggi per la recensione, valori ammessi 0-5 inclusi");
                         System.out.print("Inserisci un punteggio per la posizione: ");
@@ -157,7 +167,7 @@ public class HotelierCustomerClient {
                                 && client.checkScoreRange(serviceScore) && client.checkScoreRange(qualityScore))) {
                             break;
                         }
-                     
+
                         // populate scores array
                         reviewPoints[0] = positionScore;
                         reviewPoints[1] = cleaningScore;
@@ -166,7 +176,7 @@ public class HotelierCustomerClient {
 
                         // calculate global score as the mean of the single scores
                         int globalScore = (reviewPoints[0] + reviewPoints[1] + reviewPoints[2] + reviewPoints[3]) / 4;
-                        
+
                         // send review to server
                         client.insertReview(reviewedHotelName, reviewedHotelCity, globalScore, reviewPoints);
                         System.out.println("******************************");
@@ -185,6 +195,8 @@ public class HotelierCustomerClient {
                         writeRead(client.socketChannel, "8_exit");
                         client.selector.close();
                         client.socketChannel.close();
+                        // close notifications multicast group
+                        client.closeNotificationsGroup();
                         System.exit(0);
 
                     default:
@@ -232,7 +244,7 @@ public class HotelierCustomerClient {
             System.out.println("3 Logout");
             System.out.println("4 Cerca Hotel");
             System.out.println("5 Cerca alberghi in una citta'");
-            System.out.println("6 Inserisci Recensiones");
+            System.out.println("6 Inserisci Recensione");
             System.out.println("7 Mostra Livello Utente");
             System.out.println("8 Termina");
             System.out.println("-----------------------");
@@ -268,21 +280,31 @@ public class HotelierCustomerClient {
         // send server(username, password)
         if (!this.loggedIn) {
 
-            String msg = "2_" + username + "_" + password;
+            if ((username.length() != 0) && (password.length() != 0)) {
 
-            String retCode = writeRead(socketChannel, msg);
-            
+                String msg = "2_" + username + "_" + password;
 
-            if (retCode.equals("1")) {
-                // save that login was successful
-                this.loggedIn = true;
-                this.username = username;
-                System.out.println("-----> RESPONSE: Login effettuato");
-            } else if (retCode.equals("-1")) {
-                System.out.println("-----> RESPONSE: Login ERROR, password errata");
+                String retCode = writeRead(socketChannel, msg);
+
+                if (retCode.equals("1")) {
+                    // save that login was successful
+                    this.loggedIn = true;
+                    this.username = username;
+
+                    System.out.println("-----> RESPONSE: Login effettuato");
+
+                    // start thread for multicast and listen to notifications
+                    startNotificationsThread();
+                    subscribeToMulticastGroup();
+
+                } else if (retCode.equals("-1")) {
+                    System.out.println("-----> RESPONSE: Login ERROR, password errata");
+                } else {
+                    System.out.println("-----> RESPONSE: Login ERROR, utente non registrato");
+                }
             }
             else {
-                System.out.println("-----> RESPONSE: Login ERROR, utente non registrato");
+                System.out.println(" **** INSERT VALID USERNAME AND PASSWORD WITH LENGTH > 0 ****");
             }
         }
     }
@@ -291,10 +313,9 @@ public class HotelierCustomerClient {
     public void logout(String username) {
 
         // prepare string to send
-        String msg = "3_" + username;
+        String msg = "3_" + this.username;
 
         String retCode = writeRead(socketChannel, msg);
-
 
         if (retCode.equals("1")) {
             this.loggedIn = false;
@@ -310,11 +331,14 @@ public class HotelierCustomerClient {
 
         // prepare string to send
         String msg = "4_" + nomeHotel + "_" + citta;
+        if ((nomeHotel.length() != 0) || (citta.length() != 0)) {
+            String responseHotel = writeRead(socketChannel, msg);
+            System.out.println("-----> RESPONSE: HOTEL -> " + "\n" + responseHotel);
+            return responseHotel;
+        }
 
-        String responseHotel = writeRead(socketChannel, msg);
-        System.out.println("-----> RESPONSE: HOTEL -> " + "\n" + responseHotel);
+        return "4_empty";
 
-        return responseHotel;
     }
 
     public void searchAllHotels(String citta) {
@@ -322,14 +346,18 @@ public class HotelierCustomerClient {
         // prepare string to send
         String msg = "5_" + citta;
 
-        String responseHotels = writeRead(socketChannel, msg);
-        System.out.println("-----> RESPONSE: HOTELS per: " + citta +" -> " + "\n" + responseHotels);
+        if (citta.length() != 0) {
+            String responseHotels = writeRead(socketChannel, msg);
+            System.out.println("-----> RESPONSE: HOTELS per: " + citta + " -> " + "\n" + responseHotels);
+        } else {
+            System.out.println("Insert a city");
+        }
     }
 
     public void insertReview(String nomeHotel, String nomeCitta, int globalScore, int[] singleScores) {
         if (this.loggedIn) {
             // prepare string to send
-            System.out.println(singleScores);
+
             String msg = "6" + "_" + this.username + "_" + nomeHotel + "_" + nomeCitta + "_"
                     + String.valueOf(globalScore) + "_"
                     + String.valueOf(singleScores[0]) + "_" + String.valueOf(singleScores[1]) + "_"
@@ -337,7 +365,7 @@ public class HotelierCustomerClient {
 
             String retCode = writeRead(socketChannel, msg);
             System.out.println("-----> RESPONSE:" + retCode);
-        } 
+        }
     }
 
     public void showMyBadges() {
@@ -347,7 +375,7 @@ public class HotelierCustomerClient {
 
             String badgeName = writeRead(socketChannel, msg);
             System.out.println("-----> RESPONSE: Il tuo badge attuale e' " + badgeName);
-        } 
+        }
     }
 
     private static String writeRead(SocketChannel socketChannel, String msg) {
@@ -393,4 +421,50 @@ public class HotelierCustomerClient {
         }
     }
 
+    /* UDP NOTIFICATION RECEIVER */
+    private void subscribeToMulticastGroup() {
+        try {
+            multicastGroup = InetAddress.getByName("230.0.0.1");
+            multicastSocket.joinGroup(multicastGroup);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startNotificationsThread() {
+        // start udp thread
+
+        Thread notificationsThread = new Thread(() -> this.startNotificationReceiver());
+        notificationsThread.start();
+    }
+
+    public void startNotificationReceiver() {
+        System.out.println("Started notification receiver");
+        try {
+
+            byte[] buffer = new byte[1024];
+
+            while (true) {
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                this.multicastSocket.receive(packet);
+
+                String received = new String(packet.getData(), 0, packet.getLength());
+                System.out.println("");
+                System.out.println(" -----> MULTICAST UPDATE: " + received);
+                System.out.println("");
+                printOptions();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeNotificationsGroup() {
+        try {
+            this.multicastSocket.leaveGroup(multicastGroup);
+            this.multicastSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

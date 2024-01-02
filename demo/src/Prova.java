@@ -1,10 +1,12 @@
 import java.util.concurrent.ConcurrentHashMap;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+
+import javax.sound.midi.Receiver;
+
 import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.util.Comparator;
+import java.util.ArrayList;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -15,23 +17,15 @@ import com.google.gson.*;
 import java.util.*;
 import java.io.*;
 
-
-public class HotelierServer {
-    // config variables
+public class Prova {
     private static final String[] capoluoghi = {"L'Aquila", "Potenza", "Catanzaro", "Napoli", "Bologna", "Trieste", "Roma",
             "Genova", "Milano", "Ancona", "Campobasso", "Torino", "Bari", "Cagliari", "Palermo", "Firenze", "Trento",
             "Perugia", "Aosta", "Venezia" };
-    private static final String SERVER_CONFIG = "./assets/server.properties";
-    private static int RANKING_REFRESH_RATE;
-    private static int REVIEW_MIN_DELTA;
-    private static int SELECT_TIMEOUT;
-    private static int PORT;
-
     // json files path
     private static final String HOTELS_JSON_PATH = "./assets/Hotels.json";
     private static String USERS_JSON_PATH = "./assets/users.json";
     private static String REVIEWS_JSON_PATH = "./assets/reviews.json";
-
+    // config variables
     // Users tracker, hotels and reviews
     private static Map<String, Utente> registeredUsers;
     private static Set<String> loggedInUsers;
@@ -39,33 +33,9 @@ public class HotelierServer {
     private static Map<String, List<Hotel>> hotels;
 
     // object reference to call methods
-    private static HotelierServer serverRef;
+    private static Prova serverRef;
 
-    // multicast
-    MulticastSocket multicastSocket;
-    InetAddress multicastGroup;
-
-    public HotelierServer() {
-
-        // load config
-        Properties prop = loadConfig(SERVER_CONFIG);
-        PORT = Integer.parseInt(prop.getProperty("port"));
-        RANKING_REFRESH_RATE = Integer.parseInt(prop.getProperty("rankingRefreshRate"));
-        SELECT_TIMEOUT = Integer.parseInt(prop.getProperty("selectTimeout"));
-        REVIEW_MIN_DELTA = Integer.parseInt(prop.getProperty("reviewMinDelta"));
-
-        // load 
-        try {
-            multicastGroup = InetAddress.getByName("230.0.0.1");
-            multicastSocket = new MulticastSocket();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // from seconds calculate ms
-        RANKING_REFRESH_RATE *= 1000;
-        SELECT_TIMEOUT *= 1000;
+    public Prova() {
 
         // Initialize data structures
         registeredUsers = new HashMap<>();
@@ -79,408 +49,21 @@ public class HotelierServer {
         loadReviewsFromJson();
     }
 
-    /*
-     * Get hotels by city and id
-     * 
-     * public static List<Hotel> getHotelById(String city, int id) {
-     * List<Hotel> hotelList = hotels.get(city);
-     * List<Hotel> result = new ArrayList<>();
-     * 
-     * if (hotelList != null) {
-     * // get matching hotels by id
-     * for (Hotel hotel : hotelList) {
-     * if (hotel.id == id) {
-     * result.add(hotel);
-     * }
-     * }
-     * }
-     * return result;
-     * }
-     */
 
     public static void main(String[] args) {
-        serverRef = new HotelierServer();
-
-        // debugging
-        //serverRef.printReviews(reviews, hotels);
-        //serverRef.printHotels();
-        //serverRef.printRegistered();
-
+        serverRef = new Prova();
 
         // put start time so after RANKING_REFRESH_RATE i can check if a new ranking is
         // calculated
-        long startTime = System.currentTimeMillis();
+        serverRef.printReviews(reviews, hotels);
+        serverRef.printHotels();
+        serverRef.printRegistered();
 
-        try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-                Selector selector = Selector.open()) {
+        String newTopHotels = serverRef.recalculateRanking();
 
-            serverSocketChannel.bind(new InetSocketAddress(PORT));
-            serverSocketChannel.configureBlocking(false);
-            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-
-            System.out.printf("[SERVER] Listening on port %d\n", PORT);
-
-            while (true) {
-
-                
-                // timeout of SELECT_TIMEOUT seconds
-                if (selector.select(SELECT_TIMEOUT) > 0) {
-
-                    Set<SelectionKey> selectedKeys = selector.selectedKeys();
-                    Iterator<SelectionKey> iter = selectedKeys.iterator();
-
-                    while (iter.hasNext()) {
-                        SelectionKey key = iter.next();
-
-                        if (key.isAcceptable()) {
-                            serverRef.acceptConnection(key, selector);
-                        } else if (key.isReadable()) {
-                            serverRef.readMsg(key, selector);
-                        }
-
-                        iter.remove();
-                    }
-                }
-                
-                // get current timestamp to check condition
-                long now = System.currentTimeMillis();
-    
-                if (now > (startTime + RANKING_REFRESH_RATE)) {
-                    System.out.println("TIME TO CHECK RANKING");
-                    
-                    // sort hotel rankings based on score
-                    //String newTopHotels = serverRef.recalculateRanking();
-                    // send newTopHotelsMulticast
-                    serverRef.sendMulticastNotification("PROVA MULTICAST");
-                    System.out.println("SENT NOTIFICATION");
-    
-                    startTime = now;
-                }
-            }
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        serverRef.multicastSocket.close();
+        serverRef.getUserReviewHotel(2, "gabri");
     }
 
-    // function to split the received message from the client
-    public static String[] splitCredentials(String credentials) {
-        String[] parts = credentials.split("_");
-
-        return parts;
-    }
-
-    // function to load the configuration
-    public static Properties loadConfig(String fname) {
-        try (FileInputStream fileInputStream = new FileInputStream(fname)) {
-            Properties properties = new Properties();
-            properties.load(fileInputStream);
-
-            return properties;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private void acceptConnection(SelectionKey selKey, Selector selector) {
-        try {
-            // open serverSocket with channel, and accept connection
-            ServerSocketChannel serverSocket = (ServerSocketChannel) selKey.channel();
-            SocketChannel socketChannel = serverSocket.accept();
-            socketChannel.configureBlocking(false);
-            socketChannel.register(selector, SelectionKey.OP_READ);
-            // Attach a ByteBuffer to store client data
-            socketChannel.keyFor(selector).attach(ByteBuffer.allocate(1024));
-
-            System.out.println("Client connected: " + socketChannel.getRemoteAddress());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void readMsg(SelectionKey selKey, Selector selector) {
-        try {
-            SocketChannel socketChannel = (SocketChannel) selKey.channel();
-            ByteBuffer lengthBuffer = ByteBuffer.allocate(Integer.BYTES);
-
-            // Read the length of the message
-            int bytesRead = socketChannel.read(lengthBuffer);
-
-            if (bytesRead == -1) {
-                socketChannel.close();
-                System.out.println("Client closed connection");
-                return;
-            }
-
-            lengthBuffer.flip();
-            int messageLength = lengthBuffer.getInt();
-
-            // Read the actual message
-            ByteBuffer msgBuffer = ByteBuffer.allocate(messageLength);
-            bytesRead = socketChannel.read(msgBuffer);
-
-            if (bytesRead == -1) {
-                socketChannel.close();
-                System.out.println("Client closed connection");
-                return;
-            }
-
-            msgBuffer.flip();
-            byte[] data = new byte[msgBuffer.remaining()];
-            msgBuffer.get(data);
-            String messageReceived = new String(data, StandardCharsets.UTF_8);
-            System.out.println("RECEIVED: " + messageReceived);
-
-            // Handle the received message and send back a response
-            String msgToSend = serverRef.handleReceivedMessage(messageReceived);
-
-            // Echo the message back to the client with length prefix
-            byte[] responseBytes = msgToSend.getBytes(StandardCharsets.UTF_8);
-            ByteBuffer responseBuffer = ByteBuffer.allocate(Integer.BYTES + responseBytes.length);
-            responseBuffer.putInt(responseBytes.length);
-            responseBuffer.put(responseBytes);
-            responseBuffer.flip();
-
-            while (responseBuffer.hasRemaining()) {
-                socketChannel.write(responseBuffer);
-            }
-
-            selKey.interestOps(SelectionKey.OP_READ); // Set interest back to read for the next message
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // function to create a string of all matching hotels for a specific city
-    public String createHotelsString(String city) {
-        List<Hotel> matchingHotels = searchAllHotels(city);
-
-        StringBuilder response = new StringBuilder();
-
-        // append a new hotel on each line so that client can print it
-        for (Hotel hotel : matchingHotels) {
-            response.append(hotel.toString()).append("\n");
-        }
-
-        return response.toString();
-    }
-
-    public String handleReceivedMessage(String inputMsg) {
-        // take substring of the message
-        String msgRcvd = inputMsg.substring(2);
-
-        // take the first character to do operation switch
-        switch (inputMsg.substring(0, 1)) {
-            /* REGISTER */
-            case "1":
-                // returns 0 if user is not present, 1 if present
-                String rcvdCredentials = msgRcvd;
-                String[] credentials = splitCredentials(rcvdCredentials);
-
-                String username = credentials[0];
-                String password = credentials[1];
-
-                System.out.println("Username: " + username + " Password: " + password);
-                String isRegistered = serverRef.isRegistered(username);
-
-                // user is already registered
-                if (isRegistered.equals("1")) {
-                    System.out.println(" -------> USER ALREADY REGISTERED");
-                    return "-1";
-                }
-                // need to register user
-                else if (isRegistered.equals("0")) {
-
-                    // create new user object and save it to hashmap + users json
-                    Utente newUser = new Utente(username, password);
-                    System.out.println(newUser);
-
-                    System.out.println(" -------> USER REGISTERED NOW");
-                    return serverRef.registerUser(newUser);
-                }
-
-                /* LOGIN */
-            case "2":
-                // returns 0 if user is not present, 1 if present
-                String[] loginCredentials = splitCredentials(msgRcvd);
-
-                String usernameLogin = loginCredentials[0];
-                String passwordLogin = loginCredentials[1];
-
-                // login
-                // returns 1 if login was successful, 0 if not
-                return serverRef.login(usernameLogin, passwordLogin);
-
-            /* LOGOUT */
-            case "3":
-                String[] logoutCredentials = splitCredentials(msgRcvd);
-
-                String logoutUsername = logoutCredentials[0];
-                return serverRef.logout(logoutUsername);
-
-            /* SEARCH HOTEL */
-            case "4":
-                // split the received message and return the response
-                String[] requestedHotel = splitCredentials(msgRcvd);
-                String hotelName = requestedHotel[0];
-                String city = requestedHotel[1];
-
-                return searchHotel(hotelName, city);
-
-            /* SEARCH ALL HOTELS IN CITY */
-            case "5":
-                System.out.println(msgRcvd);
-                String[] requestedCity = splitCredentials(msgRcvd);
-                String searchCity = requestedCity[0];
-
-                // function that given the city, searches all hotels and creates a string with
-                // matching hotels
-                return createHotelsString(searchCity);
-
-            /* INSERT REVIEW */
-            case "6":
-                String[] review = splitCredentials(msgRcvd);
-
-                // get username, hotel name and city
-                String reviewerUsername = review[0];
-                String reviewedHotelName = review[1];
-                String reviewedHotelCity = review[2];
-
-                // get all the scores
-                int globalScore = Integer.parseInt(review[3]);
-                int position = Integer.parseInt(review[4]);
-                int cleaning = Integer.parseInt(review[5]);
-                int services = Integer.parseInt(review[6]);
-                int quality = Integer.parseInt(review[7]);
-                int hotelId = getHotelId(reviewedHotelCity, reviewedHotelName);
-
-                int isValidCity = isValidCity(reviewedHotelCity);
-
-                System.out.println("HOTEL ID: " + hotelId);
-                System.out.println("IS VALID CITY: " + isValidCity);
-
-                // check if the user can write the review or if too little time has passed from last review
-                boolean validReview = serverRef.canWriteReview(reviewerUsername, hotelId);
-
-                if ((hotelId != -1) && (isValidCity == 1) && (validReview == true)) {
-                    // create new review with the received data
-                    Recensione newReview = new Recensione(globalScore, position, cleaning, services, quality,
-                            reviewerUsername,
-                            hotelId, 1, 0);
-                    System.out.println(newReview.toString());
-
-                    // update user level
-                    serverRef.updateUser(reviewerUsername);
-
-                    // save new data to json
-                    addSaveReview(newReview, reviewedHotelCity);
-                    
-                    // persist utente because written reviews count has increased
-                    serverRef.saveUtenteToJson();
-                    return "1";
-                }
-
-                return "-1";
-
-            /* SHOW BADGES */
-            case "7":
-                // split credentials and get username
-                String[] userCredentials = splitCredentials(msgRcvd);
-                username = userCredentials[0];
-
-                System.out.println("USERNAME: " + username);
-                return serverRef.showBadges(username);
-
-            /* EXIT */
-            case "8":
-                System.out.println("Ok esco");
-                // close selector and socket channel
-                return "8_closed_connection";
-        }
-
-        return "-1";
-    }
-
-    /* REGISTRATION FUNCTIONS */
-    // function to check if username is present in registered users hashmap
-    public String isRegistered(String username) {
-        // returns 0 if user is not present, 1 if present
-        if (registeredUsers.containsKey(username)) {
-            return "1";
-        }
-
-        return "0";
-    }
-
-    public String registerUser(Utente newUser) {
-        return addUserAndSaveToJson(newUser);
-    }
-
-    /* LOGIN FUNCTIONS */
-    // check if user is logged in
-    public String loggedInUsersExists(String username) {
-        if (loggedInUsers.contains(username)) {
-            return "1";
-        }
-
-        return "0";
-    }
-
-    // insert that user has made a login
-    public String loggedInUsersPut(String username) {
-
-        if (!loggedInUsers.contains(username)) {
-            loggedInUsers.add(username);
-            return "1";
-        }
-
-        return "0";
-    }
-
-    // returns 1 if login was successful, 0 if not
-    public String login(String username, String password) {
-        Utente currentUser = registeredUsers.get(username);
-
-        // if null user is not registeres
-        if (currentUser != null) {
-            String registerPwd = currentUser.password;
-
-            // get password to see if they match
-            if (registerPwd.equals(password)) {
-                loggedInUsersPut(username);
-                return "1";
-            }
-
-            System.out.println("Passwords don't match");
-            return "-1";
-        }
-
-        return "0";
-    }
-
-    // returns 1 if logout was successful, 0 if not
-    public String logout(String username) {
-        loggedInUsers.remove(username);
-        System.out.println("removed entry: " + username);
-        return "1";
-    }
-
-    /* SHOW BADGES */
-    public String showBadges(String username) {
-        Utente utente = registeredUsers.get(username);
-
-        if (utente != null) {
-            String userLevel = utente.getUserLevel();
-            System.out.println("User Level for " + username + ": " + userLevel);
-            return userLevel;
-        }
-
-        return "-1";
-    }
 
     /* SEARCH FUNCTIONS */
     public int getHotelId(String city, String hotelName) {
@@ -508,26 +91,6 @@ public class HotelierServer {
     ///////////////////////////
     // UTILITY FUNCTIONS
     ///////////////////////////
-
-    private static String searchHotel(String nomeHotel, String citta) {
-        for (List<Hotel> cityHotels : hotels.values()) {
-            for (Hotel hotel : cityHotels) {
-                if (hotel.name.equalsIgnoreCase(nomeHotel) && hotel.city.equalsIgnoreCase(citta)) {
-                    return hotel.toString();
-                }
-            }
-        }
-        return "null";
-    }
-
-    private static List<Hotel> searchAllHotels(String citta) {
-        List<Hotel> matchingHotels = hotels.getOrDefault(citta, new ArrayList<>());
-        for (Hotel hotel : matchingHotels) {
-            System.out.println(hotel);
-        }
-
-        return matchingHotels;
-    }
 
     public int isValidCity(String city) {
             for (String capoluogo : capoluoghi) {
@@ -1011,13 +574,7 @@ public class HotelierServer {
 
     // function to update hotel rating based on new reviews
     public void updateHotelGlobalRate() {
-        
         for (String city : hotels.keySet()) {
-            
-            if (!reviews.containsKey(city)) {
-                break;
-            }
-
             List<Hotel> hotelList = hotels.get(city);
 
             for (Hotel hotel : hotelList) {
@@ -1079,12 +636,6 @@ public class HotelierServer {
         List<Recensione> cityReviews = reviews.get(city);
 
         List<Recensione> hotelReviews = serverRef.getReviewsForHotel(cityReviews, hotelId);
-
-        // no reviews present, return 0
-        if (hotelReviews.size() == 0) {
-            return 0;
-        }
-
         for (Recensione review : hotelReviews) {
             System.out.println(review.toString());
         }
@@ -1109,10 +660,6 @@ public class HotelierServer {
     public Recensione getUserReviewHotel(int hotelId, String username) {
         List<Recensione> userReviews = new ArrayList<>();
 
-        if (userReviews.size() == 0) {
-            return null;
-        }
-
         for (List<Recensione> reviewsList : reviews.values()) {
             for (Recensione review : reviewsList) {
                 if (review.idHotel == hotelId && review.username.equals(username)) {
@@ -1130,29 +677,13 @@ public class HotelierServer {
     public boolean canWriteReview(String username, int hotelId) {
         Recensione lastReview = serverRef.getUserReviewHotel(hotelId, username);
 
-        if (lastReview != null) {
-            long lastReviewTimestamp = lastReview.timestamp;
-            long now = System.currentTimeMillis();
+        long lastReviewTimestamp = lastReview.timestamp;
+        long now = System.currentTimeMillis();
 
-            long delta = (now - lastReviewTimestamp) / 1000;
+        long delta = (now - lastReviewTimestamp) / 1000;
 
-            // check if the time between last review and now is greater than 1 minute
-            return (delta > REVIEW_MIN_DELTA);
-        }
-        
-        // if user didn't write any review for this hotel he can write one now
-        return true;
-    }
-
-    public void sendMulticastNotification(String msg) {
-        try {
-            byte[] buffer = msg.getBytes();
-            
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, multicastGroup, PORT + 1);
-            serverRef.multicastSocket.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        // check if the time between last review and now is greater than 1 minute
+        return (delta > 60);
     }
 }
+

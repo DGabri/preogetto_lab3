@@ -29,6 +29,16 @@
       "username": "ciaoansfinapofbisbdfibasdjbsadbfjas",
       "idHotel": 22,
       "timestamp": 1672531489600
+    },
+    {
+      "totale": 2,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 2,
+      "username": "gabri",
+      "idHotel": 21,
+      "timestamp": 1704227699587
     }
   ],
   "Aosta": [
@@ -213,6 +223,16 @@
       "username": "user5asdasdf",
       "idHotel": 14,
       "timestamp": 1672531789600
+    },
+    {
+      "totale": 2,
+      "posizione": 2,
+      "pulizia": 2,
+      "servizio": 2,
+      "qualita": 2,
+      "username": "gabri",
+      "idHotel": 11,
+      "timestamp": 1704228016600
     }
   ],
   "Trento": [
