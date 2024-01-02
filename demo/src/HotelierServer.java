@@ -21,6 +21,7 @@ public class HotelierServer {
             "Perugia", "Aosta", "Venezia" };
     private static final String SERVER_CONFIG = "./assets/server.properties";
     private static int RANKING_REFRESH_RATE;
+    private static int REVIEW_MIN_DELTA;
     private static int SELECT_TIMEOUT;
     private static int PORT;
 
@@ -45,6 +46,7 @@ public class HotelierServer {
         PORT = Integer.parseInt(prop.getProperty("port"));
         RANKING_REFRESH_RATE = Integer.parseInt(prop.getProperty("rankingRefreshRate"));
         SELECT_TIMEOUT = Integer.parseInt(prop.getProperty("selectTimeout"));
+        REVIEW_MIN_DELTA = Integer.parseInt(prop.getProperty("reviewMinDelta"));
 
         // from seconds calculate ms
         RANKING_REFRESH_RATE *= 1000;
@@ -84,22 +86,12 @@ public class HotelierServer {
     public static void main(String[] args) {
         serverRef = new HotelierServer();
 
-        serverRef.printReviews(reviews, hotels);
-        System.out.println();
-        System.out.println("--------------------------------------------------------------------------------------------------");
-        System.out.println();
+        // debugging
+        //serverRef.printReviews(reviews, hotels);
+        //serverRef.printHotels();
+        //serverRef.printRegistered();
 
-        serverRef.printHotels();
 
-        System.out.println();
-        System.out.println("--------------------------------------------------------------------------------------------------");
-        System.out.println();
-
-        serverRef.printRegistered();
-
-        System.out.println();
-        System.out.println("--------------------------------------------------------------------------------------------------");
-        System.out.println();
         // put start time so after RANKING_REFRESH_RATE i can check if a new ranking is
         // calculated
         long startTime = System.currentTimeMillis();
@@ -146,6 +138,7 @@ public class HotelierServer {
                     // sort hotel rankings based on score
                     String newTopHotels = serverRef.recalculateRanking();
                     // send newTopHotelsMulticast
+
                     System.out.println(newTopHotels);
                     startTime = now;
                 }
@@ -354,7 +347,10 @@ public class HotelierServer {
                 System.out.println("HOTEL ID: " + hotelId);
                 System.out.println("IS VALID CITY: " + isValidCity);
 
-                if ((hotelId != -1) && (isValidCity == 1)) {
+                // check if the user can write the review or if too little time has passed from last review
+                boolean validReview = serverRef.canWriteReview(reviewerUsername, hotelId);
+
+                if ((hotelId != -1) && (isValidCity == 1) && (validReview == true)) {
                     // create new review with the received data
                     Recensione newReview = new Recensione(globalScore, position, cleaning, services, quality,
                             reviewerUsername,
@@ -491,6 +487,12 @@ public class HotelierServer {
         return -1;
     }
 
+
+
+    ///////////////////////////
+    // UTILITY FUNCTIONS
+    ///////////////////////////
+
     private static String searchHotel(String nomeHotel, String citta) {
         for (List<Hotel> cityHotels : hotels.values()) {
             for (Hotel hotel : cityHotels) {
@@ -510,10 +512,6 @@ public class HotelierServer {
 
         return matchingHotels;
     }
-
-    ///////////////////////////
-    // UTILITY FUNCTIONS
-    ///////////////////////////
 
     public int isValidCity(String city) {
             for (String capoluogo : capoluoghi) {
@@ -560,7 +558,7 @@ public class HotelierServer {
         }
     }
 
-    private static void printHotels() {
+    private void printHotels() {
         System.out.println("Hotels Information:");
         for (Map.Entry<String, List<Hotel>> entry : hotels.entrySet()) {
             String city = entry.getKey();
@@ -608,7 +606,7 @@ public class HotelierServer {
 
     /* FUNCTIONS TO LOAD DATA FROM FILE TO CLASS DATA STRUCTURE */
 
-    private static JsonObject readJsonFromFile(String filePath) {
+    private JsonObject readJsonFromFile(String filePath) {
         try {
             String jsonData = new String(Files.readAllBytes(Paths.get(filePath)));
 
@@ -625,7 +623,7 @@ public class HotelierServer {
     }
 
     /* HOTELS FUNCTIONS */
-    private static void loadHotelsFromJson() {
+    private void loadHotelsFromJson() {
         try {
             String hotelsJson = Files.readString(Paths.get(HOTELS_JSON_PATH));
             JsonArray hotelsArray = JsonParser.parseString(hotelsJson).getAsJsonArray();
@@ -643,7 +641,7 @@ public class HotelierServer {
         }
     }
 
-    public static void saveHotelsToJson() {
+    public void saveHotelsToJson() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonArray hotelsArray = new JsonArray();
 
@@ -686,7 +684,7 @@ public class HotelierServer {
 
     /* USERS FUNCTIONS */
 
-    private static void loadUsersFromJson() {
+    private void loadUsersFromJson() {
         registeredUsers = new ConcurrentHashMap<>();
         JsonObject jsonData = readJsonFromFile(USERS_JSON_PATH);
 
@@ -763,7 +761,7 @@ public class HotelierServer {
     }
 
     /* REVIEWS FUNCTIONS */
-    private static void loadReviewsFromJson() {
+    private void loadReviewsFromJson() {
         try {
             String jsonData = new String(Files.readAllBytes(Paths.get(REVIEWS_JSON_PATH)));
             JsonObject reviewsObject = JsonParser.parseString(jsonData).getAsJsonObject();
@@ -802,7 +800,7 @@ public class HotelierServer {
         }
     }
 
-    private static void loadReviewsFromJson1() {
+    private void loadReviewsFromJson1() {
         try {
             String jsonData = new String(Files.readAllBytes(Paths.get(REVIEWS_JSON_PATH)));
             JsonObject reviewsObject = JsonParser.parseString(jsonData).getAsJsonObject();
@@ -842,7 +840,7 @@ public class HotelierServer {
     }
 
     // function to save to json the review
-    private static void saveReviewsToJson() {
+    private void saveReviewsToJson() {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             JsonObject jsonObject = new JsonObject();
@@ -862,7 +860,7 @@ public class HotelierServer {
     }
 
     // function to add a review to the list of reviews
-    public static void addReviewToHotel(String city, Recensione recensione) {
+    public void addReviewToHotel(String city, Recensione recensione) {
 
         // Check if the hotel ID is already in the map
         if (reviews.containsKey(city)) {
@@ -877,7 +875,7 @@ public class HotelierServer {
     }
 
     // function to add a review
-    public static void addSaveReview(Recensione recensione, String city) {
+    public void addSaveReview(Recensione recensione, String city) {
         addReviewToHotel(city, recensione);
         saveReviewsToJson();
     }
@@ -886,11 +884,15 @@ public class HotelierServer {
 
     // function to get the number of reviews per hotel scaled to 100
     public double getReviewsCountPerHotel(List<Recensione> reviewsList) {
-        return reviewsList.size() / 100;
+        return ((double) reviewsList.size()) / 10;
     }
 
     // function to get all reviews for hotel
     public List<Recensione> getReviewsForHotel(List<Recensione> reviews, int hotelId) {
+        if (reviews == null) {
+            return Collections.emptyList();
+        }
+        
         List<Recensione> hotelReviews = new ArrayList<>();
 
         for (Recensione review : reviews) {
@@ -911,12 +913,14 @@ public class HotelierServer {
         // delta between last and first (temporal) review
         if (!reviewsList.isEmpty()) {
             // first review timestamp
-            long firstTimestamp = reviewsList.get(reviewsList.size() - 1).timestamp;
+            long now = System.currentTimeMillis();
             // last review timestamp
             long lastTimestamp = reviewsList.get(0).timestamp;
 
-            // scale by 100
-            return (lastTimestamp - firstTimestamp) / 100;
+            // get last digit
+            long delta = (now - lastTimestamp) % 100;
+            // scale by 10
+            return (delta / 10);
         }
 
         // if no review return 0
@@ -933,10 +937,10 @@ public class HotelierServer {
         for (Recensione review : reviewsList) {
             totalScore += review.totale;
         }
-
+        
         if (listLength != 0) {
             meanScore = (totalScore / listLength);
-            return meanScore / 100;
+            return ((double) meanScore) / 10;
         }
         
         return 0;
@@ -944,6 +948,11 @@ public class HotelierServer {
 
     // function to sort hotels by score, score is calculated using calculateScore()
     public void sortHotelsByScore(Map<String, List<Recensione>> reviews, Map<String, List<Hotel>> hotels) {
+        if ((reviews == null) || (hotels == null)) {
+            // Handle the case where reviews is null, e.g., return an empty list or throw an exception
+            return;
+        }
+
         for (Map.Entry<String, List<Recensione>> entry : reviews.entrySet()) {
             String city = entry.getKey();
             List<Recensione> reviewList = entry.getValue();
@@ -959,16 +968,19 @@ public class HotelierServer {
                 int hotelId = review.idHotel;
 
                 scores.compute(hotelId, (key, value) -> {
-                    double newScore = (value == null) ? serverRef.calculateScore(hotelId, city)
-                            : value + serverRef.calculateScore(hotelId, city);
-                    return newScore;
+                    // calculate score for each hotel
+                    System.out.println("  ");
+                    double score = serverRef.calculateScore(hotelId, city);
+                    System.out.println("SCORE FOR: " + hotelId + " SCORE: " + score);
+                    return score;
                 });
             }
 
             // Sort hotels based on the calculated score
             List<Hotel> hotelList = hotels.get(city);
             if (hotelList != null) {
-                hotelList.sort(Comparator.comparingDouble(hotel -> scores.getOrDefault(hotel.id, 0.0)));
+                // sort descending
+                hotelList.sort(Comparator.comparingDouble((Hotel hotel) -> scores.getOrDefault(hotel.id, 0.0)).reversed());
 
                 // Print sorted hotels
                 for (Hotel hotel : hotelList) {
@@ -982,7 +994,7 @@ public class HotelierServer {
     }
 
     // function to update hotel rating based on new reviews
-    public static void updateHotelGlobalRate() {
+    public void updateHotelGlobalRate() {
         for (String city : hotels.keySet()) {
             List<Hotel> hotelList = hotels.get(city);
 
@@ -1045,6 +1057,9 @@ public class HotelierServer {
         List<Recensione> cityReviews = reviews.get(city);
 
         List<Recensione> hotelReviews = serverRef.getReviewsForHotel(cityReviews, hotelId);
+        for (Recensione review : hotelReviews) {
+            System.out.println(review.toString());
+        }
 
         // quantita' recensioni
         double reviewsCount = serverRef.getReviewsCountPerHotel(hotelReviews);
@@ -1055,7 +1070,42 @@ public class HotelierServer {
         // qualita' recensioni
         double reviewsQuality = serverRef.getReviewsQualityPerHotel(hotelReviews);
 
+        System.out.println("ID: " + hotelId + " COUNT: " + reviewsCount + " ACTUALITY: " + reviewsActuality
+                + " QUALITY: " + reviewsQuality + " TOTAL: " + (reviewsCount + reviewsActuality + reviewsQuality));
         return reviewsCount + reviewsActuality + reviewsQuality;
     }
+    
 
+    // function to get the last review a user did to a hotel
+    // sorted descending so the first is the last review done
+    public Recensione getUserReviewHotel(int hotelId, String username) {
+        List<Recensione> userReviews = new ArrayList<>();
+
+        for (List<Recensione> reviewsList : reviews.values()) {
+            for (Recensione review : reviewsList) {
+                if (review.idHotel == hotelId && review.username.equals(username)) {
+                    userReviews.add(review);
+                }
+            }
+        }
+
+        // sort
+        Collections.sort(userReviews, (r1, r2) -> Long.compare(r2.timestamp, r1.timestamp));
+
+        return userReviews.get(0);
+    }
+
+    public boolean canWriteReview(String username, int hotelId) {
+        Recensione lastReview = serverRef.getUserReviewHotel(hotelId, username);
+
+        long lastReviewTimestamp = lastReview.timestamp;
+        long now = System.currentTimeMillis();
+
+        long delta = (now - lastReviewTimestamp) / 1000;
+
+        // check if the time between last review and now is greater than 1 minute
+        return (REVIEW_MIN_DELTA > 60);
+    }
+
+    
 }
