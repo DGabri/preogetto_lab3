@@ -1,5 +1,5 @@
 {
-  "1": [
+  "Aosta": [
     {
       "totale": 4,
       "posizione": 4,
@@ -7,7 +7,7 @@
       "servizio": 4,
       "qualita": 3,
       "username": "user1",
-      "idHotel": 0,
+      "idHotel": 1,
       "timestamp": 1672531199000
     },
     {
@@ -17,7 +17,7 @@
       "servizio": 5,
       "qualita": 3,
       "username": "user2",
-      "idHotel": 0,
+      "idHotel": 1,
       "timestamp": 1672531199000
     },
     {
@@ -27,7 +27,7 @@
       "servizio": 3,
       "qualita": 4,
       "username": "user5f",
-      "idHotel": 0,
+      "idHotel": 1,
       "timestamp": 1672531239000
     },
     {
@@ -37,7 +37,7 @@
       "servizio": 3,
       "qualita": 4,
       "username": "user5f",
-      "idHotel": 0,
+      "idHotel": 2,
       "timestamp": 1672531189600
     },
     {
@@ -47,7 +47,7 @@
       "servizio": 2,
       "qualita": 5,
       "username": "gabri",
-      "idHotel": 1,
+      "idHotel": 2,
       "timestamp": 1704141534154
     },
     {
@@ -57,7 +57,7 @@
       "servizio": 2,
       "qualita": 5,
       "username": "gabri",
-      "idHotel": 1,
+      "idHotel": 2,
       "timestamp": 1704142279004
     },
     {
@@ -67,7 +67,7 @@
       "servizio": 2,
       "qualita": 5,
       "username": "gabri",
-      "idHotel": 1,
+      "idHotel": 3,
       "timestamp": 1704142740915
     },
     {
@@ -77,7 +77,7 @@
       "servizio": 2,
       "qualita": 5,
       "username": "gabri",
-      "idHotel": 1,
+      "idHotel": 4,
       "timestamp": 1704142744127
     },
     {
@@ -87,7 +87,7 @@
       "servizio": 2,
       "qualita": 5,
       "username": "gabri",
-      "idHotel": 1,
+      "idHotel": 5,
       "timestamp": 1704142744458
     },
     {
@@ -97,7 +97,7 @@
       "servizio": 2,
       "qualita": 5,
       "username": "gabri",
-      "idHotel": 1,
+      "idHotel": 5,
       "timestamp": 1704142744669
     },
     {
@@ -107,7 +107,7 @@
       "servizio": 2,
       "qualita": 5,
       "username": "gabri",
-      "idHotel": 1,
+      "idHotel": 6,
       "timestamp": 1704142744882
     },
     {
@@ -129,89 +129,9 @@
       "username": "gabri",
       "idHotel": 1,
       "timestamp": 1704142745329
-    },
-    {
-      "totale": 3,
-      "posizione": 2,
-      "pulizia": 2,
-      "servizio": 2,
-      "qualita": 5,
-      "username": "gabri",
-      "idHotel": 1,
-      "timestamp": 1704142745530
-    },
-    {
-      "totale": 3,
-      "posizione": 2,
-      "pulizia": 2,
-      "servizio": 2,
-      "qualita": 5,
-      "username": "gabri",
-      "idHotel": 1,
-      "timestamp": 1704142745730
-    },
-    {
-      "totale": 3,
-      "posizione": 2,
-      "pulizia": 2,
-      "servizio": 2,
-      "qualita": 5,
-      "username": "gabri",
-      "idHotel": 1,
-      "timestamp": 1704142745941
-    },
-    {
-      "totale": 3,
-      "posizione": 2,
-      "pulizia": 2,
-      "servizio": 2,
-      "qualita": 5,
-      "username": "gabri",
-      "idHotel": 1,
-      "timestamp": 1704142746145
-    },
-    {
-      "totale": 3,
-      "posizione": 2,
-      "pulizia": 2,
-      "servizio": 2,
-      "qualita": 5,
-      "username": "gabri",
-      "idHotel": 1,
-      "timestamp": 1704142746506
-    },
-    {
-      "totale": 3,
-      "posizione": 2,
-      "pulizia": 2,
-      "servizio": 2,
-      "qualita": 5,
-      "username": "gabri",
-      "idHotel": 1,
-      "timestamp": 1704142878209
-    },
-    {
-      "totale": 3,
-      "posizione": 2,
-      "pulizia": 2,
-      "servizio": 2,
-      "qualita": 5,
-      "username": "gabri",
-      "idHotel": 1,
-      "timestamp": 1704142879373
-    },
-    {
-      "totale": 3,
-      "posizione": 2,
-      "pulizia": 2,
-      "servizio": 2,
-      "qualita": 5,
-      "username": "gabri",
-      "idHotel": 1,
-      "timestamp": 1704142880015
     }
   ],
-  "2": [
+  "Torino": [
     {
       "totale": 4,
       "posizione": 3,
@@ -219,7 +139,7 @@
       "servizio": 4,
       "qualita": 4,
       "username": "user3",
-      "idHotel": 0,
+      "idHotel": 12,
       "timestamp": 1686547199000
     },
     {
@@ -229,7 +149,7 @@
       "servizio": 5,
       "qualita": 3,
       "username": "user4",
-      "idHotel": 0,
+      "idHotel": 12,
       "timestamp": 1672531689600
     },
     {
@@ -239,7 +159,7 @@
       "servizio": 3,
       "qualita": 4,
       "username": "user655f",
-      "idHotel": 0,
+      "idHotel": 13,
       "timestamp": 1672531189630
     },
     {
@@ -249,11 +169,11 @@
       "servizio": 3,
       "qualita": 4,
       "username": "user5asdasdf",
-      "idHotel": 0,
+      "idHotel": 14,
       "timestamp": 1672531789600
     }
   ],
-  "3": [
+  "Genova": [
     {
       "totale": 2,
       "posizione": 1,
@@ -261,7 +181,7 @@
       "servizio": 3,
       "qualita": 4,
       "username": "prova_prova",
-      "idHotel": 0,
+      "idHotel": 21,
       "timestamp": 1672531185600
     },
     {
@@ -271,7 +191,7 @@
       "servizio": 3,
       "qualita": 4,
       "username": "ciaoansfinapofbisbdfibasdjbsadbfjas",
-      "idHotel": 0,
+      "idHotel": 21,
       "timestamp": 1672531129600
     },
     {
@@ -281,11 +201,11 @@
       "servizio": 3,
       "qualita": 4,
       "username": "ciaoansfinapofbisbdfibasdjbsadbfjas",
-      "idHotel": 0,
+      "idHotel": 22,
       "timestamp": 1672531489600
     }
   ],
-  "4": [
+  "Trento": [
     {
       "totale": 2,
       "posizione": 1,
@@ -293,7 +213,7 @@
       "servizio": 3,
       "qualita": 4,
       "username": "ciaoansfinapofbisbdfibasdjbsadbfjas",
-      "idHotel": 0,
+      "idHotel": 42,
       "timestamp": 1672531289600
     }
   ]

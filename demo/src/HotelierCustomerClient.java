@@ -38,15 +38,12 @@ public class HotelierCustomerClient {
             socketChannel.connect(new InetSocketAddress(SERVER_ADDRESS, PORT));
             socketChannel.register(selector, SelectionKey.OP_CONNECT);
 
-            System.out.println("Connecting to socket");
-
+            // wait for socket to be completely connected
             while (!socketChannel.finishConnect()) {
             }
 
-            System.out.println("Connected");
-
         } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception based on your requirements
+            e.printStackTrace();
         }
     }
 
@@ -64,7 +61,7 @@ public class HotelierCustomerClient {
                 input = scanner.nextLine();
 
                 switch (input) {
-                    /* REGISTER */
+                    /* REGISTRAZIONE */
                     case "1":
                         System.out.print("Inserisci username: ");
                         String usernameRegister = scanner.nextLine();
@@ -80,7 +77,7 @@ public class HotelierCustomerClient {
                         // get response code
                         String resCode = client.register(usernameRegister, passwordRegister);
                         if (resCode.equals("-1")) {
-                            System.out.println("User already registered");
+                            System.out.println("Utente gia' registrato");
                         }
                         System.out.println("******************************");
 
@@ -88,10 +85,10 @@ public class HotelierCustomerClient {
 
                     /* LOGIN */
                     case "2":
-                        // get username and password and split it to login
-                        System.out.print("Inserisci username login: ");
+                        // get username and password and send them to server
+                        System.out.print("Inserisci username di login: ");
                         String usernameLogin = scanner.nextLine();
-                        System.out.print("Inserisci password login: ");
+                        System.out.print("Inserisci password di login: ");
                         String passwordLogin = scanner.nextLine();
 
                         // login
@@ -101,6 +98,7 @@ public class HotelierCustomerClient {
 
                     /* LOGOUT */
                     case "3":
+                        // esegui logout se l'username e' presente
                         if (client.username.length() != 0) {
                             client.logout(client.username);
                         } else {
@@ -109,20 +107,19 @@ public class HotelierCustomerClient {
                         System.out.println("******************************");
                         break;
 
-                    /* SEARCH HOTEL */
+                    /* CERCA HOTEL */
                     case "4":
                         System.out.print("Inserisci nome hotel: ");
                         String nomeHotel = scanner.nextLine();
                         System.out.print("Inserisci citta' hotel: ");
                         String citta = scanner.nextLine();
 
-                        System.out.print("Hotel: " + nomeHotel + " citta: " + citta);
-                        resCode = client.searchHotel(nomeHotel, citta);
+                        client.searchHotel(nomeHotel, citta);
 
                         System.out.println("******************************");
                         break;
 
-                    /* SEARCH ALL HOTELS IN CITY */
+                    /* CERCA TUTTI GLI HOTELS IN UNA DETERMINATA CITTA' */
                     case "5":
                         System.out.print("Inserisci citta' per cercare hotel: ");
                         String cittaTuttiHotel = scanner.nextLine();
@@ -132,20 +129,56 @@ public class HotelierCustomerClient {
                         System.out.println("******************************");
                         break;
 
-                    /* INSERT REVIEW */
+                    /* INSERISCI RECENSIONE */
                     case "6":
-                        int[] reviewPoints = { 2, 2, 2, 5 };
-                        client.insertReview("Hotel Aosta 1", "Aosta", 3, reviewPoints);
+                        // init empty review
+                        int[] reviewPoints = { 0, 0, 0, 0 };
+
+                        System.out.print("********************************");
+                        System.out.print("Inserisci il nome dell'hotel da recensire: ");
+                        String reviewedHotelName = scanner.nextLine();
+                        System.out.print("Inserisci la citta' dell'hotel da recensire: ");
+                        String reviewedHotelCity = scanner.nextLine();
+                        
+                        // reviews values
+                        System.out.println("Inserisci i punteggi per la recensione, valori ammessi 0-5 inclusi");
+                        System.out.print("Inserisci un punteggio per la posizione: ");
+                        int positionScore = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Inserisci un punteggio per la pulizia: ");
+                        int cleaningScore = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Inserisci un punteggio per il servizio: ");
+                        int serviceScore = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Inserisci un punteggio per la qualita': ");
+                        int qualityScore = Integer.parseInt(scanner.nextLine());
+
+                        // check that points are between [0,5]
+                        // if false a score is wrong, break and try again
+                        if (!(client.checkScoreRange(positionScore) && client.checkScoreRange(cleaningScore)
+                                && client.checkScoreRange(serviceScore) && client.checkScoreRange(qualityScore))) {
+                            break;
+                        }
+                     
+                        // populate scores array
+                        reviewPoints[0] = positionScore;
+                        reviewPoints[1] = cleaningScore;
+                        reviewPoints[2] = serviceScore;
+                        reviewPoints[3] = qualityScore;
+
+                        // calculate global score as the mean of the single scores
+                        int globalScore = (reviewPoints[0] + reviewPoints[1] + reviewPoints[2] + reviewPoints[3]) / 4;
+                        
+                        // send review to server
+                        client.insertReview(reviewedHotelName, reviewedHotelCity, globalScore, reviewPoints);
                         System.out.println("******************************");
                         break;
 
-                    /* SHOW BADGES */
+                    /* MOSTRA BADGE UTENTE */
                     case "7":
                         client.showMyBadges();
                         System.out.println("******************************");
                         break;
 
-                    /* EXIT */
+                    /* ESCI */
                     case "8":
                         System.out.println("Ok esco");
                         // close selector and socket channel
@@ -207,6 +240,12 @@ public class HotelierCustomerClient {
 
     }
 
+    // helper function to check if score is valide
+    public boolean checkScoreRange(int value) {
+        return ((value >= 0) && (value <= 5));
+    }
+
+    // function to register a new user
     public String register(String username, String password) {
 
         if ((username.length() != 0) && (password.length() != 0)) {
@@ -215,7 +254,7 @@ public class HotelierCustomerClient {
 
             // send string and receive response
             String res = writeRead(socketChannel, msg);
-            System.out.println("RECEIVED: " + res);
+            System.out.println("-----> RESPONSE: " + res);
             return res;
         } else {
             System.out.println("Credenziali invalide, riprova, lunghezza minima > 0");
@@ -229,17 +268,18 @@ public class HotelierCustomerClient {
         if (!this.loggedIn) {
 
             String msg = "2_" + username + "_" + password;
-            System.out.println("MSG: " + msg);
 
             String retCode = writeRead(socketChannel, msg);
-            System.out.println("Login return code: " + retCode);
+            
 
             if (retCode.equals("1")) {
                 // save that login was successful
                 this.loggedIn = true;
                 this.username = username;
+                System.out.println("-----> RESPONSE: Login effettuato");
             } else {
-                System.out.println("Login again, error");
+                System.out.println("-----> RESPONSE: Login ERROR, prova di nuovo");
+                return 0;
             }
         }
 
@@ -253,14 +293,15 @@ public class HotelierCustomerClient {
         String msg = "3_" + username;
 
         String retCode = writeRead(socketChannel, msg);
-        System.out.println("Logout return code: " + retCode);
+
 
         if (retCode.equals("1")) {
             this.loggedIn = false;
             this.username = "";
-            System.out.println("Logged out");
+            System.out.println("-----> RESPONSE: Logout effettuato");
+
         } else {
-            System.out.println("Logout error");
+            System.out.println("-----> RESPONSE: ERROR Logout");
         }
     }
 
@@ -268,22 +309,20 @@ public class HotelierCustomerClient {
 
         // prepare string to send
         String msg = "4_" + nomeHotel + "_" + citta;
-        System.out.println("MSG: " + msg);
 
-        String retCode = writeRead(socketChannel, msg);
-        System.out.println("Return code: " + retCode);
+        String responseHotel = writeRead(socketChannel, msg);
+        System.out.println("-----> RESPONSE: HOTEL -> " + "\n" + responseHotel);
 
-        return retCode;
+        return responseHotel;
     }
 
     public void searchAllHotels(String citta) {
 
         // prepare string to send
         String msg = "5_" + citta;
-        System.out.println("MSG: " + msg);
 
-        String retCode = writeRead(socketChannel, msg);
-        System.out.println("Return code: " + retCode);
+        String responseHotels = writeRead(socketChannel, msg);
+        System.out.println("-----> RESPONSE: HOTELS per: " + citta +" -> " + "\n" + responseHotels);
     }
 
     public void insertReview(String nomeHotel, String nomeCitta, int globalScore, int[] singleScores) {
@@ -295,13 +334,9 @@ public class HotelierCustomerClient {
                     + String.valueOf(singleScores[0]) + "_" + String.valueOf(singleScores[1]) + "_"
                     + String.valueOf(singleScores[2]) + "_" + String.valueOf(singleScores[3]);
 
-            System.out.println("MSG: " + msg);
-
             String retCode = writeRead(socketChannel, msg);
-            System.out.println("Return code: " + retCode);
-        } else {
-            System.out.println("Login necessario per inserire recensione");
-        }
+            System.out.println("-----> RESPONSE:" + retCode);
+        } 
     }
 
     public void showMyBadges() {
@@ -311,9 +346,7 @@ public class HotelierCustomerClient {
 
             String badgeName = writeRead(socketChannel, msg);
             System.out.println("Il tuo badge attuale e': " + badgeName);
-        } else {
-            System.out.println("Login necessario per vedere badges");
-        }
+        } 
     }
 
     private static String writeRead(SocketChannel socketChannel, String msg) {
