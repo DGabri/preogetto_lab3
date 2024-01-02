@@ -51,7 +51,7 @@ public class Recensione {
     public String toString() {
         return "Recensione -> " +
                 "totale=" + totale +
-                "posizione=" + posizione +
+                ", posizione=" + posizione +
                 ", pulizia=" + pulizia +
                 ", servizio=" + servizio +
                 ", qualita=" + qualita +

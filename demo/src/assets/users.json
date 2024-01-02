@@ -37,6 +37,12 @@
       "password": "yuiop"
     },
     {
+      "writtenReviewsCount": 1,
+      "userLevel": "Recensore",
+      "username": "apple",
+      "password": "apple"
+    },
+    {
       "writtenReviewsCount": 0,
       "userLevel": "Recensore",
       "username": "poiuytre",

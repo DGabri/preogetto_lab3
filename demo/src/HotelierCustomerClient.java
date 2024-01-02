@@ -199,6 +199,7 @@ public class HotelierCustomerClient {
         }
     }
 
+    // function to load configuration file
     public static Properties loadConfig(String fname) {
         try (FileInputStream fileInputStream = new FileInputStream(fname)) {
             Properties properties = new Properties();
@@ -257,13 +258,13 @@ public class HotelierCustomerClient {
             System.out.println("-----> RESPONSE: " + res);
             return res;
         } else {
-            System.out.println("Credenziali invalide, riprova, lunghezza minima > 0");
+            System.out.println("Credenziali invalide, riprovare, lunghezza minima > 0");
         }
 
         return "";
     }
 
-    public int login(String username, String password) {
+    public void login(String username, String password) {
         // send server(username, password)
         if (!this.loggedIn) {
 
@@ -277,13 +278,13 @@ public class HotelierCustomerClient {
                 this.loggedIn = true;
                 this.username = username;
                 System.out.println("-----> RESPONSE: Login effettuato");
-            } else {
-                System.out.println("-----> RESPONSE: Login ERROR, prova di nuovo");
-                return 0;
+            } else if (retCode.equals("-1")) {
+                System.out.println("-----> RESPONSE: Login ERROR, password errata");
+            }
+            else {
+                System.out.println("-----> RESPONSE: Login ERROR, utente non registrato");
             }
         }
-
-        return 1;
     }
 
     // logout
@@ -301,7 +302,7 @@ public class HotelierCustomerClient {
             System.out.println("-----> RESPONSE: Logout effettuato");
 
         } else {
-            System.out.println("-----> RESPONSE: ERROR Logout");
+            System.out.println("-----> RESPONSE: Logout ERROR");
         }
     }
 
@@ -345,7 +346,7 @@ public class HotelierCustomerClient {
             String msg = "7_" + this.username;
 
             String badgeName = writeRead(socketChannel, msg);
-            System.out.println("Il tuo badge attuale e': " + badgeName);
+            System.out.println("-----> RESPONSE: Il tuo badge attuale e' " + badgeName);
         } 
     }
 
