@@ -2,17 +2,17 @@ import java.util.Date;
 
 
 public class Recensione {
-    public int totale;
-    public int posizione;
-    public int pulizia;
-    public int servizio;
-    public int qualita;
+    public double totale;
+    public double posizione;
+    public double pulizia;
+    public double servizio;
+    public double qualita;
     public String username;
     public int idHotel;
     public long timestamp;
 
     
-    public Recensione(int totale, int posizione, int pulizia, int servizio, int qualita, String username, int idHotel, int createDate, long ts) {
+    public Recensione(double totale, double posizione, double pulizia, double servizio, double qualita, String username, int idHotel, int createDate, long ts) {
         this.totale = totale;
         this.posizione = posizione;
         this.pulizia = pulizia;
@@ -30,19 +30,19 @@ public class Recensione {
     }
     
     /* GETTERS TO BE USED WHEN LOADING JSON */
-    public int getCleaning() {
+    public double getCleaning() {
         return this.pulizia;
     }
 
-    public int getPosition() {
+    public double getPosition() {
         return this.posizione;
     }
 
-    public int getServices() {
+    public double getServices() {
         return this.servizio;
     }
 
-    public int getQuality() {
+    public double getQuality() {
         return this.qualita;
     }
 

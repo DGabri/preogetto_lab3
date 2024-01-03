@@ -20,8 +20,7 @@ public class Hotel {
     public double rate;
     public Recensione ratings;
 
-    public Hotel(int id, String name, String description, String city, String phone, List<String> services, double rate,
-            int posizione, int pulizia, int servizio, int prezzo) {
+    public Hotel(int id, String name, String description, String city, String phone, List<String> services, double rate) {
         this.id = id;
         this.name = name;
         this.description = description;
