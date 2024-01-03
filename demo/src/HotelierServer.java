@@ -1,5 +1,6 @@
 import java.util.concurrent.ConcurrentHashMap;
 import java.nio.charset.StandardCharsets;
+import java.time.temporal.ChronoUnit;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.DatagramPacket;
@@ -10,8 +11,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.time.Duration;
 import java.util.Iterator;
 import com.google.gson.*;
+import java.time.Instant;
 import java.util.*;
 import java.io.*;
 
@@ -33,10 +36,10 @@ public class HotelierServer {
     private static String REVIEWS_JSON_PATH = "./assets/reviews.json";
 
     // Users tracker, hotels and reviews
-    private static Map<String, Utente> registeredUsers;
-    private static Set<String> loggedInUsers;
-    private static Map<String, List<Recensione>> reviews;
-    private static Map<String, List<Hotel>> hotels;
+    private static Map<String /* username */, Utente> registeredUsers;
+    private static Set<String /* username */> loggedInUsers;
+    private static Map<String /* citta */, List<Recensione>> reviews;
+    private static Map<String /* citta */, List<Hotel>> hotels;
 
     // object reference to call methods
     private static HotelierServer serverRef;
@@ -97,8 +100,19 @@ public class HotelierServer {
      * return result;
      * }
      */
-
     public static void main(String[] args) {
+        serverRef = new HotelierServer();
+
+        // debugging
+        //serverRef.printReviews(reviews, hotels);
+        //serverRef.printHotels();
+        //serverRef.printRegistered();
+
+        serverRef.recalculateRanking();
+
+    }
+
+    public static void main1(String[] args) {
         serverRef = new HotelierServer();
 
         // debugging
@@ -121,8 +135,6 @@ public class HotelierServer {
             System.out.printf("[SERVER] Listening on port %d\n", PORT);
 
             while (true) {
-
-                
                 // timeout of SELECT_TIMEOUT seconds
                 if (selector.select(SELECT_TIMEOUT) > 0) {
 
@@ -149,7 +161,8 @@ public class HotelierServer {
                     System.out.println("TIME TO CHECK RANKING");
                     
                     // sort hotel rankings based on score
-                    //String newTopHotels = serverRef.recalculateRanking();
+                    serverRef.recalculateRanking();
+                    
                     // send newTopHotelsMulticast
                     serverRef.sendMulticastNotification("PROVA MULTICAST");
                     System.out.println("SENT NOTIFICATION");
@@ -663,7 +676,6 @@ public class HotelierServer {
 
         // Iterate through all cities
         for (Map.Entry<String, List<Hotel>> entry : hotels.entrySet()) {
-            String city = entry.getKey();
             List<Hotel> cityHotels = entry.getValue();
 
             // Iterate through all hotels in the current city
@@ -920,27 +932,54 @@ public class HotelierServer {
         return hotelReviews;
     }
 
+    public double getDeltaDays(long timestamp, long timestampNow) {
+
+        // get seconds diff
+        long secondsDuration = Duration.between(Instant.ofEpochMilli(timestamp), Instant.ofEpochMilli(timestampNow))
+                .get(ChronoUnit.SECONDS);
+
+        // return days between start and end
+        return secondsDuration / (24 * 3600);
+    }
+
+    // function to give weigth to a review
+    public double getReviewScore(double deltaDays) {
+        if ((deltaDays >= 0) && (deltaDays < 5)) {
+            return 1;
+        }
+        else if ((deltaDays >= 5) && (deltaDays < 15)) {
+            return 0.8;
+        }
+        else if ((deltaDays >= 15) && (deltaDays < 30)) {
+            return 0.6;
+        }
+        else if ((deltaDays >= 30) && (deltaDays < 180)) {
+            return 0.5;
+        }
+        else if (deltaDays >= 180) {
+            return 0.1;
+        }
+        
+        return 0;
+    }
     // function to calculate the delta between last and first review timestamp
     public double getReviewsActuality(List<Recensione> reviewsList) {
 
         // sort reviewsList by timestamp descending
         reviewsList.sort((r1, r2) -> Long.compare(r2.timestamp, r1.timestamp));
 
-        // delta between last and first (temporal) review
-        if (!reviewsList.isEmpty()) {
-            // first review timestamp
-            long now = System.currentTimeMillis();
-            // last review timestamp
-            long lastTimestamp = reviewsList.get(0).timestamp;
+        // sum the total of the weight for each review of one hotel
+        long now = System.currentTimeMillis();
+        double total = 0;
 
-            // get last digit
-            long delta = (now - lastTimestamp) % 100;
-            // scale by 10
-            return (delta / 10);
+        for (Recensione review : reviewsList) {
+            double deltaDays = serverRef.getDeltaDays(review.timestamp, now);
+            double reviewWeight = serverRef.getReviewScore(deltaDays);
+
+            total += reviewWeight;
         }
 
-        // if no review return 0
-        return 0;
+        return total;
     }
 
     // function to get reviews quality
@@ -963,51 +1002,43 @@ public class HotelierServer {
     }
 
     // function to sort hotels by score, score is calculated using calculateScore()
-    public void sortHotelsByScore(Map<String, List<Recensione>> reviews, Map<String, List<Hotel>> hotels) {
-        if ((reviews == null) || (hotels == null)) {
-            // Handle the case where reviews is null, e.g., return an empty list or throw an exception
+    public void sortHotelsByScore(List<Recensione> reviewList, List<Hotel> cityHotels) {
+        if (reviewList == null || cityHotels == null) {
+            // Handle the case where reviews or hotels are null, e.g., return an empty list or throw an exception
             return;
         }
-
-        for (Map.Entry<String, List<Recensione>> entry : reviews.entrySet()) {
-            String city = entry.getKey();
-            List<Recensione> reviewList = entry.getValue();
-
-            System.out.println("City: " + city);
-            System.out.println("Sorted Hotels by Score:");
-
-            // Create a map to store the calculated score for each hotel
-            Map<Integer, Double> scores = new HashMap<>();
-
-            // Calculate the score for each hotel
-            for (Recensione review : reviewList) {
-                int hotelId = review.idHotel;
-
-                scores.compute(hotelId, (key, value) -> {
-                    // calculate score for each hotel
-                    System.out.println("  ");
-                    double score = serverRef.calculateScore(hotelId, city);
-                    System.out.println("SCORE FOR: " + hotelId + " SCORE: " + score);
-                    return score;
-                });
-            }
-
-            // Sort hotels based on the calculated score
-            List<Hotel> hotelList = hotels.get(city);
-            if (hotelList != null) {
-                // sort descending
-                hotelList.sort(Comparator.comparingDouble((Hotel hotel) -> scores.getOrDefault(hotel.id, 0.0)).reversed());
-
-                // Print sorted hotels
-                for (Hotel hotel : hotelList) {
-                    System.out.println("Hotel: " + hotel.name + ", Score: " +
-                            scores.getOrDefault(hotel.id, 0.0));
-                }
-            }
-
-            System.out.println("---------------------");
+    
+        System.out.println("Sorted Hotels by Score:");
+    
+        // key = hotelId, value = score
+        Map<Integer /* HotelId */, Double /* Score */> scores = new HashMap<>();
+    
+        // compute score for every hotel in the list
+        for (Recensione review : reviewList) {
+            int hotelId = review.idHotel;
+    
+            scores.compute(hotelId, (key, previousScore) -> {
+                // calculate score for each hotel
+                double newScore = serverRef.calculateScore(hotelId, reviewList);
+                double updatedScore = previousScore != null ? previousScore + newScore : newScore;
+                System.out.println("  ");
+                System.out.println("SCORE FOR: " + hotelId + " NEW SCORE: " + newScore + " UPDATED SCORE: " + updatedScore);
+                return updatedScore;
+            });
         }
+    
+        // sort descending
+        cityHotels.sort(Comparator.comparingDouble((Hotel hotel) -> scores.getOrDefault(hotel.id, 0.0)).reversed());
+    
+        // Print sorted hotels
+        for (Hotel hotel : cityHotels) {
+            System.out.println("Hotel: " + hotel.name + ", Score: " +
+                    scores.getOrDefault(hotel.id, 0.0));
+        }
+    
+        System.out.println("---------------------");
     }
+    
 
     // function to update hotel rating based on new reviews
     public void updateHotelGlobalRate() {
@@ -1037,37 +1068,36 @@ public class HotelierServer {
     }
 
     // function to sort the ranking of the hotels
-    public String recalculateRanking() {
+    public void recalculateRanking() {
         // first update all the hotels score
         serverRef.updateHotelGlobalRate();
 
-        String result = "";
         // calculate ranking (sort hotels)
         for (String city : hotels.keySet()) {
             List<Hotel> hotelList = hotels.get(city);
 
             // get name of actual top hotel
-            String actualTopHotelName = hotelList.isEmpty() ? null : hotelList.get(0).name;
+            String oldTopHotelName = hotelList.isEmpty() ? null : hotelList.get(0).name;
 
             // sort hotels for each city
-            serverRef.sortHotelsByScore(reviews, hotels);
+            // reviews for specific city
+            List<Recensione> cityReviewsList = reviews.get(city);
+
+            serverRef.sortHotelsByScore(cityReviewsList, hotelList);
 
             // get name of new first hotel
             String newTopHotelName = hotelList.isEmpty() ? null : hotelList.get(0).name;
 
-            System.out.println("New Top Hotel: " + newTopHotelName);
             // check if there is a change
-            if (!actualTopHotelName.equals(newTopHotelName)) {
-                System.out.println("Change in first position for city " + city);
-                System.out.println("Previous Top Hotel: " + actualTopHotelName);
-                System.out.println("New Top Hotel: " + newTopHotelName);
-                result += newTopHotelName + "_" + city + "-";
+            if (!oldTopHotelName.equals(newTopHotelName)) {
+                System.out.println("OLD TOP: " + oldTopHotelName + " NEW TOP: " + oldTopHotelName + " CITY: " + city);
+                
+                //serverRef.sendMulticastNotification("NEW TOP HOTEL: " + newTopHotelName + " CITY: " + city);
             }
         }
 
         // save hotels to json
         serverRef.saveHotelsToJson();
-        return result;
     }
 
     // function called when sorting hotels, it assigns a value to each hotel based
@@ -1075,8 +1105,7 @@ public class HotelierServer {
     // 1. number of reviews
     // 2. reviews actuality
     // 3. reviews quality
-    public double calculateScore(int hotelId, String city) {
-        List<Recensione> cityReviews = reviews.get(city);
+    public double calculateScore(int hotelId, List<Recensione> cityReviews) {
 
         List<Recensione> hotelReviews = serverRef.getReviewsForHotel(cityReviews, hotelId);
 
@@ -1085,6 +1114,7 @@ public class HotelierServer {
             return 0;
         }
 
+        System.out.println("---------------------------------------------------------------------");
         for (Recensione review : hotelReviews) {
             System.out.println(review.toString());
         }
@@ -1100,6 +1130,8 @@ public class HotelierServer {
 
         System.out.println("ID: " + hotelId + " COUNT: " + reviewsCount + " ACTUALITY: " + reviewsActuality
                 + " QUALITY: " + reviewsQuality + " TOTAL: " + (reviewsCount + reviewsActuality + reviewsQuality));
+
+        System.out.println("---------------------------------------------------------------------");
         return reviewsCount + reviewsActuality + reviewsQuality;
     }
     
