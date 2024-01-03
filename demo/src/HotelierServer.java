@@ -26,6 +26,7 @@ public class HotelierServer {
             "Perugia", "Aosta", "Venezia" };
     private static final String SERVER_CONFIG = "./assets/server.properties";
     private static int RANKING_REFRESH_RATE;
+    private static String MULTICAST_ADDR;
     private static int REVIEW_MIN_DELTA;
     private static int SELECT_TIMEOUT;
     private static int PORT;
@@ -45,7 +46,7 @@ public class HotelierServer {
     // object reference to call methods
     private static HotelierServer serverRef;
 
-    // multicast
+    // multicast variables
     private boolean isFirstCalculation;
     MulticastSocket multicastSocket;
     InetAddress multicastGroup;
@@ -58,10 +59,11 @@ public class HotelierServer {
         RANKING_REFRESH_RATE = Integer.parseInt(prop.getProperty("rankingRefreshRate"));
         SELECT_TIMEOUT = Integer.parseInt(prop.getProperty("selectTimeout"));
         REVIEW_MIN_DELTA = Integer.parseInt(prop.getProperty("reviewMinDelta"));
+        MULTICAST_ADDR = prop.getProperty("multicastAddress");
 
-        // load 
+        // start multicast socket
         try {
-            multicastGroup = InetAddress.getByName("230.0.0.1");
+            multicastGroup = InetAddress.getByName(MULTICAST_ADDR);
             multicastSocket = new MulticastSocket();
             
         } catch (IOException e) {
@@ -100,32 +102,32 @@ public class HotelierServer {
 
     public static void main(String[] args) {
         serverRef = new HotelierServer();
-        // variable to not send hotel change at first startup
+        // variable to not send multicast hotel change at first startup
         serverRef.isFirstCalculation = true;
 
         // initialize top hotels hashmap and calculate ranking at startup
         serverRef.initializeTopHotelsHashMap();
         serverRef.recalculateRanking();
 
-        printTopHotels();
         // debugging
         //serverRef.printReviews(reviews, hotels);
         //serverRef.printHotels();
         //serverRef.printRegistered();
 
-
         // put start time so after RANKING_REFRESH_RATE i can check if a new ranking is
         // calculated
         long startTime = System.currentTimeMillis();
 
+        // try with resources so it closes everything at shutdown
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
                 Selector selector = Selector.open()) {
 
+            // set non blocking and bind to port
             serverSocketChannel.bind(new InetSocketAddress(PORT));
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-            System.out.printf("[SERVER] Listening on port %d\n", PORT);
+            System.out.printf("In ascolto su porta: %d\n", PORT);
 
             while (true) {
                 // timeout of SELECT_TIMEOUT seconds
@@ -152,6 +154,7 @@ public class HotelierServer {
     
                 if (now > (startTime + RANKING_REFRESH_RATE)) {
                     // sort hotel rankings based on score
+                    System.out.println("CALCULATING NEW RANK");
                     serverRef.recalculateRanking();
                         
                     startTime = now;
@@ -660,10 +663,10 @@ public class HotelierServer {
                 hotelJson.addProperty("rate", hotel.rate);
 
                 JsonObject ratingsJson = new JsonObject();
-                ratingsJson.addProperty("cleaning", hotel.ratings.getCleaning());
-                ratingsJson.addProperty("position", hotel.ratings.getPosition());
-                ratingsJson.addProperty("services", hotel.ratings.getServices());
-                ratingsJson.addProperty("quality", hotel.ratings.getQuality());
+                ratingsJson.addProperty("cleaning", hotel.ratings.pulizia);
+                ratingsJson.addProperty("position", hotel.ratings.posizione);
+                ratingsJson.addProperty("services", hotel.ratings.servizio);
+                ratingsJson.addProperty("quality", hotel.ratings.qualita);
 
                 hotelJson.add("ratings", ratingsJson);
 
@@ -1069,9 +1072,9 @@ public class HotelierServer {
                 // if there is no hotel
                 newTopHotelName = "";
             }
-
+            
+        
             // check if there is a change and oldHotelName is not null (otherwise it is the first ranking)
-
             if (((newTopHotelName != null) && (oldTopHotelName != null)) && (!oldTopHotelName.equals(newTopHotelName))) {
 
                 //update topHotelName

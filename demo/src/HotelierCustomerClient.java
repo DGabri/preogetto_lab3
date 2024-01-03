@@ -15,6 +15,7 @@ public class HotelierCustomerClient {
     // config variables and asset path
     private static final String CLIENT_CONFIG = "./assets/client.properties";
     private static String SERVER_ADDRESS;
+    private static String MULTICAST_ADDR;
     private static int PORT;
 
     // selector variables
@@ -22,8 +23,9 @@ public class HotelierCustomerClient {
     private SocketChannel socketChannel;
     private InetAddress multicastGroup;
     private Selector selector;
-    private boolean loggedIn = false;
 
+    // login state client side
+    private boolean loggedIn = false;
     private String username = "";
 
     public HotelierCustomerClient() {
@@ -33,6 +35,7 @@ public class HotelierCustomerClient {
             Properties prop = loadConfig(CLIENT_CONFIG);
             PORT = Integer.parseInt(prop.getProperty("port"));
             SERVER_ADDRESS = prop.getProperty("serverAddress");
+            MULTICAST_ADDR = prop.getProperty("multicastAddress");
 
             System.out.println("PORT: " + PORT + " ADDR: " + SERVER_ADDRESS);
             // Open selector and socket channel
@@ -190,7 +193,6 @@ public class HotelierCustomerClient {
 
                     /* ESCI */
                     case "8":
-                        System.out.println("Ok esco");
                         // close selector and socket channel
                         writeRead(client.socketChannel, "8_exit");
                         client.selector.close();
@@ -276,6 +278,7 @@ public class HotelierCustomerClient {
         return "";
     }
 
+    // function to login
     public void login(String username, String password) {
         // send server(username, password)
         if (!this.loggedIn) {
@@ -327,6 +330,7 @@ public class HotelierCustomerClient {
         }
     }
 
+    // function to search 1 hotel
     public String searchHotel(String nomeHotel, String citta) {
 
         // prepare string to send
@@ -341,6 +345,7 @@ public class HotelierCustomerClient {
 
     }
 
+    // function to ask server for all the hotels in a given city
     public void searchAllHotels(String citta) {
 
         // prepare string to send
@@ -354,6 +359,7 @@ public class HotelierCustomerClient {
         }
     }
 
+    // function to extract input data and send it to the server
     public void insertReview(String nomeHotel, String nomeCitta, int globalScore, int[] singleScores) {
         if (this.loggedIn) {
             // prepare string to send
@@ -363,11 +369,13 @@ public class HotelierCustomerClient {
                     + String.valueOf(singleScores[0]) + "_" + String.valueOf(singleScores[1]) + "_"
                     + String.valueOf(singleScores[2]) + "_" + String.valueOf(singleScores[3]);
 
+            // send data to server
             String retCode = writeRead(socketChannel, msg);
             System.out.println("-----> RESPONSE:" + retCode);
         }
     }
 
+    // function to show user badge
     public void showMyBadges() {
         if (this.loggedIn) {
             // prepare string to send
@@ -380,40 +388,44 @@ public class HotelierCustomerClient {
 
     private static String writeRead(SocketChannel socketChannel, String msg) {
         try {
-            // Convert the message to bytes
+            // convert msg to bytes
             byte[] msgBytes = msg.getBytes(StandardCharsets.UTF_8);
 
-            // Create a ByteBuffer with length prefix
+            // create buffer with lenghth 1 integeer + msg length
             ByteBuffer writeBuffer = ByteBuffer.allocate(Integer.BYTES + msgBytes.length);
+            
+            // put the length of the message so server knows how much needs to read
             writeBuffer.putInt(msgBytes.length);
             writeBuffer.put(msgBytes);
             writeBuffer.flip();
 
-            // Write the message to the server
+            // write effective message until everything is written
             while (writeBuffer.hasRemaining()) {
                 socketChannel.write(writeBuffer);
             }
 
-            // Read the response length
+            // get server response length
             ByteBuffer lengthBuffer = ByteBuffer.allocate(Integer.BYTES);
             while (socketChannel.read(lengthBuffer) <= 0) {
-                // wait for data
             }
+
+
             lengthBuffer.flip();
-            int responseLength = lengthBuffer.getInt();
+            int responseMsgLength = lengthBuffer.getInt();
 
-            // Read the actual response
-            ByteBuffer readBuffer = ByteBuffer.allocate(responseLength);
-            while (socketChannel.read(readBuffer) <= 0) {
+            // read response msg
+            ByteBuffer responseMsgBuffer = ByteBuffer.allocate(responseMsgLength);
+            
+            while (socketChannel.read(responseMsgBuffer) <= 0) {
                 // wait for data
             }
-            readBuffer.flip();
+            responseMsgBuffer.flip();
 
-            // Convert the received bytes to a String
-            byte[] responseData = new byte[readBuffer.remaining()];
-            readBuffer.get(responseData);
+            // convert message bytes to string
+            byte[] responseStringBytes = new byte[responseMsgBuffer.remaining()];
+            responseMsgBuffer.get(responseStringBytes);
 
-            return new String(responseData, StandardCharsets.UTF_8);
+            return new String(responseStringBytes, StandardCharsets.UTF_8);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -424,13 +436,14 @@ public class HotelierCustomerClient {
     /* UDP NOTIFICATION RECEIVER */
     private void subscribeToMulticastGroup() {
         try {
-            multicastGroup = InetAddress.getByName("230.0.0.1");
+            multicastGroup = InetAddress.getByName(MULTICAST_ADDR);
             multicastSocket.joinGroup(multicastGroup);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    // function to start the notification handler thread
     public void startNotificationsThread() {
         // start udp thread
 
@@ -438,8 +451,9 @@ public class HotelierCustomerClient {
         notificationsThread.start();
     }
 
+    // function called by thread to print received message
     public void startNotificationReceiver() {
-        System.out.println("Started notification receiver");
+        System.out.println("STARTED NOTIFICATION RECEIVER THREAD");
         try {
 
             byte[] buffer = new byte[1024];
@@ -459,6 +473,7 @@ public class HotelierCustomerClient {
         }
     }
 
+    // function to close the multicast group
     public void closeNotificationsGroup() {
         try {
             this.multicastSocket.leaveGroup(multicastGroup);

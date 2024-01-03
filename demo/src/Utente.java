@@ -50,7 +50,6 @@ public class Utente {
             setLevel("Contributore_Super");
         }
 
-        System.out.println("NEW LEVEL: " + userLevel);
     }
     
     /* FUNCTION TO PRINT OBJECT */

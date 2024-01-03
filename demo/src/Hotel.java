@@ -1,14 +1,4 @@
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
-import java.lang.reflect.Type;
-import com.google.gson.Gson;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.List;
-import java.io.File;
-
 
 public class Hotel {
     public int id;
@@ -30,55 +20,6 @@ public class Hotel {
         this.rate = rate;
         Ratings ratings = new Ratings(0, 0, 0, 0);
 
-    }
-            
-    public static List<Recensione> loadReviewsFromJson(String filePath) {
-        try (FileReader reader = new FileReader(filePath)) {
-            // Definisci il tipo di oggetto che desideri deserializzare
-            Type listType = new TypeToken<List<Recensione>>() {
-            }.getType();
-
-            // Usa Gson per leggere il file JSON e deserializzarlo in una lista di Recensione
-            return new Gson().fromJson(reader, listType);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    
-    public static void appendReviewToJson(int hotelId, Recensione nuovaRecensione) {
-        String filePath = "./assets/reviews.json";
-        
-        try {
-            // Leggi il file JSON esistente
-            JsonArray jsonArray = new JsonArray();
-
-            // Aggiungi le recensioni esistenti al JsonArray
-            if (new java.io.File(filePath).exists()) {
-                jsonArray = new Gson().fromJson(new FileReader(filePath), JsonArray.class);
-            }
-
-            // Costruisci un nuovo oggetto JSON per la nuova recensione
-            JsonObject nuovaRecensioneJson = new JsonObject();
-            nuovaRecensioneJson.addProperty("id", hotelId);
-            nuovaRecensioneJson.addProperty("name", "Hotel " + hotelId);
-            nuovaRecensioneJson.addProperty("position", nuovaRecensione.posizione);
-            nuovaRecensioneJson.addProperty("cleaning", nuovaRecensione.pulizia);
-            nuovaRecensioneJson.addProperty("services", nuovaRecensione.servizio);
-            nuovaRecensioneJson.addProperty("quality", nuovaRecensione.qualita);
-
-            // Aggiungi il nuovo oggetto JSON al JsonArray
-            jsonArray.add(nuovaRecensioneJson);
-
-            try (FileWriter fileWriter = new FileWriter(filePath)) {
-                new Gson().toJson(jsonArray, fileWriter);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public String toString() {
