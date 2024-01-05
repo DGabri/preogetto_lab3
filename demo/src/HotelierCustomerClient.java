@@ -23,6 +23,7 @@ public class HotelierCustomerClient {
     private SocketChannel socketChannel;
     private InetAddress multicastGroup;
     private Selector selector;
+    Thread notificationsThread;
 
     // login state client side
     private boolean loggedIn = false;
@@ -92,7 +93,6 @@ public class HotelierCustomerClient {
                         if (resCode.equals("-1")) {
                             System.out.println("Utente gia' registrato");
                         }
-                        System.out.println("******************************");
 
                         break;
 
@@ -106,7 +106,6 @@ public class HotelierCustomerClient {
 
                         // login
                         client.login(usernameLogin, passwordLogin);
-                        System.out.println("******************************");
                         break;
 
                     /* LOGOUT */
@@ -117,7 +116,6 @@ public class HotelierCustomerClient {
                         } else {
                             System.out.println("Hai gia' effettuato il logout");
                         }
-                        System.out.println("******************************");
                         break;
 
                     /* CERCA HOTEL */
@@ -128,8 +126,6 @@ public class HotelierCustomerClient {
                         String citta = scanner.nextLine();
 
                         client.searchHotel(nomeHotel, citta);
-
-                        System.out.println("******************************");
                         break;
 
                     /* CERCA TUTTI GLI HOTELS IN UNA DETERMINATA CITTA' */
@@ -139,7 +135,7 @@ public class HotelierCustomerClient {
 
                         System.out.print("Citta': " + cittaTuttiHotel);
                         client.searchAllHotels(cittaTuttiHotel);
-                        System.out.println("******************************");
+
                         break;
 
                     /* INSERISCI RECENSIONE */
@@ -147,7 +143,6 @@ public class HotelierCustomerClient {
                         // init empty review
                         int[] reviewPoints = { 0, 0, 0, 0 };
 
-                        System.out.println("********************************");
                         System.out.print("Inserisci il nome dell'hotel da recensire: ");
                         String reviewedHotelName = scanner.nextLine();
                         System.out.print("Inserisci la citta' dell'hotel da recensire: ");
@@ -182,13 +177,11 @@ public class HotelierCustomerClient {
 
                         // send review to server
                         client.insertReview(reviewedHotelName, reviewedHotelCity, globalScore, reviewPoints);
-                        System.out.println("******************************");
                         break;
 
                     /* MOSTRA BADGE UTENTE */
                     case "7":
                         client.showMyBadges();
-                        System.out.println("******************************");
                         break;
 
                     /* ESCI */
@@ -197,13 +190,14 @@ public class HotelierCustomerClient {
                         writeRead(client.socketChannel, "8_exit");
                         client.selector.close();
                         client.socketChannel.close();
-                        // close notifications multicast group
-                        client.closeNotificationsGroup();
+                        // close notifications multicast group if it was started
+                        if (client.loggedIn == true) {
+                            client.closeNotificationsGroup();
+                        }
                         System.exit(0);
 
                     default:
                         System.out.println("Valore non corretto, inserisci un valore tra quelli elencati");
-                        System.out.println("******************************");
                         break;
                 }
             }
@@ -447,7 +441,7 @@ public class HotelierCustomerClient {
     public void startNotificationsThread() {
         // start udp thread
 
-        Thread notificationsThread = new Thread(() -> this.startNotificationReceiver());
+        this.notificationsThread = new Thread(() -> this.startNotificationReceiver());
         notificationsThread.start();
     }
 
@@ -475,11 +469,6 @@ public class HotelierCustomerClient {
 
     // function to close the multicast group
     public void closeNotificationsGroup() {
-        try {
-            this.multicastSocket.leaveGroup(multicastGroup);
-            this.multicastSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.multicastSocket.close();
     }
 }

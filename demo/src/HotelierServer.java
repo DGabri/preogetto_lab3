@@ -73,6 +73,7 @@ public class HotelierServer {
         // from seconds calculate ms
         RANKING_REFRESH_RATE *= 1000;
         SELECT_TIMEOUT *= 1000;
+        REVIEW_MIN_DELTA *= 1000;
 
         // Initialize data structures
         registeredUsers = new HashMap<>();
@@ -102,6 +103,7 @@ public class HotelierServer {
 
     public static void main(String[] args) {
         serverRef = new HotelierServer();
+
         // variable to not send multicast hotel change at first startup
         serverRef.isFirstCalculation = true;
 
@@ -139,8 +141,10 @@ public class HotelierServer {
                     while (iter.hasNext()) {
                         SelectionKey key = iter.next();
 
+                        // una nuova connessione e' disponibile
                         if (key.isAcceptable()) {
                             serverRef.acceptConnection(key, selector);
+                        // posso leggere un messaggio
                         } else if (key.isReadable()) {
                             serverRef.readMsg(key, selector);
                         }
@@ -169,7 +173,7 @@ public class HotelierServer {
     }
 
     // function to split the received message from the client
-    public static String[] splitCredentials(String credentials) {
+    public static String[] splitMessage(String credentials) {
         String[] parts = credentials.split("_");
 
         return parts;
@@ -212,16 +216,17 @@ public class HotelierServer {
             // Read the length of the message
             int bytesRead = socketChannel.read(lengthBuffer);
 
+            // client closed connection
             if (bytesRead == -1) {
                 socketChannel.close();
-                System.out.println("Client closed connection");
                 return;
             }
 
             lengthBuffer.flip();
+            // read msg length
             int messageLength = lengthBuffer.getInt();
 
-            // Read the actual message
+            // read message
             ByteBuffer msgBuffer = ByteBuffer.allocate(messageLength);
             bytesRead = socketChannel.read(msgBuffer);
 
@@ -235,12 +240,12 @@ public class HotelierServer {
             byte[] data = new byte[msgBuffer.remaining()];
             msgBuffer.get(data);
             String messageReceived = new String(data, StandardCharsets.UTF_8);
-            System.out.println("RECEIVED: " + messageReceived);
 
-            // Handle the received message and send back a response
+
+            // sen
             String msgToSend = serverRef.handleReceivedMessage(messageReceived);
 
-            // Echo the message back to the client with length prefix
+            // send response message to client
             byte[] responseBytes = msgToSend.getBytes(StandardCharsets.UTF_8);
             ByteBuffer responseBuffer = ByteBuffer.allocate(Integer.BYTES + responseBytes.length);
             responseBuffer.putInt(responseBytes.length);
@@ -251,7 +256,8 @@ public class HotelierServer {
                 socketChannel.write(responseBuffer);
             }
 
-            selKey.interestOps(SelectionKey.OP_READ); // Set interest back to read for the next message
+            // set interest to read next msg
+            selKey.interestOps(SelectionKey.OP_READ);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -282,13 +288,13 @@ public class HotelierServer {
             case "1":
                 // returns 0 if user is not present, 1 if present
                 String rcvdCredentials = msgRcvd;
-                String[] credentials = splitCredentials(rcvdCredentials);
+                String[] credentials = splitMessage(rcvdCredentials);
 
                 String username = credentials[0];
                 String password = credentials[1];
 
                 String isRegistered = serverRef.isRegistered(username);
-
+                System.out.println("IS REGISTERED: " + isRegistered);
                 // user is already registered
                 if (isRegistered.equals("1")) {
                     return "-1";
@@ -298,25 +304,25 @@ public class HotelierServer {
 
                     // create new user object and save it to hashmap + users json
                     Utente newUser = new Utente(username, password);
-
+                    System.out.println("NEW USER: " + newUser.toString());
                     return serverRef.registerUser(newUser);
                 }
 
                 /* LOGIN */
             case "2":
                 // returns 0 if user is not present, 1 if present
-                String[] loginCredentials = splitCredentials(msgRcvd);
+                String[] loginCredentials = splitMessage(msgRcvd);
 
                 String usernameLogin = loginCredentials[0];
                 String passwordLogin = loginCredentials[1];
-
+                System.out.println("USERNAME: " + usernameLogin + " PASS: " + passwordLogin);
                 // login
                 // returns 1 if login was successful, 0 if not
                 return serverRef.login(usernameLogin, passwordLogin);
 
             /* LOGOUT */
             case "3":
-                String[] logoutCredentials = splitCredentials(msgRcvd);
+                String[] logoutCredentials = splitMessage(msgRcvd);
 
                 String logoutUsername = logoutCredentials[0];
                 return serverRef.logout(logoutUsername);
@@ -324,7 +330,7 @@ public class HotelierServer {
             /* SEARCH HOTEL */
             case "4":
                 // split the received message and return the response
-                String[] requestedHotel = splitCredentials(msgRcvd);
+                String[] requestedHotel = splitMessage(msgRcvd);
                 String hotelName = requestedHotel[0];
                 String city = requestedHotel[1];
 
@@ -332,7 +338,7 @@ public class HotelierServer {
 
             /* SEARCH ALL HOTELS IN CITY */
             case "5":
-                String[] requestedCity = splitCredentials(msgRcvd);
+                String[] requestedCity = splitMessage(msgRcvd);
                 String searchCity = requestedCity[0];
 
                 // function that given the city, searches all hotels and creates a string with
@@ -341,7 +347,7 @@ public class HotelierServer {
 
             /* INSERT REVIEW */
             case "6":
-                String[] review = splitCredentials(msgRcvd);
+                String[] review = splitMessage(msgRcvd);
 
                 // get username, hotel name and city
                 String reviewerUsername = review[0];
@@ -384,7 +390,7 @@ public class HotelierServer {
             /* SHOW BADGES */
             case "7":
                 // split credentials and get username
-                String[] userCredentials = splitCredentials(msgRcvd);
+                String[] userCredentials = splitMessage(msgRcvd);
                 username = userCredentials[0];
 
                 return serverRef.showBadges(username);
@@ -437,14 +443,14 @@ public class HotelierServer {
     // returns 1 if login was successful, 0 if not
     public String login(String username, String password) {
         Utente currentUser = registeredUsers.get(username);
+        System.out.println("CURRENT USER: " + currentUser.toString());
 
-        // if null user is not registeres
-        if (currentUser != null) {
+        // if null user is not registered
+        if ((currentUser != null) && (serverRef.isRegistered(username).equals("1"))) {
             String registerPwd = currentUser.password;
-
+            System.out.println("CURRENT PASSWORD: " + registerPwd);
             // get password to see if they match
             if (registerPwd.equals(password)) {
-                loggedInUsersPut(username);
                 return "1";
             }
 
@@ -476,22 +482,22 @@ public class HotelierServer {
 
     /* SEARCH FUNCTIONS */
     public int getHotelId(String city, String hotelName) {
-        // Check if the city exists in the ConcurrentHashMap
+        // check if the city is presente in the hotel hashmap
         if (hotels.containsKey(city)) {
-            // Get the list of hotels for the specified city
+            // get hotels for passed city
             List<Hotel> cityHotels = hotels.get(city);
 
-            // Iterate through the hotels in the city
+            // scan hotels in city
             for (Hotel hotel : cityHotels) {
-                // Check if the hotel name matches
+                // check match
                 if (hotel.name.equals(hotelName)) {
-                    // Return the hotel ID if found
+                    // return hotel id
                     return hotel.id;
                 }
             }
         }
 
-        // Return -1 if the hotel is not found
+        // hotel does not exist
         return -1;
     }
 
@@ -527,81 +533,6 @@ public class HotelierServer {
             return 0;
     }
 
-    public void printReviews(Map<String, List<Recensione>> reviews, Map<String, List<Hotel>> hotels) {
-
-        for (Map.Entry<String, List<Recensione>> entry : reviews.entrySet()) {
-            String city = entry.getKey();
-            List<Recensione> reviewList = entry.getValue();
-
-            System.out.println("City: " + city);
-            System.out.println("Reviews:");
-
-            for (Recensione review : reviewList) {
-                int hotelId = review.idHotel;
-                List<Hotel> hotelList = hotels.get(city);
-
-                if (hotelList != null) {
-                    // Find the hotel with the corresponding ID using a for loop
-                    Hotel foundHotel = null;
-                    for (Hotel hotel : hotelList) {
-                        if (hotel.id == hotelId) {
-                            foundHotel = hotel;
-                            break;
-                        }
-                    }
-
-                    if (foundHotel != null) {
-                        System.out.println("Hotel: " + foundHotel.name);
-                    }
-                }
-
-                System.out.println(review);
-                System.out.println("---------------------");
-            }
-        }
-    }
-
-    private void printHotels() {
-        System.out.println("Hotels Information:");
-        for (Map.Entry<String, List<Hotel>> entry : hotels.entrySet()) {
-            String city = entry.getKey();
-            List<Hotel> hotelList = entry.getValue();
-
-            System.out.println("City: " + city);
-            System.out.println("Hotels:");
-
-            for (Hotel hotel : hotelList) {
-                System.out.println(hotel);
-            }
-
-            System.out.println("---------------------");
-        }
-    }
-
-    public void printRegistered() {
-        System.out.println("Registered Users:");
-
-        for (Map.Entry<String, Utente> entry : registeredUsers.entrySet()) {
-            String username = entry.getKey();
-            Utente user = entry.getValue();
-
-            System.out.println("Username: " + username);
-            System.out.println("Written Reviews Count: " + user.getUserReviewCount());
-            // Add any other user information you want to print
-            System.out.println("----------------------------");
-        }
-
-    }
-
-    public void printLoggedIn() {
-        System.out.println("Logged-In Users:");
-
-        for (String username : loggedInUsers) {
-            System.out.println("Username: " + username);
-            // Add any other logged-in user information you want to print
-            System.out.println("----------------------------");
-        }
-    }
 
     ///////////////////////////
     // JSON FUNCTIONS
@@ -730,6 +661,7 @@ public class HotelierServer {
             String username = newUtente.username;
 
             registeredUsers.put(username, newUtente);
+            System.out.println("ADDED USER TO HASHMAP");
             serverRef.saveUtenteToJson();
 
             return "1";
@@ -844,7 +776,8 @@ public class HotelierServer {
 
     // function to get the number of reviews per hotel scaled to 100
     public double getReviewsCountPerHotel(List<Recensione> reviewsList) {
-        return ((double) reviewsList.size()) / 10;
+        //return ((double) reviewsList.size()) / 10;
+        return ((double) reviewsList.size());
     }
 
     // function to get all reviews for hotel
@@ -958,15 +891,6 @@ public class HotelierServer {
         // sort descending
         cityHotels.sort(Comparator.comparingDouble((Hotel hotel) -> scores.getOrDefault(hotel.id, 0.0)).reversed());
 
-        /* 
-         * 
-         // Print sorted hotels
-         for (Hotel hotel : cityHotels) {
-             System.out.println("Hotel: " + hotel.name + ", Score: " +
-             scores.getOrDefault(hotel.id, 0.0));
-            }
-            */
-
     }
     
     public void updateHotelGlobalRate() {
@@ -1014,33 +938,6 @@ public class HotelierServer {
         saveHotelsToJson();
     }
     
-
-    // function to update hotel rating based on new reviews
-    public void updateHotelGlobalRate1() {
-        
-        for (String city : hotels.keySet()) {
-            
-            if (!reviews.containsKey(city)) {
-                break;
-            }
-
-            List<Hotel> hotelList = hotels.get(city);
-
-            for (Hotel hotel : hotelList) {
-                List<Recensione> cityReviews = reviews.get(city);
-                List<Recensione> hotelReviewsList = serverRef.getReviewsForHotel(cityReviews, hotel.id);
-
-                // calculate total reate as the mean of all reviews rate for that hotel
-                double totalRate = serverRef.getReviewsQualityPerHotel(hotelReviewsList);
-
-                // Update the hotel's rate
-                hotel.rate = totalRate;
-            }
-        }
-
-        // persist update to json
-        saveHotelsToJson();
-    }
 
     // function to sort the ranking of the hotels
     public void recalculateRanking() {
@@ -1130,7 +1027,7 @@ public class HotelierServer {
         double reviewsActuality = serverRef.getReviewsActuality(hotelReviews);
 
         // qualita' recensioni
-        double reviewsQuality = serverRef.getReviewsQualityPerHotel(hotelReviews) / 10;
+        double reviewsQuality = serverRef.getReviewsQualityPerHotel(hotelReviews);
 
         return reviewsCount + reviewsActuality + reviewsQuality;
     }
@@ -1141,16 +1038,17 @@ public class HotelierServer {
     public Recensione getUserReviewHotel(int hotelId, String username) {
         List<Recensione> userReviews = new ArrayList<>();
 
-        if (userReviews.size() == 0) {
-            return null;
-        }
-
+        // get reviews for user and selected hotel
         for (List<Recensione> reviewsList : reviews.values()) {
             for (Recensione review : reviewsList) {
                 if (review.idHotel == hotelId && review.username.equals(username)) {
                     userReviews.add(review);
                 }
             }
+        }
+        
+        if (userReviews.size() == 0) {
+            return null;
         }
 
         // sort
