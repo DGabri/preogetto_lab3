@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="lib" path="./demo/src/lib/gson-2.10.1.jar"/>
-    <classpathentry kind="lib" path="./demo/src/"/>
+    <classpathentry kind="lib" path="./src/lib/gson-2.10.1.jar"/>
+    <classpathentry kind="lib" path="./src/"/>
     <!-- Add other classpath entries as needed -->
 </classpath>
