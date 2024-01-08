@@ -5,14 +5,12 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.util.Comparator;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Iterator;
 import com.google.gson.*;
 import java.time.Instant;
 import java.util.*;
@@ -33,8 +31,8 @@ public class HotelierServerMain {
 
     // json files path
     private static final String HOTELS_JSON_PATH = "./assets/Hotels.json";
-    private static String USERS_JSON_PATH = "./assets/users.json";
-    private static String REVIEWS_JSON_PATH = "./assets/reviews.json";
+    private static String USERS_JSON_PATH = "./assets/Users.json";
+    private static String REVIEWS_JSON_PATH = "./assets/Reviews.json";
 
     // Users tracker, hotels and reviews
     private static Map<String /* username */, Utente> registeredUsers;
@@ -538,6 +536,12 @@ public class HotelierServerMain {
     /* HOTELS FUNCTIONS */
     private void loadHotelsFromJson() {
         try {
+            Path hotelsPath = Paths.get(HOTELS_JSON_PATH);
+            if (Files.size(hotelsPath) == 0) {
+                System.out.println("File JSON Hotels.json vuoto");
+                return;
+            }
+        
             String hotelsJson = Files.readString(Paths.get(HOTELS_JSON_PATH));
             JsonArray hotelsArray = JsonParser.parseString(hotelsJson).getAsJsonArray();
 
@@ -550,7 +554,7 @@ public class HotelierServerMain {
                 hotels.computeIfAbsent(city, k -> new ArrayList<>()).add(hotel);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Errore file JSON Hotels.json");
         }
     }
 
@@ -597,25 +601,38 @@ public class HotelierServerMain {
     /* USERS FUNCTIONS */
 
     private void loadUsersFromJson() {
-        registeredUsers = new ConcurrentHashMap<>();
-        JsonObject jsonData = readJsonFromFile(USERS_JSON_PATH);
+        try {
 
-        if (jsonData != null && jsonData.has("utenti")) {
-            JsonArray utentiArray = jsonData.getAsJsonArray("utenti");
-
-            for (int i = 0; i < utentiArray.size(); i++) {
-                try {
-                    Utente utente = new Gson().fromJson(utentiArray.get(i), Utente.class);
-                    registeredUsers.put(utente.username, utente);
-                } catch (Exception e) {
-                    System.err.println("Error loading Utente: " + e.getMessage());
+            Path usersPath = Paths.get(USERS_JSON_PATH);
+            
+            if (Files.size(usersPath) == 0) {
+                System.out.println("File JSON Utenti.json vuoto");
+                return;
+            }
+            
+            registeredUsers = new ConcurrentHashMap<>();
+            JsonObject jsonData = readJsonFromFile(USERS_JSON_PATH);
+            
+            if (jsonData != null && jsonData.has("utenti")) {
+                JsonArray utentiArray = jsonData.getAsJsonArray("utenti");
+                
+                for (int i = 0; i < utentiArray.size(); i++) {
+                    try {
+                        Utente utente = new Gson().fromJson(utentiArray.get(i), Utente.class);
+                        registeredUsers.put(utente.username, utente);
+                    } catch (Exception e) {
+                        System.err.println("Errore file JSON Users.json");
+                    }
                 }
             }
         }
-    }
-
-    // function to save all registered users to json
-    private void saveUtenteToJson() {
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        }
+        
+        // function to save all registered users to json
+        private void saveUtenteToJson() {
         try {
             JsonObject jsonObject = new JsonObject();
             JsonArray utentiArray = new JsonArray();
@@ -675,6 +692,13 @@ public class HotelierServerMain {
     /* REVIEWS FUNCTIONS */
     private void loadReviewsFromJson() {
         try {
+            Path reviewsPath = Paths.get(REVIEWS_JSON_PATH);
+
+            if (Files.size(reviewsPath) == 0) {
+                System.out.println("File Reviews.json vuoto");
+                return;
+            }
+
             String jsonData = new String(Files.readAllBytes(Paths.get(REVIEWS_JSON_PATH)));
             JsonObject reviewsObject = JsonParser.parseString(jsonData).getAsJsonObject();
 
@@ -708,7 +732,7 @@ public class HotelierServerMain {
                 reviews.put(hotelIdStr, reviewsList);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Errore file JSON Reviews.json");
         }
     }
 
