@@ -65,7 +65,7 @@ public class HotelierServerMain {
         try {
             multicastGroup = InetAddress.getByName(MULTICAST_ADDR);
             multicastSocket = new MulticastSocket();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,20 +87,7 @@ public class HotelierServerMain {
         loadHotelsFromJson();
         loadReviewsFromJson();
     }
-
-    private static void printTopHotels() {
-        System.out.println("Top Hotels:");
-
-        for (Map.Entry<String, String> entry : topHotels.entrySet()) {
-            String city = entry.getKey();
-            String hotelName = entry.getValue();
-
-            System.out.println(city + "-> " + hotelName);
-        }
-
-        System.out.println("---------------------");
-    }
-
+    
     public static void main(String[] args) {
         serverRef = new HotelierServerMain();
 
@@ -111,13 +98,7 @@ public class HotelierServerMain {
         serverRef.initializeTopHotelsHashMap();
         serverRef.recalculateRanking();
 
-        // debugging
-        //serverRef.printReviews(reviews, hotels);
-        //serverRef.printHotels();
-        //serverRef.printRegistered();
-
-        // put start time so after RANKING_REFRESH_RATE i can check if a new ranking is
-        // calculated
+        // put start time so after RANKING_REFRESH_RATE i can check if a new ranking is calculated
         long startTime = System.currentTimeMillis();
 
         // try with resources so it closes everything at shutdown
@@ -141,10 +122,10 @@ public class HotelierServerMain {
                     while (iter.hasNext()) {
                         SelectionKey key = iter.next();
 
-                        // una nuova connessione e' disponibile
+                        // new connection available
                         if (key.isAcceptable()) {
                             serverRef.acceptConnection(key, selector);
-                        // posso leggere un messaggio
+                        // new message readeable
                         } else if (key.isReadable()) {
                             serverRef.readMsg(key, selector);
                         }
@@ -158,7 +139,6 @@ public class HotelierServerMain {
     
                 if (now > (startTime + RANKING_REFRESH_RATE)) {
                     // sort hotel rankings based on score
-                    System.out.println("CALCULATING NEW RANK");
                     serverRef.recalculateRanking();
                         
                     startTime = now;
@@ -192,6 +172,7 @@ public class HotelierServerMain {
         }
     }
 
+    // function to accept a new connection
     private void acceptConnection(SelectionKey selKey, Selector selector) {
         try {
             // open serverSocket with channel, and accept connection
@@ -199,21 +180,23 @@ public class HotelierServerMain {
             SocketChannel socketChannel = serverSocket.accept();
             socketChannel.configureBlocking(false);
             socketChannel.register(selector, SelectionKey.OP_READ);
-            // Attach a ByteBuffer to store client data
+            
+            // attach bytebuffer to save data received
             socketChannel.keyFor(selector).attach(ByteBuffer.allocate(1024));
 
-            System.out.println("Client connected: " + socketChannel.getRemoteAddress());
+            System.out.println("Nuovo client connesso: " + socketChannel.getRemoteAddress());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    // function to read a message and send response
     public void readMsg(SelectionKey selKey, Selector selector) {
         try {
             SocketChannel socketChannel = (SocketChannel) selKey.channel();
             ByteBuffer lengthBuffer = ByteBuffer.allocate(Integer.BYTES);
 
-            // Read the length of the message
+            // read message legnth
             int bytesRead = socketChannel.read(lengthBuffer);
 
             // client closed connection
@@ -232,7 +215,7 @@ public class HotelierServerMain {
 
             if (bytesRead == -1) {
                 socketChannel.close();
-                System.out.println("Client closed connection");
+                System.out.println("Un client ha chiuso la connessione");
                 return;
             }
 
@@ -294,7 +277,7 @@ public class HotelierServerMain {
                 String password = credentials[1];
 
                 String isRegistered = serverRef.isRegistered(username);
-                System.out.println("IS REGISTERED: " + isRegistered);
+
                 // user is already registered
                 if (isRegistered.equals("1")) {
                     return "-1";
@@ -304,7 +287,6 @@ public class HotelierServerMain {
 
                     // create new user object and save it to hashmap + users json
                     Utente newUser = new Utente(username, password);
-                    System.out.println("NEW USER: " + newUser.toString());
                     return serverRef.registerUser(newUser);
                 }
 
@@ -315,7 +297,6 @@ public class HotelierServerMain {
 
                 String usernameLogin = loginCredentials[0];
                 String passwordLogin = loginCredentials[1];
-                System.out.println("USERNAME: " + usernameLogin + " PASS: " + passwordLogin);
                 // login
                 // returns 1 if login was successful, 0 if not
                 return serverRef.login(usernameLogin, passwordLogin);
@@ -443,12 +424,11 @@ public class HotelierServerMain {
     // returns 1 if login was successful, 0 if not
     public String login(String username, String password) {
         Utente currentUser = registeredUsers.get(username);
-        System.out.println("CURRENT USER: " + currentUser.toString());
 
         // if null user is not registered
         if ((currentUser != null) && (serverRef.isRegistered(username).equals("1"))) {
             String registerPwd = currentUser.password;
-            System.out.println("CURRENT PASSWORD: " + registerPwd);
+
             // get password to see if they match
             if (registerPwd.equals(password)) {
                 return "1";
@@ -660,8 +640,9 @@ public class HotelierServerMain {
             // get username and use it as key of insertion
             String username = newUtente.username;
 
+            // add username to hashmap
             registeredUsers.put(username, newUtente);
-            System.out.println("ADDED USER TO HASHMAP");
+
             serverRef.saveUtenteToJson();
 
             return "1";
@@ -949,7 +930,7 @@ public class HotelierServerMain {
         // calculate ranking (sort hotels)
         for (String city : hotels.keySet()) {
             List<Hotel> hotelList = hotels.get(city);
-            
+
             // get oldTopHotelName
             String oldTopHotelName = serverRef.getCurrentTopHotel(city);
 
@@ -964,26 +945,28 @@ public class HotelierServerMain {
 
                 // get name of new first hotel
                 newTopHotelName = hotelList.get(0).name;
-            }
-            else {
+            } else {
                 // if there is no hotel
                 newTopHotelName = "";
             }
-            
-        
-            // check if there is a change and oldHotelName is not null (otherwise it is the first ranking)
-            if (((newTopHotelName != null) && (oldTopHotelName != null)) && (!oldTopHotelName.equals(newTopHotelName))) {
 
+            
+            // check if there is a change and oldHotelName is not null (otherwise it is the first ranking)
+            if (((newTopHotelName != null) && (oldTopHotelName != null))
+            && (!oldTopHotelName.equals(newTopHotelName))) {
+                
                 //update topHotelName
                 serverRef.updateTopHotelName(city, newTopHotelName);
-                
+
                 if (serverRef.isFirstCalculation == false) {
-                    serverRef.sendMulticastNotification("NEW TOP HOTEL: " + newTopHotelName + " CITY: " + city);
-                    System.out.println("SENT NOTIFICATION -> " + "NEW TOP HOTEL: " + newTopHotelName + " CITY: " + city);
+                    String updateMsg = "NEW TOP HOTEL: " + newTopHotelName + " CITY: " + city;
+                    // append new hotel to the final string                    
+                    serverRef.sendMulticastNotification(updateMsg);
+                    System.out.println("SENT NOTIFICATION UPDATE -> " + updateMsg);
                 }
             }
         }
-
+        
         serverRef.isFirstCalculation = false;
 
         // save hotels to json
