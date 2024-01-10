@@ -649,7 +649,50 @@ public class HotelierServerMain {
 
     /* USERS FUNCTIONS */
 
+
     private void loadUsersFromJson() {
+        try {
+            // get Users.json path
+            Path usersPath = Paths.get(USERS_JSON_PATH);
+    
+            // if file is empty (size == 0) return as there is nothing to read
+            if (Files.size(usersPath) == 0) {
+                System.out.println("File JSON Utenti.json vuoto");
+                return;
+            }
+    
+            // initialize registeredUsers hashmap
+            registeredUsers = new ConcurrentHashMap<>();
+    
+            // read file content and parse
+            String usersJson = Files.readString(usersPath);
+            JsonObject jsonData = JsonParser.parseString(usersJson).getAsJsonObject();
+    
+            // if data is not null and has "utenti" key, load file data in memory
+            if (jsonData != null && jsonData.has("utenti")) {
+                // from loaded json access utenti key
+                JsonArray utentiArray = jsonData.getAsJsonArray("utenti");
+    
+                // iterate all users array
+                for (int i = 0; i < utentiArray.size(); i++) {
+                    try {
+                        // parse from json to java class type Utente
+                        Utente utente = new Gson().fromJson(utentiArray.get(i), Utente.class);
+                        // add user to hashmap
+                        registeredUsers.put(utente.username, utente);
+    
+                    } catch (Exception e) {
+                        System.err.println("Errore file JSON Users.json");
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    private void loadUsersFromJson1() {
         try {
             // get Users.json path
             Path usersPath = Paths.get(USERS_JSON_PATH);
