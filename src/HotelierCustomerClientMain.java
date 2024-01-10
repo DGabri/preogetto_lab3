@@ -194,7 +194,8 @@ public class HotelierCustomerClientMain {
                         client.socketChannel.close();
                         // close notifications multicast group if it was started
                         if (client.loggedIn == true) {
-                            client.closeNotificationsGroup();
+                            client.stopThreadAndMulticast();
+                            //client.closeNotificationsGroup();
                         }
                         System.exit(0);
 
@@ -390,7 +391,8 @@ public class HotelierCustomerClientMain {
             this.username = "";
             printResponse("Logout effettuato");
             // close multicast group
-            client.closeNotificationsGroup();
+            //client.closeNotificationsGroup();
+            stopThreadAndMulticast();
             System.out.println("GROUP CLOSED");
         } else {
             printResponse("Logout error");
@@ -548,4 +550,17 @@ public class HotelierCustomerClientMain {
     public void closeNotificationsGroup() {
         this.multicastSocket.close();
     }
+
+    public void stopThreadAndMulticast() {
+        // Interrupt the notificationsThread to stop the loop
+        if (notificationsThread != null) {
+            notificationsThread.interrupt();
+        }
+
+        // Close the socket if it is still open
+        if (multicastSocket != null && !multicastSocket.isClosed()) {
+            multicastSocket.close();
+        }
+    }
+
 }
