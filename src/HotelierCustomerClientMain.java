@@ -389,7 +389,9 @@ public class HotelierCustomerClientMain {
             this.loggedIn = false;
             this.username = "";
             printResponse("Logout effettuato");
-
+            // close multicast group
+            client.closeNotificationsGroup();
+            System.out.println("GROUP CLOSED");
         } else {
             printResponse("Logout error");
         }
