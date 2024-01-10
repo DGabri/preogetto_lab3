@@ -551,23 +551,6 @@ public class HotelierServerMain {
     // JSON FUNCTIONS
     ///////////////////////////
 
-    /* FUNCTIONS TO LOAD DATA FROM FILE TO CLASS DATA STRUCTURE */
-
-    private JsonObject readJsonFromFile(String filePath) {
-        try {
-            String jsonData = new String(Files.readAllBytes(Paths.get(filePath)));
-
-            if (jsonData != null && !jsonData.isEmpty()) {
-                return JsonParser.parseString(jsonData).getAsJsonObject();
-            } else {
-                return null;
-            }
-        } catch (IOException | JsonSyntaxException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     /* HOTELS FUNCTIONS */
     private void loadHotelsFromJson() {
         try {
@@ -582,6 +565,12 @@ public class HotelierServerMain {
 
             // read file content and parse
             String hotelsJson = Files.readString(Paths.get(HOTELS_JSON_PATH));
+
+            // no hotels to read
+            if (hotelsJson.trim().isEmpty()) {
+                return;
+            }
+
             JsonArray hotelsArray = JsonParser.parseString(hotelsJson).getAsJsonArray();
 
             // iterate the json array where each item is a hotel
@@ -666,6 +655,12 @@ public class HotelierServerMain {
     
             // read file content and parse
             String usersJson = Files.readString(usersPath);
+
+            // no data to load
+            if (usersJson.trim().isEmpty()) {
+                return;
+            }
+
             JsonObject jsonData = JsonParser.parseString(usersJson).getAsJsonObject();
     
             // if data is not null and has "utenti" key, load file data in memory
@@ -691,45 +686,6 @@ public class HotelierServerMain {
         }
     }
 
-    
-    private void loadUsersFromJson1() {
-        try {
-            // get Users.json path
-            Path usersPath = Paths.get(USERS_JSON_PATH);
-            
-            // if file is empty (size == 0) return as there is nothing to read
-            if (Files.size(usersPath) == 0) {
-                System.out.println("File JSON Utenti.json vuoto");
-                return;
-            }
-
-            // initialize registeredUsers hashmap
-            registeredUsers = new ConcurrentHashMap<>();
-            // read json from file
-            JsonObject jsonData = readJsonFromFile(USERS_JSON_PATH);
-
-            // if data is not null load file data in memory
-            if (jsonData != null && jsonData.has("utenti")) {
-                // from loaded json access utenti key
-                JsonArray utentiArray = jsonData.getAsJsonArray("utenti");
-
-                // iterate all users array
-                for (int i = 0; i < utentiArray.size(); i++) {
-                    try {
-                        // parse from json to java class type Utente
-                        Utente utente = new Gson().fromJson(utentiArray.get(i), Utente.class);
-                        // add user to hashmap
-                        registeredUsers.put(utente.username, utente);
-
-                    } catch (Exception e) {
-                        System.err.println("Errore file JSON Users.json");
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     // function to save all registered users to json
     private void saveUtenteToJson() {
@@ -809,8 +765,14 @@ public class HotelierServerMain {
             }
 
             // read all data in the file
-            String jsonData = new String(Files.readAllBytes(reviewsPath));
-            JsonObject reviewsObject = JsonParser.parseString(jsonData).getAsJsonObject();
+            String reviewsJsonData = new String(Files.readAllBytes(reviewsPath));
+
+            // no data to load
+            if (reviewsJsonData.trim().isEmpty()) {
+                return;
+            }
+
+            JsonObject reviewsObject = JsonParser.parseString(reviewsJsonData).getAsJsonObject();
 
             // for every review in the json object parse to java data structure
             for (Map.Entry<String, JsonElement> entry : reviewsObject.entrySet()) {

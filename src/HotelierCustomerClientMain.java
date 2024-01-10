@@ -26,6 +26,7 @@ public class HotelierCustomerClientMain {
     private InetAddress multicastGroup;
     private Selector selector;
     Thread notificationsThread;
+    private volatile boolean threadRunning = true;
 
     // login state client side
     private boolean loggedIn = false;
@@ -390,10 +391,9 @@ public class HotelierCustomerClientMain {
             this.loggedIn = false;
             this.username = "";
             printResponse("Logout effettuato");
-            // close multicast group
-            //client.closeNotificationsGroup();
+            // close multicast group and stop thread
             stopThreadAndMulticast();
-            System.out.println("GROUP CLOSED");
+
         } else {
             printResponse("Logout error");
         }
@@ -520,17 +520,18 @@ public class HotelierCustomerClientMain {
     public void startNotificationsThread() {
         // start udp thread
 
-        this.notificationsThread = new Thread(() -> this.startNotificationReceiver());
+        this.notificationsThread = new Thread(() -> this.runNotificationReceiver());
         notificationsThread.start();
     }
 
     // function called by thread to print received message
-    public void startNotificationReceiver() {
+    public void runNotificationReceiver() {
         try {
 
             byte[] buffer = new byte[1024];
-
-            while (true) {
+            
+            // until thread is runnig run execution
+            while (threadRunning) {
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 this.multicastSocket.receive(packet);
 
@@ -547,20 +548,22 @@ public class HotelierCustomerClientMain {
     }
 
     // function to close the multicast group
-    public void closeNotificationsGroup() {
-        this.multicastSocket.close();
+    public void leaveNotificationsGroup() {
+        try {
+            multicastSocket.leaveGroup(multicastGroup);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopThreadAndMulticast() {
-        // Interrupt the notificationsThread to stop the loop
-        if (notificationsThread != null) {
-            notificationsThread.interrupt();
-        }
+        // stop notificationsThread setting var to false
+        threadRunning = false;
+        notificationsThread.interrupt();
 
-        // Close the socket if it is still open
-        if (multicastSocket != null && !multicastSocket.isClosed()) {
-            multicastSocket.close();
-        }
+        // leave multicast notifications group
+        leaveNotificationsGroup();
+
     }
 
 }

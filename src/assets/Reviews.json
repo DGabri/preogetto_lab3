@@ -1,1 +1,38 @@
-{}
+{
+  "Roma": [
+    {
+      "totale": 5.0,
+      "posizione": 5.0,
+      "pulizia": 5.0,
+      "servizio": 5.0,
+      "qualita": 5.0,
+      "username": "gabri",
+      "idHotel": 114,
+      "timestamp": 1704880480818
+    }
+  ],
+  "Bari": [
+    {
+      "totale": 5.0,
+      "posizione": 5.0,
+      "pulizia": 5.0,
+      "servizio": 5.0,
+      "qualita": 5.0,
+      "username": "test",
+      "idHotel": 154,
+      "timestamp": 1704880514820
+    }
+  ],
+  "Aosta": [
+    {
+      "totale": 5.0,
+      "posizione": 5.0,
+      "pulizia": 5.0,
+      "servizio": 5.0,
+      "qualita": 5.0,
+      "username": "test",
+      "idHotel": 4,
+      "timestamp": 1704880481167
+    }
+  ]
+}

@@ -204,211 +204,6 @@
     }
   },
   {
-    "id": 191,
-    "name": "Hotel Cagliari 1",
-    "description": "Un ridente hotel a Cagliari, in Via della gioia, 16",
-    "city": "Cagliari",
-    "phone": "373-1936590",
-    "services": [
-      "Posto auto",
-      "Wi-Fi",
-      "Palestra",
-      "Servizio in camera",
-      "Cancellazione gratuita"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 192,
-    "name": "Hotel Cagliari 2",
-    "description": "Un bellissimo hotel a Cagliari, in Via Cavour, 74",
-    "city": "Cagliari",
-    "phone": "339-1421791",
-    "services": [
-      "Sauna",
-      "Posto auto"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 193,
-    "name": "Hotel Cagliari 3",
-    "description": "Un organizzato hotel a Cagliari, in Via Napoli, 86",
-    "city": "Cagliari",
-    "phone": "316-3284996",
-    "services": [
-      "Posto auto",
-      "Wi-Fi",
-      "Paga in struttura",
-      "Palestra",
-      "Cancellazione gratuita"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 194,
-    "name": "Hotel Cagliari 4",
-    "description": "Un organizzato hotel a Cagliari, in Via Italia, 72",
-    "city": "Cagliari",
-    "phone": "344-8099110",
-    "services": [
-      "TV in camera",
-      "Sauna"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 195,
-    "name": "Hotel Cagliari 5",
-    "description": "Un grazioso hotel a Cagliari, in Via del tesoro, 82",
-    "city": "Cagliari",
-    "phone": "359-1568880",
-    "services": [
-      "Sauna",
-      "Servizio in camera",
-      "Wi-Fi",
-      "Piscina",
-      "Frigo in camera",
-      "Cancellazione gratuita"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 196,
-    "name": "Hotel Cagliari 6",
-    "description": "Un grazioso hotel a Cagliari, in Via del tramonto, 78",
-    "city": "Cagliari",
-    "phone": "354-7464132",
-    "services": [
-      "Paga in struttura",
-      "Wi-Fi",
-      "Posto auto",
-      "TV in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 197,
-    "name": "Hotel Cagliari 7",
-    "description": "Un bellissimo hotel a Cagliari, in Via della libertà, 69",
-    "city": "Cagliari",
-    "phone": "348-4448609",
-    "services": [
-      "Palestra",
-      "Cancellazione gratuita",
-      "Frigo in camera",
-      "Paga in struttura",
-      "Servizio in camera",
-      "TV in camera",
-      "Wi-Fi",
-      "Piscina",
-      "Posto auto"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 198,
-    "name": "Hotel Cagliari 8",
-    "description": "Un grazioso hotel a Cagliari, in Via della fantasia, 47",
-    "city": "Cagliari",
-    "phone": "345-1256390",
-    "services": [
-      "Cancellazione gratuita",
-      "Palestra"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 199,
-    "name": "Hotel Cagliari 9",
-    "description": "Un grazioso hotel a Cagliari, in Via del tramonto, 26",
-    "city": "Cagliari",
-    "phone": "351-5616554",
-    "services": [
-      "TV in camera",
-      "Wi-Fi",
-      "Cancellazione gratuita",
-      "Frigo in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 200,
-    "name": "Hotel Cagliari 10",
-    "description": "Un grazioso hotel a Cagliari, in Via Roma, 73",
-    "city": "Cagliari",
-    "phone": "350-6988999",
-    "services": [
-      "Wi-Fi",
-      "Palestra",
-      "Piscina",
-      "Paga in struttura",
-      "Frigo in camera",
-      "Sauna"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
     "id": 51,
     "name": "Hotel Venezia 1",
     "description": "Un bellissimo hotel a Venezia, in Via della gioia, 90",
@@ -615,6 +410,233 @@
     }
   },
   {
+    "id": 191,
+    "name": "Hotel Cagliari 1",
+    "description": "Un ridente hotel a Cagliari, in Via della gioia, 16",
+    "city": "Cagliari",
+    "phone": "373-1936590",
+    "services": [
+      "Posto auto",
+      "Wi-Fi",
+      "Palestra",
+      "Servizio in camera",
+      "Cancellazione gratuita"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 192,
+    "name": "Hotel Cagliari 2",
+    "description": "Un bellissimo hotel a Cagliari, in Via Cavour, 74",
+    "city": "Cagliari",
+    "phone": "339-1421791",
+    "services": [
+      "Sauna",
+      "Posto auto"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 193,
+    "name": "Hotel Cagliari 3",
+    "description": "Un organizzato hotel a Cagliari, in Via Napoli, 86",
+    "city": "Cagliari",
+    "phone": "316-3284996",
+    "services": [
+      "Posto auto",
+      "Wi-Fi",
+      "Paga in struttura",
+      "Palestra",
+      "Cancellazione gratuita"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 194,
+    "name": "Hotel Cagliari 4",
+    "description": "Un organizzato hotel a Cagliari, in Via Italia, 72",
+    "city": "Cagliari",
+    "phone": "344-8099110",
+    "services": [
+      "TV in camera",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 195,
+    "name": "Hotel Cagliari 5",
+    "description": "Un grazioso hotel a Cagliari, in Via del tesoro, 82",
+    "city": "Cagliari",
+    "phone": "359-1568880",
+    "services": [
+      "Sauna",
+      "Servizio in camera",
+      "Wi-Fi",
+      "Piscina",
+      "Frigo in camera",
+      "Cancellazione gratuita"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 196,
+    "name": "Hotel Cagliari 6",
+    "description": "Un grazioso hotel a Cagliari, in Via del tramonto, 78",
+    "city": "Cagliari",
+    "phone": "354-7464132",
+    "services": [
+      "Paga in struttura",
+      "Wi-Fi",
+      "Posto auto",
+      "TV in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 197,
+    "name": "Hotel Cagliari 7",
+    "description": "Un bellissimo hotel a Cagliari, in Via della libertà, 69",
+    "city": "Cagliari",
+    "phone": "348-4448609",
+    "services": [
+      "Palestra",
+      "Cancellazione gratuita",
+      "Frigo in camera",
+      "Paga in struttura",
+      "Servizio in camera",
+      "TV in camera",
+      "Wi-Fi",
+      "Piscina",
+      "Posto auto"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 198,
+    "name": "Hotel Cagliari 8",
+    "description": "Un grazioso hotel a Cagliari, in Via della fantasia, 47",
+    "city": "Cagliari",
+    "phone": "345-1256390",
+    "services": [
+      "Cancellazione gratuita",
+      "Palestra"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 199,
+    "name": "Hotel Cagliari 9",
+    "description": "Un grazioso hotel a Cagliari, in Via del tramonto, 26",
+    "city": "Cagliari",
+    "phone": "351-5616554",
+    "services": [
+      "TV in camera",
+      "Wi-Fi",
+      "Cancellazione gratuita",
+      "Frigo in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 200,
+    "name": "Hotel Cagliari 10",
+    "description": "Un grazioso hotel a Cagliari, in Via Roma, 73",
+    "city": "Cagliari",
+    "phone": "350-6988999",
+    "services": [
+      "Wi-Fi",
+      "Palestra",
+      "Piscina",
+      "Paga in struttura",
+      "Frigo in camera",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 154,
+    "name": "Hotel Bari 4",
+    "description": "Un ridente hotel a Bari, in Via Leonardo da Vinci, 57",
+    "city": "Bari",
+    "phone": "391-3143801",
+    "services": [
+      "Wi-Fi",
+      "Frigo in camera",
+      "Posto auto",
+      "Piscina",
+      "TV in camera",
+      "Cancellazione gratuita"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
     "id": 153,
     "name": "Hotel Bari 3",
     "description": "Un organizzato hotel a Bari, in Via della gioia, 18",
@@ -668,28 +690,6 @@
       "Cancellazione gratuita",
       "Sauna",
       "Paga in struttura"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 154,
-    "name": "Hotel Bari 4",
-    "description": "Un ridente hotel a Bari, in Via Leonardo da Vinci, 57",
-    "city": "Bari",
-    "phone": "391-3143801",
-    "services": [
-      "Wi-Fi",
-      "Frigo in camera",
-      "Posto auto",
-      "Piscina",
-      "TV in camera",
-      "Cancellazione gratuita"
     ],
     "rate": 0.0,
     "ratings": {
@@ -1038,198 +1038,6 @@
     }
   },
   {
-    "id": 161,
-    "name": "Hotel Potenza 1",
-    "description": "Un bellissimo hotel a Potenza, in Via Napoli, 2",
-    "city": "Potenza",
-    "phone": "371-3333206",
-    "services": [
-      "Cancellazione gratuita",
-      "Posto auto",
-      "Sauna",
-      "Frigo in camera",
-      "TV in camera",
-      "Servizio in camera",
-      "Wi-Fi",
-      "Paga in struttura",
-      "Piscina"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 162,
-    "name": "Hotel Potenza 2",
-    "description": "Un organizzato hotel a Potenza, in Via della fantasia, 28",
-    "city": "Potenza",
-    "phone": "321-8195983",
-    "services": [
-      "Frigo in camera",
-      "Servizio in camera",
-      "Piscina",
-      "Cancellazione gratuita",
-      "Wi-Fi",
-      "Sauna"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 163,
-    "name": "Hotel Potenza 3",
-    "description": "Un grazioso hotel a Potenza, in Via Cavour, 41",
-    "city": "Potenza",
-    "phone": "339-2785716",
-    "services": [
-      "Posto auto",
-      "Servizio in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 164,
-    "name": "Hotel Potenza 4",
-    "description": "Un ridente hotel a Potenza, in Via Leonardo da Vinci, 19",
-    "city": "Potenza",
-    "phone": "379-1923761",
-    "services": [
-      "Servizio in camera",
-      "Paga in struttura",
-      "Wi-Fi",
-      "Palestra",
-      "TV in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 165,
-    "name": "Hotel Potenza 5",
-    "description": "Un bellissimo hotel a Potenza, in Via Leonardo da Vinci, 94",
-    "city": "Potenza",
-    "phone": "364-4572927",
-    "services": [
-      "Frigo in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 166,
-    "name": "Hotel Potenza 6",
-    "description": "Un bellissimo hotel a Potenza, in Via della gioia, 45",
-    "city": "Potenza",
-    "phone": "354-9008946",
-    "services": [],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 167,
-    "name": "Hotel Potenza 7",
-    "description": "Un organizzato hotel a Potenza, in Via Italia, 78",
-    "city": "Potenza",
-    "phone": "387-4671888",
-    "services": [
-      "Posto auto",
-      "Paga in struttura",
-      "TV in camera",
-      "Palestra",
-      "Frigo in camera",
-      "Piscina",
-      "Sauna"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 168,
-    "name": "Hotel Potenza 8",
-    "description": "Un organizzato hotel a Potenza, in Via Leonardo da Vinci, 17",
-    "city": "Potenza",
-    "phone": "360-3861142",
-    "services": [
-      "Frigo in camera",
-      "Cancellazione gratuita"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 169,
-    "name": "Hotel Potenza 9",
-    "description": "Un grazioso hotel a Potenza, in Via del tesoro, 12",
-    "city": "Potenza",
-    "phone": "393-4353806",
-    "services": [
-      "Sauna",
-      "Frigo in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 170,
-    "name": "Hotel Potenza 10",
-    "description": "Un ridente hotel a Potenza, in Via Cavour, 57",
-    "city": "Potenza",
-    "phone": "380-3671849",
-    "services": [],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
     "id": 101,
     "name": "Hotel Ancona 1",
     "description": "Un ridente hotel a Ancona, in Via del tesoro, 86",
@@ -1440,18 +1248,433 @@
     }
   },
   {
-    "id": 171,
-    "name": "Hotel Reggio-Calabria 1",
-    "description": "Un bellissimo hotel a Reggio-Calabria, in Via Roma, 20",
-    "city": "Reggio-Calabria",
-    "phone": "326-9737379",
+    "id": 161,
+    "name": "Hotel Potenza 1",
+    "description": "Un bellissimo hotel a Potenza, in Via Napoli, 2",
+    "city": "Potenza",
+    "phone": "371-3333206",
     "services": [
-      "Servizio in camera",
+      "Cancellazione gratuita",
+      "Posto auto",
       "Sauna",
       "Frigo in camera",
+      "TV in camera",
+      "Servizio in camera",
+      "Wi-Fi",
+      "Paga in struttura",
+      "Piscina"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 162,
+    "name": "Hotel Potenza 2",
+    "description": "Un organizzato hotel a Potenza, in Via della fantasia, 28",
+    "city": "Potenza",
+    "phone": "321-8195983",
+    "services": [
+      "Frigo in camera",
+      "Servizio in camera",
+      "Piscina",
+      "Cancellazione gratuita",
+      "Wi-Fi",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 163,
+    "name": "Hotel Potenza 3",
+    "description": "Un grazioso hotel a Potenza, in Via Cavour, 41",
+    "city": "Potenza",
+    "phone": "339-2785716",
+    "services": [
+      "Posto auto",
+      "Servizio in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 164,
+    "name": "Hotel Potenza 4",
+    "description": "Un ridente hotel a Potenza, in Via Leonardo da Vinci, 19",
+    "city": "Potenza",
+    "phone": "379-1923761",
+    "services": [
+      "Servizio in camera",
+      "Paga in struttura",
+      "Wi-Fi",
+      "Palestra",
+      "TV in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 165,
+    "name": "Hotel Potenza 5",
+    "description": "Un bellissimo hotel a Potenza, in Via Leonardo da Vinci, 94",
+    "city": "Potenza",
+    "phone": "364-4572927",
+    "services": [
+      "Frigo in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 166,
+    "name": "Hotel Potenza 6",
+    "description": "Un bellissimo hotel a Potenza, in Via della gioia, 45",
+    "city": "Potenza",
+    "phone": "354-9008946",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 167,
+    "name": "Hotel Potenza 7",
+    "description": "Un organizzato hotel a Potenza, in Via Italia, 78",
+    "city": "Potenza",
+    "phone": "387-4671888",
+    "services": [
+      "Posto auto",
+      "Paga in struttura",
+      "TV in camera",
+      "Palestra",
+      "Frigo in camera",
+      "Piscina",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 168,
+    "name": "Hotel Potenza 8",
+    "description": "Un organizzato hotel a Potenza, in Via Leonardo da Vinci, 17",
+    "city": "Potenza",
+    "phone": "360-3861142",
+    "services": [
+      "Frigo in camera",
+      "Cancellazione gratuita"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 169,
+    "name": "Hotel Potenza 9",
+    "description": "Un grazioso hotel a Potenza, in Via del tesoro, 12",
+    "city": "Potenza",
+    "phone": "393-4353806",
+    "services": [
+      "Sauna",
+      "Frigo in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 170,
+    "name": "Hotel Potenza 10",
+    "description": "Un ridente hotel a Potenza, in Via Cavour, 57",
+    "city": "Potenza",
+    "phone": "380-3671849",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 34,
+    "name": "Hotel Milano 4",
+    "description": "Un grazioso hotel a Milano, in Via Cavour, 60",
+    "city": "Milano",
+    "phone": "319-7593785",
+    "services": [
+      "Wi-Fi",
+      "Palestra",
+      "Posto auto",
+      "Paga in struttura",
+      "TV in camera",
+      "Servizio in camera",
+      "Frigo in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 33,
+    "name": "Hotel Milano 3",
+    "description": "Un grazioso hotel a Milano, in Via Napoli, 0",
+    "city": "Milano",
+    "phone": "381-8835813",
+    "services": [
+      "TV in camera",
+      "Wi-Fi",
+      "Paga in struttura",
+      "Sauna",
+      "Cancellazione gratuita",
+      "Servizio in camera",
+      "Palestra",
+      "Posto auto",
+      "Frigo in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 31,
+    "name": "Hotel Milano 1",
+    "description": "Un bellissimo hotel a Milano, in Via della libertà, 63",
+    "city": "Milano",
+    "phone": "382-3187543",
+    "services": [
+      "Frigo in camera",
+      "Palestra",
+      "Paga in struttura",
+      "Piscina",
       "Posto auto",
       "Cancellazione gratuita",
+      "Servizio in camera",
+      "TV in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 32,
+    "name": "Hotel Milano 2",
+    "description": "Un grazioso hotel a Milano, in Via della gioia, 15",
+    "city": "Milano",
+    "phone": "333-2489254",
+    "services": [
+      "Palestra",
+      "Paga in struttura"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 35,
+    "name": "Hotel Milano 5",
+    "description": "Un grazioso hotel a Milano, in Via Napoli, 81",
+    "city": "Milano",
+    "phone": "361-8518964",
+    "services": [
+      "Wi-Fi",
+      "Frigo in camera",
+      "Cancellazione gratuita",
       "Paga in struttura",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 36,
+    "name": "Hotel Milano 6",
+    "description": "Un bellissimo hotel a Milano, in Via Roma, 22",
+    "city": "Milano",
+    "phone": "360-9179865",
+    "services": [
+      "Piscina"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 37,
+    "name": "Hotel Milano 7",
+    "description": "Un bellissimo hotel a Milano, in Via del tramonto, 40",
+    "city": "Milano",
+    "phone": "376-9386435",
+    "services": [
+      "Cancellazione gratuita",
+      "Paga in struttura",
+      "Sauna",
+      "Frigo in camera",
+      "Piscina",
+      "Wi-Fi",
+      "Servizio in camera",
+      "Posto auto",
+      "TV in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 38,
+    "name": "Hotel Milano 8",
+    "description": "Un grazioso hotel a Milano, in Via del tramonto, 57",
+    "city": "Milano",
+    "phone": "396-5144061",
+    "services": [
+      "Posto auto"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 39,
+    "name": "Hotel Milano 9",
+    "description": "Un grazioso hotel a Milano, in Via della gioia, 62",
+    "city": "Milano",
+    "phone": "363-1478190",
+    "services": [
+      "Wi-Fi",
+      "Palestra",
+      "Paga in struttura",
+      "Servizio in camera",
+      "Cancellazione gratuita",
+      "Piscina",
+      "Frigo in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 40,
+    "name": "Hotel Milano 10",
+    "description": "Un ridente hotel a Milano, in Via del tramonto, 35",
+    "city": "Milano",
+    "phone": "320-4042951",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 61,
+    "name": "Hotel Udine 1",
+    "description": "Un grazioso hotel a Udine, in Via del tesoro, 5",
+    "city": "Udine",
+    "phone": "328-3594856",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 62,
+    "name": "Hotel Udine 2",
+    "description": "Un ridente hotel a Udine, in Via Italia, 45",
+    "city": "Udine",
+    "phone": "349-6164021",
+    "services": [
+      "Piscina",
+      "Frigo in camera",
+      "Cancellazione gratuita",
+      "Posto auto",
+      "TV in camera",
+      "Sauna",
       "Wi-Fi"
     ],
     "rate": 0.0,
@@ -1463,18 +1686,127 @@
     }
   },
   {
-    "id": 172,
-    "name": "Hotel Reggio-Calabria 2",
-    "description": "Un bellissimo hotel a Reggio-Calabria, in Via Italia, 46",
-    "city": "Reggio-Calabria",
-    "phone": "350-1941840",
+    "id": 63,
+    "name": "Hotel Udine 3",
+    "description": "Un grazioso hotel a Udine, in Via Leonardo da Vinci, 36",
+    "city": "Udine",
+    "phone": "365-5941474",
     "services": [
+      "Paga in struttura"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 64,
+    "name": "Hotel Udine 4",
+    "description": "Un bellissimo hotel a Udine, in Via Roma, 22",
+    "city": "Udine",
+    "phone": "365-4968567",
+    "services": [
+      "Piscina",
+      "Wi-Fi",
       "Cancellazione gratuita",
+      "TV in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 65,
+    "name": "Hotel Udine 5",
+    "description": "Un bellissimo hotel a Udine, in Via della gioia, 74",
+    "city": "Udine",
+    "phone": "313-1972887",
+    "services": [
+      "Frigo in camera",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 66,
+    "name": "Hotel Udine 6",
+    "description": "Un organizzato hotel a Udine, in Via Roma, 26",
+    "city": "Udine",
+    "phone": "323-2099722",
+    "services": [
+      "Piscina",
       "Wi-Fi",
       "Palestra",
-      "TV in camera",
-      "Servizio in camera",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 67,
+    "name": "Hotel Udine 7",
+    "description": "Un grazioso hotel a Udine, in Via Roma, 7",
+    "city": "Udine",
+    "phone": "387-8334625",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 68,
+    "name": "Hotel Udine 8",
+    "description": "Un organizzato hotel a Udine, in Via Leonardo da Vinci, 41",
+    "city": "Udine",
+    "phone": "349-2943307",
+    "services": [
       "Posto auto",
+      "Frigo in camera",
+      "Wi-Fi",
+      "Piscina",
+      "Sauna",
+      "Palestra",
+      "Paga in struttura",
+      "TV in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 69,
+    "name": "Hotel Udine 9",
+    "description": "Un ridente hotel a Udine, in Via della fantasia, 93",
+    "city": "Udine",
+    "phone": "385-8808230",
+    "services": [
+      "Servizio in camera",
       "Paga in struttura",
       "Frigo in camera"
     ],
@@ -1487,151 +1819,19 @@
     }
   },
   {
-    "id": 173,
-    "name": "Hotel Reggio-Calabria 3",
-    "description": "Un grazioso hotel a Reggio-Calabria, in Via del tramonto, 88",
-    "city": "Reggio-Calabria",
-    "phone": "375-9179643",
+    "id": 70,
+    "name": "Hotel Udine 10",
+    "description": "Un grazioso hotel a Udine, in Via Leonardo da Vinci, 83",
+    "city": "Udine",
+    "phone": "366-6244753",
     "services": [
-      "Frigo in camera",
-      "Sauna"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 174,
-    "name": "Hotel Reggio-Calabria 4",
-    "description": "Un ridente hotel a Reggio-Calabria, in Via della fantasia, 25",
-    "city": "Reggio-Calabria",
-    "phone": "369-7124516",
-    "services": [
-      "Palestra",
-      "Wi-Fi",
-      "TV in camera",
-      "Paga in struttura",
-      "Frigo in camera",
-      "Servizio in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 175,
-    "name": "Hotel Reggio-Calabria 5",
-    "description": "Un ridente hotel a Reggio-Calabria, in Via Napoli, 13",
-    "city": "Reggio-Calabria",
-    "phone": "360-1713031",
-    "services": [
-      "Sauna"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 176,
-    "name": "Hotel Reggio-Calabria 6",
-    "description": "Un bellissimo hotel a Reggio-Calabria, in Via Italia, 82",
-    "city": "Reggio-Calabria",
-    "phone": "313-7927998",
-    "services": [
-      "Piscina",
-      "Frigo in camera",
-      "Wi-Fi",
-      "Servizio in camera",
       "Cancellazione gratuita",
-      "Posto auto"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 177,
-    "name": "Hotel Reggio-Calabria 7",
-    "description": "Un organizzato hotel a Reggio-Calabria, in Via del tesoro, 71",
-    "city": "Reggio-Calabria",
-    "phone": "368-1712796",
-    "services": [],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 178,
-    "name": "Hotel Reggio-Calabria 8",
-    "description": "Un organizzato hotel a Reggio-Calabria, in Via del tesoro, 98",
-    "city": "Reggio-Calabria",
-    "phone": "323-7396734",
-    "services": [
-      "TV in camera",
-      "Cancellazione gratuita",
-      "Frigo in camera",
-      "Piscina",
-      "Paga in struttura"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 179,
-    "name": "Hotel Reggio-Calabria 9",
-    "description": "Un organizzato hotel a Reggio-Calabria, in Via della gioia, 93",
-    "city": "Reggio-Calabria",
-    "phone": "354-7421895",
-    "services": [
-      "TV in camera",
-      "Posto auto"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 180,
-    "name": "Hotel Reggio-Calabria 10",
-    "description": "Un bellissimo hotel a Reggio-Calabria, in Via della gioia, 3",
-    "city": "Reggio-Calabria",
-    "phone": "332-6393863",
-    "services": [
-      "Wi-Fi",
-      "TV in camera",
+      "Posto auto",
       "Sauna",
-      "Servizio in camera",
       "Palestra",
-      "Posto auto"
+      "Frigo in camera",
+      "Paga in struttura",
+      "Piscina"
     ],
     "rate": 0.0,
     "ratings": {
@@ -1848,33 +2048,18 @@
     }
   },
   {
-    "id": 61,
-    "name": "Hotel Udine 1",
-    "description": "Un grazioso hotel a Udine, in Via del tesoro, 5",
-    "city": "Udine",
-    "phone": "328-3594856",
-    "services": [],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 62,
-    "name": "Hotel Udine 2",
-    "description": "Un ridente hotel a Udine, in Via Italia, 45",
-    "city": "Udine",
-    "phone": "349-6164021",
+    "id": 171,
+    "name": "Hotel Reggio-Calabria 1",
+    "description": "Un bellissimo hotel a Reggio-Calabria, in Via Roma, 20",
+    "city": "Reggio-Calabria",
+    "phone": "326-9737379",
     "services": [
-      "Piscina",
-      "Frigo in camera",
-      "Cancellazione gratuita",
-      "Posto auto",
-      "TV in camera",
+      "Servizio in camera",
       "Sauna",
+      "Frigo in camera",
+      "Posto auto",
+      "Cancellazione gratuita",
+      "Paga in struttura",
       "Wi-Fi"
     ],
     "rate": 0.0,
@@ -1886,174 +2071,19 @@
     }
   },
   {
-    "id": 63,
-    "name": "Hotel Udine 3",
-    "description": "Un grazioso hotel a Udine, in Via Leonardo da Vinci, 36",
-    "city": "Udine",
-    "phone": "365-5941474",
-    "services": [
-      "Paga in struttura"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 64,
-    "name": "Hotel Udine 4",
-    "description": "Un bellissimo hotel a Udine, in Via Roma, 22",
-    "city": "Udine",
-    "phone": "365-4968567",
-    "services": [
-      "Piscina",
-      "Wi-Fi",
-      "Cancellazione gratuita",
-      "TV in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 65,
-    "name": "Hotel Udine 5",
-    "description": "Un bellissimo hotel a Udine, in Via della gioia, 74",
-    "city": "Udine",
-    "phone": "313-1972887",
-    "services": [
-      "Frigo in camera",
-      "Sauna"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 66,
-    "name": "Hotel Udine 6",
-    "description": "Un organizzato hotel a Udine, in Via Roma, 26",
-    "city": "Udine",
-    "phone": "323-2099722",
-    "services": [
-      "Piscina",
-      "Wi-Fi",
-      "Palestra",
-      "Sauna"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 67,
-    "name": "Hotel Udine 7",
-    "description": "Un grazioso hotel a Udine, in Via Roma, 7",
-    "city": "Udine",
-    "phone": "387-8334625",
-    "services": [],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 68,
-    "name": "Hotel Udine 8",
-    "description": "Un organizzato hotel a Udine, in Via Leonardo da Vinci, 41",
-    "city": "Udine",
-    "phone": "349-2943307",
-    "services": [
-      "Posto auto",
-      "Frigo in camera",
-      "Wi-Fi",
-      "Piscina",
-      "Sauna",
-      "Palestra",
-      "Paga in struttura",
-      "TV in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 69,
-    "name": "Hotel Udine 9",
-    "description": "Un ridente hotel a Udine, in Via della fantasia, 93",
-    "city": "Udine",
-    "phone": "385-8808230",
-    "services": [
-      "Servizio in camera",
-      "Paga in struttura",
-      "Frigo in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 70,
-    "name": "Hotel Udine 10",
-    "description": "Un grazioso hotel a Udine, in Via Leonardo da Vinci, 83",
-    "city": "Udine",
-    "phone": "366-6244753",
+    "id": 172,
+    "name": "Hotel Reggio-Calabria 2",
+    "description": "Un bellissimo hotel a Reggio-Calabria, in Via Italia, 46",
+    "city": "Reggio-Calabria",
+    "phone": "350-1941840",
     "services": [
       "Cancellazione gratuita",
-      "Posto auto",
-      "Sauna",
-      "Palestra",
-      "Frigo in camera",
-      "Paga in struttura",
-      "Piscina"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 34,
-    "name": "Hotel Milano 4",
-    "description": "Un grazioso hotel a Milano, in Via Cavour, 60",
-    "city": "Milano",
-    "phone": "319-7593785",
-    "services": [
       "Wi-Fi",
       "Palestra",
-      "Posto auto",
-      "Paga in struttura",
       "TV in camera",
       "Servizio in camera",
+      "Posto auto",
+      "Paga in struttura",
       "Frigo in camera"
     ],
     "rate": 0.0,
@@ -2065,83 +2095,13 @@
     }
   },
   {
-    "id": 33,
-    "name": "Hotel Milano 3",
-    "description": "Un grazioso hotel a Milano, in Via Napoli, 0",
-    "city": "Milano",
-    "phone": "381-8835813",
-    "services": [
-      "TV in camera",
-      "Wi-Fi",
-      "Paga in struttura",
-      "Sauna",
-      "Cancellazione gratuita",
-      "Servizio in camera",
-      "Palestra",
-      "Posto auto",
-      "Frigo in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 31,
-    "name": "Hotel Milano 1",
-    "description": "Un bellissimo hotel a Milano, in Via della libertà, 63",
-    "city": "Milano",
-    "phone": "382-3187543",
+    "id": 173,
+    "name": "Hotel Reggio-Calabria 3",
+    "description": "Un grazioso hotel a Reggio-Calabria, in Via del tramonto, 88",
+    "city": "Reggio-Calabria",
+    "phone": "375-9179643",
     "services": [
       "Frigo in camera",
-      "Palestra",
-      "Paga in struttura",
-      "Piscina",
-      "Posto auto",
-      "Cancellazione gratuita",
-      "Servizio in camera",
-      "TV in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 32,
-    "name": "Hotel Milano 2",
-    "description": "Un grazioso hotel a Milano, in Via della gioia, 15",
-    "city": "Milano",
-    "phone": "333-2489254",
-    "services": [
-      "Palestra",
-      "Paga in struttura"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 35,
-    "name": "Hotel Milano 5",
-    "description": "Un grazioso hotel a Milano, in Via Napoli, 81",
-    "city": "Milano",
-    "phone": "361-8518964",
-    "services": [
-      "Wi-Fi",
-      "Frigo in camera",
-      "Cancellazione gratuita",
-      "Paga in struttura",
       "Sauna"
     ],
     "rate": 0.0,
@@ -2153,13 +2113,18 @@
     }
   },
   {
-    "id": 36,
-    "name": "Hotel Milano 6",
-    "description": "Un bellissimo hotel a Milano, in Via Roma, 22",
-    "city": "Milano",
-    "phone": "360-9179865",
+    "id": 174,
+    "name": "Hotel Reggio-Calabria 4",
+    "description": "Un ridente hotel a Reggio-Calabria, in Via della fantasia, 25",
+    "city": "Reggio-Calabria",
+    "phone": "369-7124516",
     "services": [
-      "Piscina"
+      "Palestra",
+      "Wi-Fi",
+      "TV in camera",
+      "Paga in struttura",
+      "Frigo in camera",
+      "Servizio in camera"
     ],
     "rate": 0.0,
     "ratings": {
@@ -2170,37 +2135,34 @@
     }
   },
   {
-    "id": 37,
-    "name": "Hotel Milano 7",
-    "description": "Un bellissimo hotel a Milano, in Via del tramonto, 40",
-    "city": "Milano",
-    "phone": "376-9386435",
+    "id": 175,
+    "name": "Hotel Reggio-Calabria 5",
+    "description": "Un ridente hotel a Reggio-Calabria, in Via Napoli, 13",
+    "city": "Reggio-Calabria",
+    "phone": "360-1713031",
     "services": [
-      "Cancellazione gratuita",
-      "Paga in struttura",
-      "Sauna",
-      "Frigo in camera",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 176,
+    "name": "Hotel Reggio-Calabria 6",
+    "description": "Un bellissimo hotel a Reggio-Calabria, in Via Italia, 82",
+    "city": "Reggio-Calabria",
+    "phone": "313-7927998",
+    "services": [
       "Piscina",
+      "Frigo in camera",
       "Wi-Fi",
       "Servizio in camera",
-      "Posto auto",
-      "TV in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 38,
-    "name": "Hotel Milano 8",
-    "description": "Un grazioso hotel a Milano, in Via del tramonto, 57",
-    "city": "Milano",
-    "phone": "396-5144061",
-    "services": [
+      "Cancellazione gratuita",
       "Posto auto"
     ],
     "rate": 0.0,
@@ -2212,19 +2174,32 @@
     }
   },
   {
-    "id": 39,
-    "name": "Hotel Milano 9",
-    "description": "Un grazioso hotel a Milano, in Via della gioia, 62",
-    "city": "Milano",
-    "phone": "363-1478190",
+    "id": 177,
+    "name": "Hotel Reggio-Calabria 7",
+    "description": "Un organizzato hotel a Reggio-Calabria, in Via del tesoro, 71",
+    "city": "Reggio-Calabria",
+    "phone": "368-1712796",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 178,
+    "name": "Hotel Reggio-Calabria 8",
+    "description": "Un organizzato hotel a Reggio-Calabria, in Via del tesoro, 98",
+    "city": "Reggio-Calabria",
+    "phone": "323-7396734",
     "services": [
-      "Wi-Fi",
-      "Palestra",
-      "Paga in struttura",
-      "Servizio in camera",
+      "TV in camera",
       "Cancellazione gratuita",
+      "Frigo in camera",
       "Piscina",
-      "Frigo in camera"
+      "Paga in struttura"
     ],
     "rate": 0.0,
     "ratings": {
@@ -2235,12 +2210,37 @@
     }
   },
   {
-    "id": 40,
-    "name": "Hotel Milano 10",
-    "description": "Un ridente hotel a Milano, in Via del tramonto, 35",
-    "city": "Milano",
-    "phone": "320-4042951",
-    "services": [],
+    "id": 179,
+    "name": "Hotel Reggio-Calabria 9",
+    "description": "Un organizzato hotel a Reggio-Calabria, in Via della gioia, 93",
+    "city": "Reggio-Calabria",
+    "phone": "354-7421895",
+    "services": [
+      "TV in camera",
+      "Posto auto"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 180,
+    "name": "Hotel Reggio-Calabria 10",
+    "description": "Un bellissimo hotel a Reggio-Calabria, in Via della gioia, 3",
+    "city": "Reggio-Calabria",
+    "phone": "332-6393863",
+    "services": [
+      "Wi-Fi",
+      "TV in camera",
+      "Sauna",
+      "Servizio in camera",
+      "Palestra",
+      "Posto auto"
+    ],
     "rate": 0.0,
     "ratings": {
       "cleaning": 0.0,
@@ -3284,21 +3284,6 @@
     }
   },
   {
-    "id": 113,
-    "name": "Hotel Roma 3",
-    "description": "Un grazioso hotel a Roma, in Via della fantasia, 1",
-    "city": "Roma",
-    "phone": "332-1286644",
-    "services": [],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
     "id": 114,
     "name": "Hotel Roma 4",
     "description": "Un bellissimo hotel a Roma, in Via della libertà, 86",
@@ -3312,6 +3297,21 @@
       "TV in camera",
       "Paga in struttura"
     ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 113,
+    "name": "Hotel Roma 3",
+    "description": "Un grazioso hotel a Roma, in Via della fantasia, 1",
+    "city": "Roma",
+    "phone": "332-1286644",
+    "services": [],
     "rate": 0.0,
     "ratings": {
       "cleaning": 0.0,
@@ -3471,6 +3471,21 @@
     }
   },
   {
+    "id": 4,
+    "name": "Hotel Aosta 4",
+    "description": "Un organizzato hotel a Aosta, in Via Cavour, 37",
+    "city": "Aosta",
+    "phone": "392-3923265",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
     "id": 3,
     "name": "Hotel Aosta 3",
     "description": "Un grazioso hotel a Aosta, in Via Leonardo da Vinci, 87",
@@ -3518,21 +3533,6 @@
       "Frigo in camera",
       "TV in camera"
     ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 4,
-    "name": "Hotel Aosta 4",
-    "description": "Un organizzato hotel a Aosta, in Via Cavour, 37",
-    "city": "Aosta",
-    "phone": "392-3923265",
-    "services": [],
     "rate": 0.0,
     "ratings": {
       "cleaning": 0.0,
