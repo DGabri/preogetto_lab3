@@ -57,7 +57,6 @@ public class HotelierCustomerClientMain {
             // multicast socket init
             multicastSocket = new MulticastSocket(PORT + 1);
             multicastSocket.setReuseAddress(true);
-            System.out.println(multicastSocket.getReuseAddress());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,6 +96,11 @@ public class HotelierCustomerClientMain {
 
                     /* LOGIN */
                     case "2":
+                        // execute only if user is not logged in
+                        if (client.loggedIn == true) {
+                            break;
+                        }
+
                         // get username and password and send them to server
                         System.out.print("Inserisci username di login: ");
                         String usernameLogin = scanner.nextLine().trim();
@@ -138,6 +142,11 @@ public class HotelierCustomerClientMain {
 
                     /* INSERISCI RECENSIONE */
                     case "6":
+                        // if client is not logged in forbid operation
+                        if (client.loggedIn == false) {
+                            break;
+                        }
+
                         // init empty review
                         int[] reviewPoints = { 0, 0, 0, 0 };
 
@@ -169,6 +178,11 @@ public class HotelierCustomerClientMain {
 
                     /* MOSTRA BADGE UTENTE */
                     case "7":
+                        // if client is not logged in forbid operation
+                        if (client.loggedIn == false) {
+                            break;
+                        }
+
                         client.showMyBadges();
                         break;
 
@@ -352,6 +366,8 @@ public class HotelierCustomerClientMain {
 
                 } else if (retCode.equals("-1")) {
                     printResponse("Login ERROR, password errata");
+                } else if (retCode.equals("-2")){
+                    printResponse("Login ERROR, utente gia' loggato");
                 } else {
                     printResponse("Login ERROR, utente non registrato");
                 }
@@ -423,6 +439,8 @@ public class HotelierCustomerClientMain {
 
             if (retCode.equals("1")) {
                 printResponse("Recensione inserita correttamente");
+            } else if  (retCode.equals("-2")) {
+                printResponse("Hotel non presente");
             } else {
                 printResponse("Errore nell'inserimento recensione");
             }
@@ -431,14 +449,11 @@ public class HotelierCustomerClientMain {
 
     // function to show user badge
     public void showMyBadges() {
-        if (this.loggedIn) {
-            // prepare string to send
-            String msg = "7_" + this.username;
+        // prepare string to send
+        String msg = "7_" + this.username;
 
-            String badgeName = writeRead(socketChannel, msg);
-            printResponse("Il tuo badge attuale e': " + badgeName);
-
-        }
+        String badgeName = writeRead(socketChannel, msg);
+        printResponse("Il tuo badge attuale e': " + badgeName);
     }
 
     private static String writeRead(SocketChannel socketChannel, String msg) {
@@ -507,7 +522,6 @@ public class HotelierCustomerClientMain {
 
     // function called by thread to print received message
     public void startNotificationReceiver() {
-        System.out.println("STARTED NOTIFICATION RECEIVER THREAD");
         try {
 
             byte[] buffer = new byte[1024];

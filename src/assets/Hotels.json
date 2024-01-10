@@ -615,6 +615,30 @@
     }
   },
   {
+    "id": 153,
+    "name": "Hotel Bari 3",
+    "description": "Un organizzato hotel a Bari, in Via della gioia, 18",
+    "city": "Bari",
+    "phone": "324-9331039",
+    "services": [
+      "Servizio in camera",
+      "Paga in struttura",
+      "Posto auto",
+      "Cancellazione gratuita",
+      "Piscina",
+      "Palestra",
+      "Wi-Fi",
+      "TV in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
     "id": 151,
     "name": "Hotel Bari 1",
     "description": "Un grazioso hotel a Bari, in Via della gioia, 28",
@@ -644,30 +668,6 @@
       "Cancellazione gratuita",
       "Sauna",
       "Paga in struttura"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 153,
-    "name": "Hotel Bari 3",
-    "description": "Un organizzato hotel a Bari, in Via della gioia, 18",
-    "city": "Bari",
-    "phone": "324-9331039",
-    "services": [
-      "Servizio in camera",
-      "Paga in struttura",
-      "Posto auto",
-      "Cancellazione gratuita",
-      "Piscina",
-      "Palestra",
-      "Wi-Fi",
-      "TV in camera"
     ],
     "rate": 0.0,
     "ratings": {
@@ -828,15 +828,14 @@
     }
   },
   {
-    "id": 141,
-    "name": "Hotel Napoli 1",
-    "description": "Un grazioso hotel a Napoli, in Via della libertà, 1",
+    "id": 145,
+    "name": "Hotel Napoli 5",
+    "description": "Un bellissimo hotel a Napoli, in Via della libertà, 7",
     "city": "Napoli",
-    "phone": "311-6107327",
+    "phone": "315-9904110",
     "services": [
-      "Cancellazione gratuita",
-      "Frigo in camera",
-      "Paga in struttura",
+      "Posto auto",
+      "Servizio in camera",
       "Sauna"
     ],
     "rate": 0.0,
@@ -862,6 +861,26 @@
       "Cancellazione gratuita",
       "Frigo in camera",
       "Wi-Fi",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 141,
+    "name": "Hotel Napoli 1",
+    "description": "Un grazioso hotel a Napoli, in Via della libertà, 1",
+    "city": "Napoli",
+    "phone": "311-6107327",
+    "services": [
+      "Cancellazione gratuita",
+      "Frigo in camera",
+      "Paga in struttura",
       "Sauna"
     ],
     "rate": 0.0,
@@ -906,25 +925,6 @@
       "TV in camera",
       "Sauna",
       "Wi-Fi"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 145,
-    "name": "Hotel Napoli 5",
-    "description": "Un bellissimo hotel a Napoli, in Via della libertà, 7",
-    "city": "Napoli",
-    "phone": "315-9904110",
-    "services": [
-      "Posto auto",
-      "Servizio in camera",
-      "Sauna"
     ],
     "rate": 0.0,
     "ratings": {
@@ -1440,38 +1440,19 @@
     }
   },
   {
-    "id": 31,
-    "name": "Hotel Milano 1",
-    "description": "Un bellissimo hotel a Milano, in Via della libertà, 63",
+    "id": 34,
+    "name": "Hotel Milano 4",
+    "description": "Un grazioso hotel a Milano, in Via Cavour, 60",
     "city": "Milano",
-    "phone": "382-3187543",
+    "phone": "319-7593785",
     "services": [
-      "Frigo in camera",
+      "Wi-Fi",
       "Palestra",
-      "Paga in struttura",
-      "Piscina",
       "Posto auto",
-      "Cancellazione gratuita",
+      "Paga in struttura",
+      "TV in camera",
       "Servizio in camera",
-      "TV in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 32,
-    "name": "Hotel Milano 2",
-    "description": "Un grazioso hotel a Milano, in Via della gioia, 15",
-    "city": "Milano",
-    "phone": "333-2489254",
-    "services": [
-      "Palestra",
-      "Paga in struttura"
+      "Frigo in camera"
     ],
     "rate": 0.0,
     "ratings": {
@@ -1507,19 +1488,38 @@
     }
   },
   {
-    "id": 34,
-    "name": "Hotel Milano 4",
-    "description": "Un grazioso hotel a Milano, in Via Cavour, 60",
+    "id": 31,
+    "name": "Hotel Milano 1",
+    "description": "Un bellissimo hotel a Milano, in Via della libertà, 63",
     "city": "Milano",
-    "phone": "319-7593785",
+    "phone": "382-3187543",
     "services": [
-      "Wi-Fi",
+      "Frigo in camera",
       "Palestra",
-      "Posto auto",
       "Paga in struttura",
-      "TV in camera",
+      "Piscina",
+      "Posto auto",
+      "Cancellazione gratuita",
       "Servizio in camera",
-      "Frigo in camera"
+      "TV in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
+    "id": 32,
+    "name": "Hotel Milano 2",
+    "description": "Un grazioso hotel a Milano, in Via della gioia, 15",
+    "city": "Milano",
+    "phone": "333-2489254",
+    "services": [
+      "Palestra",
+      "Paga in struttura"
     ],
     "rate": 0.0,
     "ratings": {
@@ -2250,6 +2250,31 @@
     }
   },
   {
+    "id": 95,
+    "name": "Hotel Perugia 5",
+    "description": "Un ridente hotel a Perugia, in Via della fantasia, 0",
+    "city": "Perugia",
+    "phone": "344-1459046",
+    "services": [
+      "Piscina",
+      "TV in camera",
+      "Posto auto",
+      "Palestra",
+      "Wi-Fi",
+      "Frigo in camera",
+      "Servizio in camera",
+      "Cancellazione gratuita",
+      "Sauna"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
     "id": 91,
     "name": "Hotel Perugia 1",
     "description": "Un grazioso hotel a Perugia, in Via della fantasia, 44",
@@ -2323,31 +2348,6 @@
     "city": "Perugia",
     "phone": "341-9302350",
     "services": [],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 95,
-    "name": "Hotel Perugia 5",
-    "description": "Un ridente hotel a Perugia, in Via della fantasia, 0",
-    "city": "Perugia",
-    "phone": "344-1459046",
-    "services": [
-      "Piscina",
-      "TV in camera",
-      "Posto auto",
-      "Palestra",
-      "Wi-Fi",
-      "Frigo in camera",
-      "Servizio in camera",
-      "Cancellazione gratuita",
-      "Sauna"
-    ],
     "rate": 0.0,
     "ratings": {
       "cleaning": 0.0,
@@ -3093,6 +3093,21 @@
     }
   },
   {
+    "id": 84,
+    "name": "Hotel Firenze 4",
+    "description": "Un ridente hotel a Firenze, in Via Leonardo da Vinci, 19",
+    "city": "Firenze",
+    "phone": "330-7174828",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
     "id": 81,
     "name": "Hotel Firenze 1",
     "description": "Un ridente hotel a Firenze, in Via Roma, 53",
@@ -3138,21 +3153,6 @@
       "TV in camera",
       "Cancellazione gratuita"
     ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 84,
-    "name": "Hotel Firenze 4",
-    "description": "Un ridente hotel a Firenze, in Via Leonardo da Vinci, 19",
-    "city": "Firenze",
-    "phone": "330-7174828",
-    "services": [],
     "rate": 0.0,
     "ratings": {
       "cleaning": 0.0,
@@ -3284,6 +3284,21 @@
     }
   },
   {
+    "id": 113,
+    "name": "Hotel Roma 3",
+    "description": "Un grazioso hotel a Roma, in Via della fantasia, 1",
+    "city": "Roma",
+    "phone": "332-1286644",
+    "services": [],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
     "id": 114,
     "name": "Hotel Roma 4",
     "description": "Un bellissimo hotel a Roma, in Via della libertà, 86",
@@ -3333,21 +3348,6 @@
       "Frigo in camera",
       "Posto auto"
     ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 113,
-    "name": "Hotel Roma 3",
-    "description": "Un grazioso hotel a Roma, in Via della fantasia, 1",
-    "city": "Roma",
-    "phone": "332-1286644",
-    "services": [],
     "rate": 0.0,
     "ratings": {
       "cleaning": 0.0,
@@ -3857,6 +3857,29 @@
     }
   },
   {
+    "id": 135,
+    "name": "Hotel Campobasso 5",
+    "description": "Un ridente hotel a Campobasso, in Via Italia, 7",
+    "city": "Campobasso",
+    "phone": "338-6483711",
+    "services": [
+      "Wi-Fi",
+      "Posto auto",
+      "Sauna",
+      "TV in camera",
+      "Frigo in camera",
+      "Palestra",
+      "Servizio in camera"
+    ],
+    "rate": 0.0,
+    "ratings": {
+      "cleaning": 0.0,
+      "position": 0.0,
+      "services": 0.0,
+      "quality": 0.0
+    }
+  },
+  {
     "id": 131,
     "name": "Hotel Campobasso 1",
     "description": "Un ridente hotel a Campobasso, in Via Leonardo da Vinci, 72",
@@ -3927,29 +3950,6 @@
       "Paga in struttura",
       "Frigo in camera",
       "Piscina",
-      "Servizio in camera"
-    ],
-    "rate": 0.0,
-    "ratings": {
-      "cleaning": 0.0,
-      "position": 0.0,
-      "services": 0.0,
-      "quality": 0.0
-    }
-  },
-  {
-    "id": 135,
-    "name": "Hotel Campobasso 5",
-    "description": "Un ridente hotel a Campobasso, in Via Italia, 7",
-    "city": "Campobasso",
-    "phone": "338-6483711",
-    "services": [
-      "Wi-Fi",
-      "Posto auto",
-      "Sauna",
-      "TV in camera",
-      "Frigo in camera",
-      "Palestra",
       "Servizio in camera"
     ],
     "rate": 0.0,

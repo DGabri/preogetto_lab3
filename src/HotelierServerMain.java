@@ -16,10 +16,10 @@ import java.time.Instant;
 import java.util.*;
 import java.io.*;
 
-
 public class HotelierServerMain {
     // config variables
-    private static final String[] capoluoghi = {"L'Aquila", "Potenza", "Catanzaro", "Napoli", "Bologna", "Trieste", "Roma",
+    private static final String[] capoluoghi = { "L'Aquila", "Potenza", "Catanzaro", "Napoli", "Bologna", "Trieste",
+            "Roma",
             "Genova", "Milano", "Ancona", "Campobasso", "Torino", "Bari", "Cagliari", "Palermo", "Firenze", "Trento",
             "Perugia", "Aosta", "Venezia" };
     private static final String SERVER_CONFIG = "./assets/server.properties";
@@ -59,7 +59,7 @@ public class HotelierServerMain {
         REVIEW_MIN_DELTA = Integer.parseInt(prop.getProperty("reviewMinDelta"));
         MULTICAST_ADDR = prop.getProperty("multicastAddress");
 
-        // start multicast socket
+        // initialize multicast socket
         try {
             multicastGroup = InetAddress.getByName(MULTICAST_ADDR);
             multicastSocket = new MulticastSocket();
@@ -85,7 +85,7 @@ public class HotelierServerMain {
         loadHotelsFromJson();
         loadReviewsFromJson();
     }
-    
+
     public static void main(String[] args) {
         serverRef = new HotelierServerMain();
 
@@ -96,7 +96,8 @@ public class HotelierServerMain {
         serverRef.initializeTopHotelsHashMap();
         serverRef.recalculateRanking();
 
-        // put start time so after RANKING_REFRESH_RATE i can check if a new ranking is calculated
+        // put start time so after RANKING_REFRESH_RATE i can check if a new ranking is
+        // calculated
         long startTime = System.currentTimeMillis();
 
         // try with resources so it closes everything at shutdown
@@ -123,7 +124,7 @@ public class HotelierServerMain {
                         // new connection available
                         if (key.isAcceptable()) {
                             serverRef.acceptConnection(key, selector);
-                        // new message readeable
+                            // new message readeable
                         } else if (key.isReadable()) {
                             serverRef.readMsg(key, selector);
                         }
@@ -131,22 +132,23 @@ public class HotelierServerMain {
                         iter.remove();
                     }
                 }
-                
-                // get current timestamp to check condition
+
+                // get current timestamp to check condition of refresh
                 long now = System.currentTimeMillis();
-    
+
                 if (now > (startTime + RANKING_REFRESH_RATE)) {
                     // sort hotel rankings based on score
                     serverRef.recalculateRanking();
-                        
+
                     startTime = now;
                 }
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        // close multicast socket
         serverRef.multicastSocket.close();
     }
 
@@ -164,6 +166,7 @@ public class HotelierServerMain {
             properties.load(fileInputStream);
 
             return properties;
+
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -178,7 +181,7 @@ public class HotelierServerMain {
             SocketChannel socketChannel = serverSocket.accept();
             socketChannel.configureBlocking(false);
             socketChannel.register(selector, SelectionKey.OP_READ);
-            
+
             // attach bytebuffer to save data received
             socketChannel.keyFor(selector).attach(ByteBuffer.allocate(1024));
 
@@ -191,21 +194,25 @@ public class HotelierServerMain {
     // function to read a message and send response
     public void readMsg(SelectionKey selKey, Selector selector) {
         try {
+            // get socket from selKey
             SocketChannel socketChannel = (SocketChannel) selKey.channel();
-            ByteBuffer lengthBuffer = ByteBuffer.allocate(Integer.BYTES);
+            ByteBuffer msgLengthBuffer = ByteBuffer.allocate(Integer.BYTES);
 
-            // read message legnth
-            int bytesRead = socketChannel.read(lengthBuffer);
+            // read length of msg
+            int bytesRead = socketChannel.read(msgLengthBuffer);
 
             // client closed connection
             if (bytesRead == -1) {
                 socketChannel.close();
+                System.out.println("Client ha chiuso la connessione");
                 return;
             }
 
-            lengthBuffer.flip();
+            // make buffer ready to be read
+            msgLengthBuffer.flip();
+
             // read msg length
-            int messageLength = lengthBuffer.getInt();
+            int messageLength = msgLengthBuffer.getInt();
 
             // read message
             ByteBuffer msgBuffer = ByteBuffer.allocate(messageLength);
@@ -213,26 +220,32 @@ public class HotelierServerMain {
 
             if (bytesRead == -1) {
                 socketChannel.close();
-                System.out.println("Un client ha chiuso la connessione");
+                System.out.println("Client ha chiuso la connessione");
                 return;
             }
 
+            // make buffer ready to be read
             msgBuffer.flip();
+            // allocate buffer to put message
             byte[] data = new byte[msgBuffer.remaining()];
             msgBuffer.get(data);
+
+            // decode using UTF 8
             String messageReceived = new String(data, StandardCharsets.UTF_8);
 
-
-            // sen
+            // handle message payload
             String msgToSend = serverRef.handleReceivedMessage(messageReceived);
 
             // send response message to client
             byte[] responseBytes = msgToSend.getBytes(StandardCharsets.UTF_8);
             ByteBuffer responseBuffer = ByteBuffer.allocate(Integer.BYTES + responseBytes.length);
+            // put message length
             responseBuffer.putInt(responseBytes.length);
+            // put message
             responseBuffer.put(responseBytes);
             responseBuffer.flip();
 
+            // until there is data to write, write it in channel
             while (responseBuffer.hasRemaining()) {
                 socketChannel.write(responseBuffer);
             }
@@ -249,18 +262,22 @@ public class HotelierServerMain {
     public String createHotelsString(String city) {
         List<Hotel> matchingHotels = searchAllHotels(city);
 
-        StringBuilder response = new StringBuilder();
+        if (matchingHotels.size() != 0) {
+            StringBuilder response = new StringBuilder();
 
-        // append a new hotel on each line so that client can print it
-        for (Hotel hotel : matchingHotels) {
-            response.append(hotel.toString()).append("\n");
+            // append a new hotel on each line so that client can print it
+            for (Hotel hotel : matchingHotels) {
+                response.append(hotel.toString()).append("\n");
+            }
+
+            return response.toString();
         }
-
-        return response.toString();
+        return "null";
     }
 
     public String handleReceivedMessage(String inputMsg) {
-        // take substring of the message
+        // take substring of the message, removing the opearation code
+        // es. op_message -> 1_username_password
         String msgRcvd = inputMsg.substring(2);
 
         // take the first character to do operation switch
@@ -290,7 +307,7 @@ public class HotelierServerMain {
 
                 /* LOGIN */
             case "2":
-                // returns 0 if user is not present, 1 if present
+                // get credentials
                 String[] loginCredentials = splitMessage(msgRcvd);
 
                 String usernameLogin = loginCredentials[0];
@@ -339,12 +356,14 @@ public class HotelierServerMain {
                 double cleaning = Double.parseDouble(review[5]);
                 double services = Double.parseDouble(review[6]);
                 double quality = Double.parseDouble(review[7]);
+                // get hotel id, returns -1 if hotel is not present
                 int hotelId = getHotelId(reviewedHotelCity, reviewedHotelName);
 
                 // check if selected city is in capoluoghi
                 int isValidCity = isValidCity(reviewedHotelCity);
 
-                // check if the user can write the review or if too little time has passed from last review
+                // check if the user can write the review or if too little time has passed from
+                // last review
                 boolean validReview = serverRef.canWriteReview(reviewerUsername, hotelId);
 
                 if ((hotelId != -1) && (isValidCity == 1) && (validReview == true)) {
@@ -358,10 +377,12 @@ public class HotelierServerMain {
 
                     // save new data to json
                     addSaveReview(newReview, reviewedHotelCity);
-                    
-                    // persist utente because written reviews count has increased
-                    serverRef.saveUtenteToJson();
                     return "1";
+                }
+
+                // hotel not present
+                if (hotelId == -1) {
+                    return "-2";
                 }
 
                 return "-1";
@@ -400,35 +421,36 @@ public class HotelierServerMain {
 
     /* LOGIN FUNCTIONS */
     // check if user is logged in
-    public String loggedInUsersExists(String username) {
+    public int isUserLoggedIn(String username) {
         if (loggedInUsers.contains(username)) {
-            return "1";
+            return 1;
         }
 
-        return "0";
+        return 0;
     }
 
     // insert that user has made a login
-    public String loggedInUsersPut(String username) {
-
+    public static void loggedInUsersPut(String username) {
         if (!loggedInUsers.contains(username)) {
             loggedInUsers.add(username);
-            return "1";
         }
-
-        return "0";
     }
 
     // returns 1 if login was successful, 0 if not
     public String login(String username, String password) {
         Utente currentUser = registeredUsers.get(username);
+        // returns 1 if user is already logged in
+        // if 0 user can login
+        int isLoggedIn = isUserLoggedIn(username);
 
         // if null user is not registered
-        if ((currentUser != null) && (serverRef.isRegistered(username).equals("1"))) {
+        if ((currentUser != null) && (serverRef.isRegistered(username).equals("1")) && (isLoggedIn == 0)) {
             String registerPwd = currentUser.password;
 
             // get password to see if they match
             if (registerPwd.equals(password)) {
+                // add user to logged in users set
+                loggedInUsersPut(username);
                 return "1";
             }
 
@@ -436,11 +458,17 @@ public class HotelierServerMain {
             return "-1";
         }
 
+        // user is already logged in
+        if (isLoggedIn == 1) {
+            return "-2";
+        }
+
         return "0";
     }
 
     // returns 1 if logout was successful, 0 if not
     public String logout(String username) {
+        // remove username from logged in users
         loggedInUsers.remove(username);
 
         return "1";
@@ -451,6 +479,7 @@ public class HotelierServerMain {
         Utente utente = registeredUsers.get(username);
 
         if (utente != null) {
+            // get user badge from user object
             String userLevel = utente.getUserLevel();
             return userLevel;
         }
@@ -460,7 +489,7 @@ public class HotelierServerMain {
 
     /* SEARCH FUNCTIONS */
     public int getHotelId(String city, String hotelName) {
-        // check if the city is presente in the hotel hashmap
+        // check if the city is in the hotel hashmap
         if (hotels.containsKey(city)) {
             // get hotels for passed city
             List<Hotel> cityHotels = hotels.get(city);
@@ -479,38 +508,44 @@ public class HotelierServerMain {
         return -1;
     }
 
-
-
     ///////////////////////////
     // UTILITY FUNCTIONS
     ///////////////////////////
 
+    // given hotel name and citta returns hotel if exists
     private static String searchHotel(String nomeHotel, String citta) {
-        for (List<Hotel> cityHotels : hotels.values()) {
+
+        List<Hotel> cityHotels = hotels.get(citta);
+
+        if (cityHotels != null) {
+            // iterate all hotels and check maatches
             for (Hotel hotel : cityHotels) {
-                if (hotel.name.equalsIgnoreCase(nomeHotel) && hotel.city.equalsIgnoreCase(citta)) {
+                if (hotel.name.equalsIgnoreCase(nomeHotel)) {
                     return hotel.toString();
                 }
             }
         }
+
         return "null";
     }
 
+    // return all hotels in the given city
     private static List<Hotel> searchAllHotels(String citta) {
+        // if citta is not present return empty list
         List<Hotel> matchingHotels = hotels.getOrDefault(citta, new ArrayList<>());
 
         return matchingHotels;
     }
 
+    // function to check if given city is a capoluogo
     public int isValidCity(String city) {
-            for (String capoluogo : capoluoghi) {
-                if (capoluogo.equalsIgnoreCase(city)) {
-                    return 1;
-                }
+        for (String capoluogo : capoluoghi) {
+            if (capoluogo.equalsIgnoreCase(city)) {
+                return 1;
             }
-            return 0;
+        }
+        return 0;
     }
-
 
     ///////////////////////////
     // JSON FUNCTIONS
@@ -536,21 +571,29 @@ public class HotelierServerMain {
     /* HOTELS FUNCTIONS */
     private void loadHotelsFromJson() {
         try {
+            // get Hotels.json path
             Path hotelsPath = Paths.get(HOTELS_JSON_PATH);
+
+            // if file is empty (size == 0) return as there is nothing to read
             if (Files.size(hotelsPath) == 0) {
                 System.out.println("File JSON Hotels.json vuoto");
                 return;
             }
-        
+
+            // read file content and parse
             String hotelsJson = Files.readString(Paths.get(HOTELS_JSON_PATH));
             JsonArray hotelsArray = JsonParser.parseString(hotelsJson).getAsJsonArray();
 
+            // iterate the json array where each item is a hotel
             for (int i = 0; i < hotelsArray.size(); i++) {
-                JsonObject hotelObject = hotelsArray.get(i).getAsJsonObject();
-                Hotel hotel = new Gson().fromJson(hotelObject, Hotel.class);
+                // parse each hotel as a jsonObject
+                JsonObject hotelJsonObject = hotelsArray.get(i).getAsJsonObject();
+                // from json object pass to Hotel object specifying type Hotel.class
+                Hotel hotel = new Gson().fromJson(hotelJsonObject, Hotel.class);
 
                 // Add hotel to the map
                 String city = hotel.city;
+                // if the city was not present add it to the hashmap and add the hotel
                 hotels.computeIfAbsent(city, k -> new ArrayList<>()).add(hotel);
             }
         } catch (IOException e) {
@@ -568,7 +611,10 @@ public class HotelierServerMain {
 
             // Iterate through all hotels in the current city
             for (Hotel hotel : cityHotels) {
+                // initialize an empty json object for the current hotel
                 JsonObject hotelJson = new JsonObject();
+
+                // add all necessary object properties to the hotelJson object
                 hotelJson.addProperty("id", hotel.id);
                 hotelJson.addProperty("name", hotel.name);
                 hotelJson.addProperty("description", hotel.description);
@@ -577,21 +623,24 @@ public class HotelierServerMain {
                 hotelJson.add("services", gson.toJsonTree(hotel.services));
                 hotelJson.addProperty("rate", hotel.rate);
 
+                // create raingsJson objec
                 JsonObject ratingsJson = new JsonObject();
                 ratingsJson.addProperty("cleaning", hotel.ratings.pulizia);
                 ratingsJson.addProperty("position", hotel.ratings.posizione);
                 ratingsJson.addProperty("services", hotel.ratings.servizio);
                 ratingsJson.addProperty("quality", hotel.ratings.qualita);
 
+                // add ratings object to hotel jsonObject
                 hotelJson.add("ratings", ratingsJson);
 
-                // Add the hotel to the array for the current city
+                // add current hotel to the array of hotels to dump to file
                 hotelsArray.add(hotelJson);
             }
         }
 
-        // Write the entire array to the file
+        // write all objects to file
         try (FileWriter writer = new FileWriter(HOTELS_JSON_PATH)) {
+            // call json method to dump to file
             gson.toJson(hotelsArray, writer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -602,45 +651,57 @@ public class HotelierServerMain {
 
     private void loadUsersFromJson() {
         try {
-
+            // get Users.json path
             Path usersPath = Paths.get(USERS_JSON_PATH);
             
+            // if file is empty (size == 0) return as there is nothing to read
             if (Files.size(usersPath) == 0) {
                 System.out.println("File JSON Utenti.json vuoto");
                 return;
             }
-            
+
+            // initialize registeredUsers hashmap
             registeredUsers = new ConcurrentHashMap<>();
+            // read json from file
             JsonObject jsonData = readJsonFromFile(USERS_JSON_PATH);
-            
+
+            // if data is not null load file data in memory
             if (jsonData != null && jsonData.has("utenti")) {
+                // from loaded json access utenti key
                 JsonArray utentiArray = jsonData.getAsJsonArray("utenti");
-                
+
+                // iterate all users array
                 for (int i = 0; i < utentiArray.size(); i++) {
                     try {
+                        // parse from json to java class type Utente
                         Utente utente = new Gson().fromJson(utentiArray.get(i), Utente.class);
+                        // add user to hashmap
                         registeredUsers.put(utente.username, utente);
+
                     } catch (Exception e) {
                         System.err.println("Errore file JSON Users.json");
                     }
                 }
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        }
-        
-        // function to save all registered users to json
-        private void saveUtenteToJson() {
+    }
+
+    // function to save all registered users to json
+    private void saveUtenteToJson() {
         try {
+            // initialize utentiArray to keep all users json
             JsonObject jsonObject = new JsonObject();
-            JsonArray utentiArray = new JsonArray();
+            JsonArray utentiJsonArray = new JsonArray();
 
-            registeredUsers.forEach((key, value) -> utentiArray.add(new Gson().toJsonTree(value)));
+            // for every registered user add its json object to the array of users
+            registeredUsers.forEach((key, value) -> utentiJsonArray.add(new Gson().toJsonTree(value)));
 
-            jsonObject.add("utenti", utentiArray);
+            // add the users array to the json object with key = utenti
+            jsonObject.add("utenti", utentiJsonArray);
 
+            // write to file all the data
             try (FileWriter fileWriter = new FileWriter(USERS_JSON_PATH)) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 gson.toJson(jsonObject, fileWriter);
@@ -670,6 +731,7 @@ public class HotelierServerMain {
         }
     }
 
+    // update user when a new review is written
     public int updateUser(String username) {
         // Check if the username exists in the ConcurrentHashMap
         if (registeredUsers.containsKey(username)) {
@@ -684,6 +746,8 @@ public class HotelierServerMain {
             // Put the updated user back into the map
             registeredUsers.put(username, currentUser);
 
+            // persist utente because written reviews count has increased
+            serverRef.saveUtenteToJson();
             return 1;
         }
         return -1;
@@ -692,25 +756,31 @@ public class HotelierServerMain {
     /* REVIEWS FUNCTIONS */
     private void loadReviewsFromJson() {
         try {
+            // get file path
             Path reviewsPath = Paths.get(REVIEWS_JSON_PATH);
-
+            
+            // if file is empty (size == 0) return as there is nothing to read
             if (Files.size(reviewsPath) == 0) {
                 System.out.println("File Reviews.json vuoto");
                 return;
             }
 
-            String jsonData = new String(Files.readAllBytes(Paths.get(REVIEWS_JSON_PATH)));
+            // read all data in the file
+            String jsonData = new String(Files.readAllBytes(reviewsPath));
             JsonObject reviewsObject = JsonParser.parseString(jsonData).getAsJsonObject();
 
+            // for every review in the json object parse to java data structure
             for (Map.Entry<String, JsonElement> entry : reviewsObject.entrySet()) {
+                // get hotel id, array of reviews and initialize reviewsList
                 String hotelIdStr = entry.getKey();
                 JsonArray reviewsArray = entry.getValue().getAsJsonArray();
                 List<Recensione> reviewsList = new ArrayList<>();
 
+                // iterate each review and parse 
                 for (JsonElement reviewElement : reviewsArray) {
                     JsonObject reviewObject = reviewElement.getAsJsonObject();
 
-                    // Extract review details
+                    // get review fields with matching type
                     double totale = reviewObject.get("totale").getAsDouble();
                     double posizione = reviewObject.get("posizione").getAsDouble();
                     double pulizia = reviewObject.get("pulizia").getAsDouble();
@@ -720,15 +790,15 @@ public class HotelierServerMain {
                     long ts = reviewObject.get("timestamp").getAsLong();
                     String username = reviewObject.get("username").getAsString();
 
-                    // Create a new Recensione
+                    // create new Recensione from parsed data
                     Recensione recensione = new Recensione(totale, posizione, pulizia, servizio, qualita, username,
                             idHotel, 0, ts);
 
-                    // Add the review to the list
+                    // append review to list
                     reviewsList.add(recensione);
                 }
 
-                // Add the reviews list to the reviews map
+                // append reviews list for current hotel to the reviews hashmap
                 reviews.put(hotelIdStr, reviewsList);
             }
         } catch (IOException e) {
@@ -742,12 +812,13 @@ public class HotelierServerMain {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             JsonObject jsonObject = new JsonObject();
 
-            // Iterate over the ConcurrentHashMap using forEach
+            // for every review create a json object and add it to jsonObject
             reviews.forEach((hotelId, reviewsList) -> {
                 JsonArray reviewsArray = gson.toJsonTree(reviewsList).getAsJsonArray();
                 jsonObject.add(hotelId, reviewsArray);
             });
 
+            // write data to json
             try (FileWriter fileWriter = new FileWriter(REVIEWS_JSON_PATH)) {
                 gson.toJson(jsonObject, fileWriter);
             }
@@ -773,7 +844,9 @@ public class HotelierServerMain {
 
     // function to add a review
     public void addSaveReview(Recensione recensione, String city) {
+        // add the passed review to the hotel
         addReviewToHotel(city, recensione);
+        // persist new review to file
         saveReviewsToJson();
     }
 
@@ -781,18 +854,19 @@ public class HotelierServerMain {
 
     // function to get the number of reviews per hotel scaled to 100
     public double getReviewsCountPerHotel(List<Recensione> reviewsList) {
-        //return ((double) reviewsList.size()) / 10;
+        // return ((double) reviewsList.size()) / 10;
         return ((double) reviewsList.size());
     }
 
     // function to get all reviews for hotel
     public List<Recensione> getReviewsForHotel(List<Recensione> reviews, int hotelId) {
         if (reviews == null) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
-        
+
         List<Recensione> hotelReviews = new ArrayList<>();
 
+        // iterate all reviews and check match with passed hotel id
         for (Recensione review : reviews) {
             if (review.idHotel == hotelId) {
                 hotelReviews.add(review);
@@ -802,6 +876,7 @@ public class HotelierServerMain {
         return hotelReviews;
     }
 
+    // calculate the time delta in days between two timestamps to calculate ranking
     public double getDeltaDays(long timestamp, long timestampNow) {
 
         // get seconds diff
@@ -816,22 +891,19 @@ public class HotelierServerMain {
     public double getReviewScore(double deltaDays) {
         if ((deltaDays >= 0) && (deltaDays < 5)) {
             return 1;
-        }
-        else if ((deltaDays >= 5) && (deltaDays < 15)) {
+        } else if ((deltaDays >= 5) && (deltaDays < 15)) {
             return 0.8;
-        }
-        else if ((deltaDays >= 15) && (deltaDays < 30)) {
+        } else if ((deltaDays >= 15) && (deltaDays < 30)) {
             return 0.6;
-        }
-        else if ((deltaDays >= 30) && (deltaDays < 180)) {
+        } else if ((deltaDays >= 30) && (deltaDays < 180)) {
             return 0.5;
-        }
-        else if (deltaDays >= 180) {
+        } else if (deltaDays >= 180) {
             return 0.1;
         }
-        
+
         return 0;
     }
+
     // function to calculate the delta between last and first review timestamp
     public double getReviewsActuality(List<Recensione> reviewsList) {
 
@@ -842,6 +914,9 @@ public class HotelierServerMain {
         long now = System.currentTimeMillis();
         double total = 0;
 
+        // get total reviews actuality calculate delta in days between now and the
+        // iterateed review
+        // call function that given time delta returns a score
         for (Recensione review : reviewsList) {
             double deltaDays = serverRef.getDeltaDays(review.timestamp, now);
             double reviewWeight = serverRef.getReviewScore(deltaDays);
@@ -852,7 +927,8 @@ public class HotelierServerMain {
         return total;
     }
 
-    // function to get reviews quality
+    // function to get reviews quality, calculated as the mean of the total of every
+    // review
     public double getReviewsQualityPerHotel(List<Recensione> reviewsList) {
         // calculate mean score
         int listLength = reviewsList.size();
@@ -862,19 +938,20 @@ public class HotelierServerMain {
         for (Recensione review : reviewsList) {
             totalScore += review.totale;
         }
-        
+
         if (listLength != 0) {
             meanScore = (totalScore / listLength);
             return meanScore;
         }
-        
+
         return 0;
     }
 
     // function to sort hotels by score, score is calculated using calculateScore()
     public void sortHotelsByScore(List<Recensione> reviewList, List<Hotel> cityHotels) {
         if (reviewList == null || cityHotels == null) {
-            // Handle the case where reviews or hotels are null, e.g., return an empty list or throw an exception
+            // Handle the case where reviews or hotels are null, e.g., return an empty list
+            // or throw an exception
             return;
         }
 
@@ -886,42 +963,42 @@ public class HotelierServerMain {
 
             scores.compute(hotelId, (key, previousScore) -> {
                 // calculate score for each hotel
-                // calculate new score and add it to the previous score
+                // calculate new score and add it to the previous score if it was not null
                 double newScore = serverRef.calculateScore(hotelId, reviewList);
                 double updatedScore = previousScore != null ? previousScore + newScore : newScore;
                 return updatedScore;
             });
         }
 
-        // sort descending
+        // sort descending by the before calculated score
         cityHotels.sort(Comparator.comparingDouble((Hotel hotel) -> scores.getOrDefault(hotel.id, 0.0)).reversed());
 
     }
-    
+
     public void updateHotelGlobalRate() {
         for (String city : hotels.keySet()) {
             // if there is not a review for this city skip the calculation
             if (!reviews.containsKey(city)) {
                 break;
             }
-    
+
             // get hotels for this city
             List<Hotel> hotelList = hotels.get(city);
-    
+
             // iterate hotels
             for (Hotel hotel : hotelList) {
                 // get reviews for current city and for current hotel
                 List<Recensione> cityReviews = reviews.get(city);
                 List<Recensione> hotelReviewsList = serverRef.getReviewsForHotel(cityReviews, hotel.id);
-    
+
                 // calculate points total
                 double cleaningTotal = 0;
                 double positionTotal = 0;
                 double servicesTotal = 0;
                 double qualityTotal = 0;
-    
+
                 int numReviews = hotelReviewsList.size();
-    
+
                 if (numReviews > 0) {
                     for (Recensione review : hotelReviewsList) {
                         cleaningTotal += review.pulizia;
@@ -929,7 +1006,7 @@ public class HotelierServerMain {
                         servicesTotal += review.servizio;
                         qualityTotal += review.qualita;
                     }
-    
+
                     // update value with average
                     hotel.ratings.pulizia = cleaningTotal / numReviews;
                     hotel.ratings.posizione = positionTotal / numReviews;
@@ -938,20 +1015,21 @@ public class HotelierServerMain {
                 }
             }
         }
-    
-        // Persist the update to JSON
+
+        // persist the update to JSON
         saveHotelsToJson();
     }
-    
 
     // function to sort the ranking of the hotels
     public void recalculateRanking() {
         // first update all the hotels score
         serverRef.updateHotelGlobalRate();
 
+        // update message to send via multicast
+        String newRankingMsg = "";
         String newTopHotelName;
-        
-        // calculate ranking (sort hotels)
+
+        // calculate ranking (sort hotels) in each city
         for (String city : hotels.keySet()) {
             List<Hotel> hotelList = hotels.get(city);
 
@@ -961,8 +1039,7 @@ public class HotelierServerMain {
             if (hotelList.size() > 0) {
                 // get name of actual top hotel
 
-                // sort hotels for each city
-                // reviews for specific city
+                // get reviews for specific city
                 List<Recensione> cityReviewsList = reviews.get(city);
 
                 serverRef.sortHotelsByScore(cityReviewsList, hotelList);
@@ -974,29 +1051,40 @@ public class HotelierServerMain {
                 newTopHotelName = "";
             }
 
-            
-            // check if there is a change and oldHotelName is not null (otherwise it is the first ranking)
+            // check if there is a change and oldHotelName is not null (otherwise it is the
+            // first ranking)
             if (((newTopHotelName != null) && (oldTopHotelName != null))
-            && (!oldTopHotelName.equals(newTopHotelName))) {
-                
-                //update topHotelName
+                    && (!oldTopHotelName.equals(newTopHotelName))) {
+
+                // update topHotelName
                 serverRef.updateTopHotelName(city, newTopHotelName);
 
                 if (serverRef.isFirstCalculation == false) {
-                    String updateMsg = "NEW TOP HOTEL: " + newTopHotelName + " CITY: " + city;
-                    // append new hotel to the final string                    
-                    serverRef.sendMulticastNotification(updateMsg);
-                    System.out.println("SENT NOTIFICATION UPDATE -> " + updateMsg);
+                    String updateMsg = "NEW TOP HOTEL: " + newTopHotelName + " CITY: " + city + "\n";
+                    // append new hotel to the final string
+                    newRankingMsg += updateMsg;
                 }
             }
+
+            // periodically persist data
+            serverRef.saveReviewsToJson();
+            serverRef.saveHotelsToJson();
+            serverRef.saveUtenteToJson();
         }
-        
+
+        // send update message if there was a ranking change
+        if (newRankingMsg.length() != 0) {
+            serverRef.sendMulticastNotification(newRankingMsg);
+            System.out.println("SENT NOTIFICATION UPDATE -> " + newRankingMsg);
+        }
         serverRef.isFirstCalculation = false;
 
         // save hotels to json
         serverRef.saveHotelsToJson();
     }
 
+    // function to initialize the top hotels hashmap, put every capoluogo as key and
+    // empty string as value
     public void initializeTopHotelsHashMap() {
         for (String city : capoluoghi) {
             serverRef.updateTopHotelName(city, "");
@@ -1038,22 +1126,22 @@ public class HotelierServerMain {
 
         return reviewsCount + reviewsActuality + reviewsQuality;
     }
-    
 
     // function to get the last review a user did to a hotel
     // sorted descending so the first is the last review done
-    public Recensione getUserReviewHotel(int hotelId, String username) {
+    public Recensione getLastHotelReviewForUser(int hotelId, String username) {
         List<Recensione> userReviews = new ArrayList<>();
 
         // get reviews for user and selected hotel
         for (List<Recensione> reviewsList : reviews.values()) {
             for (Recensione review : reviewsList) {
+                // check if hotel id and username match
                 if (review.idHotel == hotelId && review.username.equals(username)) {
                     userReviews.add(review);
                 }
             }
         }
-        
+
         if (userReviews.size() == 0) {
             return null;
         }
@@ -1061,11 +1149,15 @@ public class HotelierServerMain {
         // sort
         Collections.sort(userReviews, (r1, r2) -> Long.compare(r2.timestamp, r1.timestamp));
 
+        // return first review
         return userReviews.get(0);
     }
 
+    // function to check if user can write a review
+    // checks if the time delta between now and last review is greater than config
+    // value
     public boolean canWriteReview(String username, int hotelId) {
-        Recensione lastReview = serverRef.getUserReviewHotel(hotelId, username);
+        Recensione lastReview = serverRef.getLastHotelReviewForUser(hotelId, username);
 
         if (lastReview != null) {
             long lastReviewTimestamp = lastReview.timestamp;
@@ -1076,7 +1168,7 @@ public class HotelierServerMain {
             // check if the time between last review and now is greater than 1 minute
             return (delta > REVIEW_MIN_DELTA);
         }
-        
+
         // if user didn't write any review for this hotel he can write one now
         return true;
     }
@@ -1085,7 +1177,8 @@ public class HotelierServerMain {
     public void sendMulticastNotification(String msg) {
         try {
             byte[] buffer = msg.getBytes();
-            
+
+            // create packet to send to multicast group
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, multicastGroup, PORT + 1);
             serverRef.multicastSocket.send(packet);
         } catch (IOException e) {
